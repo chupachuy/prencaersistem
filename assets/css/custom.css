@@ -1,0 +1,145 @@
+/* assets/css/custom.css */
+:root {
+    --primary-color: #367d84;
+    --secondary-color: #bfb5aa;
+    --accent-color: #843c34; /* Complementary to primary */
+    --gray-700: #4a5568;
+    --gray-600: #718096;
+    --bg-color: #f8fafc;
+}
+
+body {
+    background-color: var(--bg-color);
+    font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: var(--gray-700);
+    line-height: 1.6;
+}
+
+/* Elegant Typography */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 300;
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+}
+
+/* Base Spacing & Generous layout */
+.container, .container-fluid {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+.card {
+    border: none;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    border-radius: 0; /* No border radius */
+    margin-bottom: 2rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card h5 {
+    color: #fff;
+}
+
+.card:hover {
+    box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+}
+
+/* Color Blend Classes - From Primary to Secondary */
+.bg-blend-1 {
+    background: linear-gradient(135deg, #367d84 0%, #5a7c7e 100%) !important;
+}
+
+.bg-blend-2 {
+    background: linear-gradient(135deg, #5a7c7e 0%, #7e7b78 100%) !important;
+}
+
+.bg-blend-3 {
+    background: linear-gradient(135deg, #7e7b78 0%, #a29a90 100%) !important;
+}
+
+.bg-blend-4 {
+    background: linear-gradient(135deg, #a29a90 0%, #bfb5aa 100%) !important;
+}
+
+/* Card Titles Bold */
+.card h5 {
+    font-weight: 700;
+}
+
+/* Buttons */
+.btn {
+    border-radius: 0; /* No border radius */
+    padding: 0.75rem 2rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: #2a646a;
+    border-color: #2a646a;
+}
+
+.btn-secondary {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+    color: #fff;
+}
+
+.btn-secondary:hover {
+    background-color: #a89f94;
+    border-color: #a89f94;
+}
+
+/* Forms */
+.form-control, .form-select {
+    border-radius: 0;
+    padding: 0.75rem 1rem;
+    border: 1px solid #e2e8f0;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(52, 124, 132, 0.25);
+}
+
+/* Sidebar Styling */
+.sidebar {
+    background-color: #fff;
+    min-height: 100vh;
+    box-shadow: 2px 0 20px rgba(0,0,0,0.03);
+    padding: 2rem 1rem;
+}
+
+.sidebar .nav-link {
+    color: var(--gray-600);
+    padding: 1rem 1.5rem;
+    transition: all 0.3s ease;
+    border-left: 3px solid transparent;
+}
+
+.sidebar .nav-link.active, .sidebar .nav-link:hover {
+    color: var(--primary-color);
+    background-color: rgba(52, 124, 132, 0.05);
+    border-left-color: var(--primary-color);
+}
+
+/* Images */
+.img-hover-color {
+    filter: grayscale(100%);
+    transition: filter 0.5s ease;
+}
+.img-hover-color:hover {
+    filter: grayscale(0%);
+}
+
+.header-logo {
+    max-height: 50px;
+}
