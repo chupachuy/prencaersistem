@@ -18,6 +18,8 @@ require_once __DIR__ . '/controllers/AsignacionController.php';
 require_once __DIR__ . '/controllers/PacienteController.php';
 require_once __DIR__ . '/controllers/PerfilController.php';
 require_once __DIR__ . '/controllers/InformesExploracionController.php';
+require_once __DIR__ . '/controllers/ConsultaController.php';
+require_once __DIR__ . '/controllers/Reporte1erTrimestreController.php';
 
 $router = new Router();
 
@@ -63,6 +65,20 @@ $router->get('/informes_exploracion/edit', [InformesExploracionController::class
 $router->post('/informes_exploracion/update', [InformesExploracionController::class, 'update']);
 $router->get('/informes_exploracion/delete', [InformesExploracionController::class, 'delete']);
 $router->get('/informes_exploracion/por-paciente', [InformesExploracionController::class, 'porPaciente']);
+
+// Consultas
+$router->get('/consultas', [ConsultaController::class, 'index']);
+$router->get('/consultas/create', [ConsultaController::class, 'create']);
+$router->post('/consultas/store', [ConsultaController::class, 'store']);
+$router->get('/consultas/show', [ConsultaController::class, 'show']);
+
+// Reporte 1er Trimestre
+$router->get('/reporte_1er_trimestre/create', [Reporte1erTrimestreController::class, 'create']);
+$router->post('/reporte_1er_trimestre/store', [Reporte1erTrimestreController::class, 'store']);
+$router->get('/reporte_1er_trimestre/show', [Reporte1erTrimestreController::class, 'show']);
+$router->get('/reporte_1er_trimestre/edit', [Reporte1erTrimestreController::class, 'edit']);
+$router->post('/reporte_1er_trimestre/update', [Reporte1erTrimestreController::class, 'update']);
+$router->get('/reporte_1er_trimestre/print', [Reporte1erTrimestreController::class, 'print']);
 
 // Auth Routes
 $router->get('/login', [AuthController::class, 'showLogin']);

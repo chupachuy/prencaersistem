@@ -45,6 +45,11 @@ if ($matchPath === '') $matchPath = '/';
 
         <?php if ($roleId == Auth::ROLE_MEDICO || $roleId == Auth::ROLE_JEFE || $roleId == Auth::ROLE_SUPERADMIN || $roleId == Auth::ROLE_ADMINISTRADOR): ?>
         <li>
+            <a href="<?= Url::to('/consultas') ?>" class="<?php echo strpos($matchPath, '/consultas') === 0 ? 'active' : ''; ?>">
+                <i class="fa-solid fa-calendar-check"></i> Consultas
+            </a>
+        </li>
+        <li>
             <a href="<?= Url::to('/diagnosticos') ?>" class="<?php echo strpos($matchPath, '/diagnosticos') === 0 && strpos($matchPath, '/diagnosticos/todos') === false ? 'active' : ''; ?>">
                 <i class="fa-solid fa-file-medical"></i> Mis Diagnósticos
             </a>
@@ -71,11 +76,6 @@ if ($matchPath === '') $matchPath = '/';
         <li>
             <a href="<?= Url::to('/pacientes') ?>" class="<?php echo strpos($matchPath, '/pacientes') === 0 && strpos($matchPath, '/asignaciones') === false ? 'active' : ''; ?>">
                 <i class="fa-solid fa-users-viewfinder"></i> Pacientes
-            </a>
-        </li>
-        <li>
-            <a href="<?= Url::to('/asignaciones') ?>" class="<?php echo strpos($matchPath, '/asignaciones') === 0 ? 'active' : ''; ?>">
-                <i class="fa-solid fa-list-check"></i> Asignaciones
             </a>
         </li>
         <?php endif; ?>
