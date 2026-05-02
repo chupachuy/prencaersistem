@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../core/Controller.php';
 require_once __DIR__ . '/../models/Asignacion.php';
 require_once __DIR__ . '/../models/User.php';
+require_once __DIR__ . '/../models/Paciente.php';
 require_once __DIR__ . '/../helpers/Auth.php';
 require_once __DIR__ . '/../helpers/Session.php';
 
@@ -44,7 +45,10 @@ class AsignacionController extends Controller
         $userModel = new User();
         $medicos = $userModel->getAllDoctors();
 
-        $this->render('asignaciones/create', ['medicos' => $medicos]);
+        $pacienteModel = new Paciente();
+        $pacientes = $pacienteModel->getAll();
+
+        $this->render('asignaciones/create', ['medicos' => $medicos, 'pacientes' => $pacientes]);
     }
 
     public function store()

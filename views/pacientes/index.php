@@ -25,6 +25,8 @@ require_once __DIR__ . '/../layouts/sidebar.php';
                         <th>ID</th>
                         <th>Nombre Completo</th>
                         <th>Fecha Nacimiento</th>
+                        <th>Teléfono</th>
+                        <th>Correo</th>
                         <th>Registrado en</th>
                     </tr>
                 </thead>
@@ -47,6 +49,8 @@ require_once __DIR__ . '/../layouts/sidebar.php';
                                         echo $fn->format('d/m/Y'); 
                                     ?>
                                 </td>
+                                <td><?php echo htmlspecialchars($paciente['telefono'] ?? '-'); ?></td>
+                                <td><?php echo htmlspecialchars($paciente['email'] ?? '-'); ?></td>
                                 <td style="color: var(--apple-gray);">
                                     <?php 
                                         $fc = new DateTime($paciente['created_at'] ?? 'now');

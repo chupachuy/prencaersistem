@@ -46,6 +46,7 @@ class UserController extends Controller
             'nombre' => trim($_POST['nombre'] ?? ''),
             'apellido' => trim($_POST['apellido'] ?? ''),
             'email' => trim($_POST['email'] ?? ''),
+            'telefono' => trim($_POST['telefono'] ?? ''),
             'password' => $_POST['password'] ?? '',
             'rol_id' => $_POST['rol_id'] ?? '',
             'especialidad' => trim($_POST['especialidad'] ?? ''),
@@ -126,6 +127,7 @@ class UserController extends Controller
             'nombre' => trim($_POST['nombre'] ?? ''),
             'apellido' => trim($_POST['apellido'] ?? ''),
             'email' => trim($_POST['email'] ?? ''),
+            'telefono' => trim($_POST['telefono'] ?? ''),
             'rol_id' => $_POST['rol_id'] ?? '',
             'especialidad' => trim($_POST['especialidad'] ?? ''),
             'activo' => isset($_POST['activo']) ? 1 : 0

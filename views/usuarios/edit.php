@@ -42,6 +42,13 @@ require_once __DIR__ . '/../layouts/sidebar.php';
                             <input type="email" class="form-control" id="email" name="email" value="<?php echo htmlspecialchars($usuario['email'] ?? ''); ?>" required>
                         </div>
                         <div class="col-md-6 mb-3">
+                            <label for="telefono" class="form-label">Número de Teléfono</label>
+                            <input type="text" class="form-control" id="telefono" name="telefono" value="<?php echo htmlspecialchars($usuario['telefono'] ?? ''); ?>" placeholder="Ej: 555-123-4567">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
                             <label for="password" class="form-label">Nueva Contraseña</label>
                             <input type="password" class="form-control" id="password" name="password" placeholder="Dejar en blanco para no cambiar">
                         </div>

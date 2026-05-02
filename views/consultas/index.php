@@ -54,21 +54,9 @@ require_once __DIR__ . '/../layouts/sidebar.php';
                                                 <a href="<?php echo Url::to('/consultas/show?id=' . $consulta['id_consulta']); ?>" class="btn btn-sm btn-apple btn-apple-secondary" title="Ver">
                                                     <i class="fa-solid fa-eye"></i>
                                                 </a>
-                                                <?php 
-                                                $reporte1t = $reportesData[$consulta['id_consulta']] ?? null;
-                                                if (!$reporte1t): 
-                                                ?>
-                                                    <a href="<?php echo Url::to('/reporte_1er_trimestre/create?consulta_id=' . $consulta['id_consulta']); ?>" class="btn btn-sm btn-apple btn-apple-primary" title="Reporte 1er Trimestre">
-                                                        <i class="fa-solid fa-baby"></i> 1er Trimestre
-                                                    </a>
-                                                <?php else: ?>
-                                                    <a href="<?php echo Url::to('/reporte_1er_trimestre/edit?id=' . $reporte1t['id_reporte_1t']); ?>" class="btn btn-sm btn-apple btn-apple-secondary" title="Editar">
-                                                        <i class="fa-solid fa-pen"></i>
-                                                    </a>
-                                                    <a href="<?php echo Url::to('/reporte_1er_trimestre/print?id=' . $reporte1t['id_reporte_1t']); ?>" class="btn btn-sm btn-apple btn-apple-secondary" target="_blank" title="Ver PDF">
-                                                        <i class="fa-solid fa-print"></i>
-                                                    </a>
-                                                <?php endif; ?>
+                                                <a href="<?php echo Url::to('/reportes_1er_trimestre/create?paciente_id=' . $consulta['id_paciente']); ?>" class="btn btn-sm btn-apple btn-apple-primary" title="Reporte 1er Trimestre">
+                                                    <i class="fa-solid fa-baby"></i> 1er Trimestre
+                                                </a>
                                             </div>
                                         </td>
                                     </tr>

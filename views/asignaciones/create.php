@@ -28,8 +28,17 @@ require_once __DIR__ . '/../layouts/sidebar.php';
                     <div class="row mb-4">
                         <div class="col-md-6" style="border-right: 1px solid rgba(0,0,0,0.08);">
                             <label for="paciente_id" class="form-label">Paciente <span style="color: #bf2b2b;">*</span></label>
-                            <input type="text" class="form-control" id="paciente_id" name="paciente_id" placeholder="ID o nombre del paciente" required>
-                            <div style="font-size: 12px; color: var(--apple-gray); margin-top: 6px;">Ingrese el identificador único del paciente.</div>
+                            <select class="form-select" id="paciente_id" name="paciente_id" required>
+                                <option value="">Seleccione un paciente...</option>
+                                <?php if (!empty($pacientes)): ?>
+                                    <?php foreach ($pacientes as $paciente): ?>
+                                        <option value="<?php echo htmlspecialchars($paciente['id']); ?>">
+                                            <?php echo htmlspecialchars($paciente['nombre'] . ' ' . $paciente['apellido']); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </select>
+                            <div style="font-size: 12px; color: var(--apple-gray); margin-top: 6px;">Seleccione el paciente a asignar.</div>
                         </div>
 
                         <div class="col-md-6">

@@ -41,6 +41,11 @@ if ($matchPath === '') $matchPath = '/';
                 <i class="fa-solid fa-file-medical-alt"></i> Informes Exploracion
             </a>
         </li>
+        <li>
+            <a href="<?= Url::to('/reportes_1er_trimestre') ?>" class="<?php echo strpos($matchPath, '/reportes_1er_trimestre') === 0 ? 'active' : ''; ?>">
+                <i class="fa-solid fa-file-invoice"></i> Reportes 1er Trimestre
+            </a>
+        </li>
         <?php endif; ?>
 
         <?php if ($roleId == Auth::ROLE_MEDICO || $roleId == Auth::ROLE_JEFE || $roleId == Auth::ROLE_SUPERADMIN || $roleId == Auth::ROLE_ADMINISTRADOR): ?>

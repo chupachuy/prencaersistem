@@ -1,19 +1,16 @@
 <?php
 require_once __DIR__ . '/../core/Controller.php';
 require_once __DIR__ . '/../models/Consulta.php';
-require_once __DIR__ . '/../models/Reporte1erTrimestre.php';
 require_once __DIR__ . '/../helpers/Auth.php';
 require_once __DIR__ . '/../helpers/Session.php';
 
 class ConsultaController extends Controller
 {
     private $consultaModel;
-    private $reporteModel;
 
     public function __construct()
     {
         $this->consultaModel = new Consulta();
-        $this->reporteModel = new Reporte1erTrimestre();
     }
 
     public function index()
@@ -23,13 +20,7 @@ class ConsultaController extends Controller
         }
 
         $consultas = $this->consultaModel->getAllWithPaciente();
-        
-        $reportesData = [];
-        foreach ($consultas as $consulta) {
-            $reportesData[$consulta['id_consulta']] = $this->reporteModel->getByConsultaId($consulta['id_consulta']);
-        }
-        
-        $this->render('consultas/index', ['consultas' => $consultas, 'reportesData' => $reportesData]);
+        $this->render('consultas/index', ['consultas' => $consultas]);
     }
 
     public function create()
@@ -63,7 +54,7 @@ class ConsultaController extends Controller
 
         if ($consultaId) {
             Session::set('success', 'Consulta registrada correctamente.');
-            $this->redirect('/reporte_1er_trimestre/create?consulta_id=' . $consultaId);
+            $this->redirect('/reportes_1er_trimestre/create?paciente_id=' . $consultaId);
         } else {
             Session::set('error', 'Error al registrar la consulta.');
             $this->redirect('/consultas/create');

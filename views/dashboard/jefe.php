@@ -11,6 +11,16 @@ require_once __DIR__ . '/../layouts/sidebar.php';
 
 <div class="row">
     <div class="col-md-4 mb-4">
+        <div class="stats-card" style="cursor: pointer; transition: all 0.2s;" onclick="window.location.href='<?php echo Url::to('/reportes_1er_trimestre'); ?>'">
+            <div class="stats-icon" style="background: #d1e7dd; color: #367d84;">
+                <i class="fa-solid fa-file-invoice"></i>
+            </div>
+            <h3 class="stats-number">Reportes 1er Trimestre</h3>
+            <p class="stats-label">Ver reportes prenatales</p>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
         <div class="stats-card" style="cursor: pointer; transition: all 0.2s;" onclick="window.location.href='<?php echo Url::to('/diagnosticos'); ?>'">
             <div class="stats-icon" style="background: #d1e7dd; color: #367d84;">
                 <i class="fa-solid fa-stethoscope"></i>

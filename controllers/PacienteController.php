@@ -52,13 +52,16 @@ class PacienteController extends Controller
         $nombre = trim($_POST['nombre'] ?? '');
         $apellido = trim($_POST['apellido'] ?? '');
         $fecha_nacimiento = trim($_POST['fecha_nacimiento'] ?? '');
+        $email = trim($_POST['email'] ?? '');
+        $telefono = trim($_POST['telefono'] ?? '');
+        $direccion = trim($_POST['direccion'] ?? '');
 
         if (empty($nombre) || empty($apellido) || empty($fecha_nacimiento)) {
             Session::set('error', 'Nombre, Apellido y Fecha de Nacimiento son obligatorios.');
             $this->redirect('/pacientes/create');
         }
 
-        $pacienteId = $this->pacienteModel->create($nombre, $apellido, Auth::id(), $fecha_nacimiento);
+        $pacienteId = $this->pacienteModel->create($nombre, $apellido, Auth::id(), $fecha_nacimiento, $email, $telefono, $direccion);
 
         if ($pacienteId) {
             // If it's a doctor creating a patient, automatically assign the patient to them

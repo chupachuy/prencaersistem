@@ -24,6 +24,7 @@ require_once __DIR__ . '/../layouts/sidebar.php';
                     <tr>
                         <th>Nombre</th>
                         <th>Email</th>
+                        <th>Teléfono</th>
                         <th>Rol</th>
                         <th>Especialidad</th>
                         <th>Fecha</th>
@@ -44,6 +45,7 @@ require_once __DIR__ . '/../layouts/sidebar.php';
                                     </div>
                                 </td>
                                 <td style="color: var(--apple-gray);"><?php echo htmlspecialchars($userObj['email']); ?></td>
+                                <td style="color: var(--apple-gray);"><?php echo htmlspecialchars($userObj['telefono'] ?? '-'); ?></td>
                                 <td>
                                     <span class="badge" style="background: #d1e7dd; color: #367d84;"><?php echo htmlspecialchars($userObj['rol_nombre'] ?? 'N/A'); ?></span>
                                 </td>

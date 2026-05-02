@@ -37,13 +37,13 @@ class Paciente
         return $stmt->fetchAll();
     }
 
-    public function create($nombre, $apellido, $userId, $fecha_nacimiento = null)
+    public function create($nombre, $apellido, $userId, $fecha_nacimiento = null, $email = null, $telefono = null, $direccion = null)
     {
         if (!$fecha_nacimiento) {
             $fecha_nacimiento = date('Y-m-d');
         }
-        $stmt = $this->db->prepare("INSERT INTO pacientes (nombre, apellido, fecha_nacimiento, created_by) VALUES (?, ?, ?, ?)");
-        $stmt->execute([$nombre, $apellido, $fecha_nacimiento, $userId]);
+        $stmt = $this->db->prepare("INSERT INTO pacientes (nombre, apellido, fecha_nacimiento, email, telefono, direccion, created_by) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$nombre, $apellido, $fecha_nacimiento, $email, $telefono, $direccion, $userId]);
         return $this->db->lastInsertId();
     }
 }

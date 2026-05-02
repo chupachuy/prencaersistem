@@ -26,11 +26,12 @@ class User
 
     public function create($data)
     {
-        $stmt = $this->db->prepare("INSERT INTO usuarios (nombre, apellido, email, password, rol_id, especialidad, activo, email_verified) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt = $this->db->prepare("INSERT INTO usuarios (nombre, apellido, email, telefono, password, rol_id, especialidad, activo, email_verified) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
         return $stmt->execute([
             $data['nombre'],
             $data['apellido'],
             $data['email'],
+            $data['telefono'] ?? null,
             password_hash($data['password'], PASSWORD_DEFAULT),
             $data['rol_id'],
             $data['especialidad'] ?? null,
@@ -68,6 +69,10 @@ class User
             $setParts[] = "email = ?";
             $params[] = $data['email'];
         }
+        if (isset($data['telefono'])) {
+            $setParts[] = "telefono = ?";
+            $params[] = $data['telefono'];
+        }
         if (isset($data['password'])) {
             $setParts[] = "password = ?";
             $params[] = $data['password'];
@@ -104,8 +109,13 @@ class User
 
     public function getAllDoctors()
     {
-        // Query to get users with ROLE_MEDICO (Role ID 4)
         $stmt = $this->db->query("SELECT u.*, r.nombre as rol_nombre FROM usuarios u JOIN roles r ON u.rol_id = r.id WHERE u.rol_id = 4");
+        return $stmt->fetchAll();
+    }
+
+    public function getMedicos()
+    {
+        $stmt = $this->db->query("SELECT id, nombre, apellido, especialidad FROM usuarios WHERE rol_id = 4 AND activo = 1 ORDER BY nombre ASC");
         return $stmt->fetchAll();
     }
 }

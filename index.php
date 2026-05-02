@@ -19,7 +19,7 @@ require_once __DIR__ . '/controllers/PacienteController.php';
 require_once __DIR__ . '/controllers/PerfilController.php';
 require_once __DIR__ . '/controllers/InformesExploracionController.php';
 require_once __DIR__ . '/controllers/ConsultaController.php';
-require_once __DIR__ . '/controllers/Reporte1erTrimestreController.php';
+require_once __DIR__ . '/controllers/Reportes1erTrimestreController.php';
 
 $router = new Router();
 
@@ -72,13 +72,15 @@ $router->get('/consultas/create', [ConsultaController::class, 'create']);
 $router->post('/consultas/store', [ConsultaController::class, 'store']);
 $router->get('/consultas/show', [ConsultaController::class, 'show']);
 
-// Reporte 1er Trimestre
-$router->get('/reporte_1er_trimestre/create', [Reporte1erTrimestreController::class, 'create']);
-$router->post('/reporte_1er_trimestre/store', [Reporte1erTrimestreController::class, 'store']);
-$router->get('/reporte_1er_trimestre/show', [Reporte1erTrimestreController::class, 'show']);
-$router->get('/reporte_1er_trimestre/edit', [Reporte1erTrimestreController::class, 'edit']);
-$router->post('/reporte_1er_trimestre/update', [Reporte1erTrimestreController::class, 'update']);
-$router->get('/reporte_1er_trimestre/print', [Reporte1erTrimestreController::class, 'print']);
+// Reportes 1er Trimestre
+$router->get('/reportes_1er_trimestre', [Reportes1erTrimestreController::class, 'index']);
+$router->get('/reportes_1er_trimestre/create', [Reportes1erTrimestreController::class, 'create']);
+$router->post('/reportes_1er_trimestre/store', [Reportes1erTrimestreController::class, 'store']);
+$router->get('/reportes_1er_trimestre/show', [Reportes1erTrimestreController::class, 'show']);
+$router->get('/reportes_1er_trimestre/edit', [Reportes1erTrimestreController::class, 'edit']);
+$router->post('/reportes_1er_trimestre/update', [Reportes1erTrimestreController::class, 'update']);
+$router->get('/reportes_1er_trimestre/print', [Reportes1erTrimestreController::class, 'print']);
+$router->post('/reportes_1er_trimestre/delete', [Reportes1erTrimestreController::class, 'delete']);
 
 // Auth Routes
 $router->get('/login', [AuthController::class, 'showLogin']);

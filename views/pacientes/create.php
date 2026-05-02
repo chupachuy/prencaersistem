@@ -38,6 +38,22 @@ require_once __DIR__ . '/../layouts/sidebar.php';
                         <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" required>
                     </div>
 
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label">Correo Electrónico</label>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="Ej. paciente@correo.com">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="telefono" class="form-label">Número de Teléfono</label>
+                            <input type="text" class="form-control" id="telefono" name="telefono" placeholder="Ej. 555-123-4567">
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="direccion" class="form-label">Dirección</label>
+                        <textarea class="form-control" id="direccion" name="direccion" rows="2" placeholder="Dirección del paciente"></textarea>
+                    </div>
+
                     <div class="d-flex justify-content-end gap-2">
                         <a href="<?php echo Url::to('/pacientes'); ?>" class="btn btn-apple btn-apple-secondary">Cancelar</a>
                         <button type="submit" class="btn btn-apple btn-apple-primary"><i class="fa-solid fa-save"></i> Guardar</button>
