@@ -20,6 +20,7 @@ require_once __DIR__ . '/controllers/PerfilController.php';
 require_once __DIR__ . '/controllers/InformesExploracionController.php';
 require_once __DIR__ . '/controllers/ConsultaController.php';
 require_once __DIR__ . '/controllers/Reportes1erTrimestreController.php';
+require_once __DIR__ . '/controllers/ConsentimientoController.php';
 
 $router = new Router();
 
@@ -81,6 +82,21 @@ $router->get('/reportes_1er_trimestre/edit', [Reportes1erTrimestreController::cl
 $router->post('/reportes_1er_trimestre/update', [Reportes1erTrimestreController::class, 'update']);
 $router->get('/reportes_1er_trimestre/print', [Reportes1erTrimestreController::class, 'print']);
 $router->post('/reportes_1er_trimestre/delete', [Reportes1erTrimestreController::class, 'delete']);
+
+// Consentimientos
+$router->get('/consentimientos', [ConsentimientoController::class, 'index']);
+$router->get('/consentimientos/create', [ConsentimientoController::class, 'create']);
+$router->post('/consentimientos/store', [ConsentimientoController::class, 'store']);
+$router->get('/consentimientos/firmar', [ConsentimientoController::class, 'firmar']);
+$router->post('/consentimientos/storeFirma', [ConsentimientoController::class, 'storeFirma']);
+$router->get('/consentimientos/show', [ConsentimientoController::class, 'show']);
+$router->get('/consentimientos/print', [ConsentimientoController::class, 'print']);
+$router->get('/consentimientos/catalogo', [ConsentimientoController::class, 'catalogo']);
+$router->get('/consentimientos/catalogo/create', [ConsentimientoController::class, 'catalogoCreate']);
+$router->post('/consentimientos/catalogo/store', [ConsentimientoController::class, 'catalogoStore']);
+$router->get('/consentimientos/catalogo/edit', [ConsentimientoController::class, 'catalogoEdit']);
+$router->post('/consentimientos/catalogo/update', [ConsentimientoController::class, 'catalogoUpdate']);
+$router->post('/consentimientos/catalogo/delete', [ConsentimientoController::class, 'catalogoDelete']);
 
 // Auth Routes
 $router->get('/login', [AuthController::class, 'showLogin']);

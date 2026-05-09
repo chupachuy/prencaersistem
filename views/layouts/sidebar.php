@@ -24,6 +24,11 @@ if ($matchPath === '') $matchPath = '/';
                 <i class="fa-solid fa-chart-line"></i> Dashboard
             </a>
         </li>
+        <li>
+            <a href="<?= Url::to('/consentimientos') ?>" class="<?php echo strpos($matchPath, '/consentimientos') === 0 ? 'active' : ''; ?>">
+                <i class="fa-solid fa-file-signature"></i> Consentimientos
+            </a>
+        </li>
 
         <?php if ($roleId == Auth::ROLE_SUPERADMIN || $roleId == Auth::ROLE_ADMINISTRADOR || $roleId == Auth::ROLE_JEFE): ?>
         <li>
