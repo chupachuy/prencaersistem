@@ -47,8 +47,18 @@ if ($matchPath === '') $matchPath = '/';
             </a>
         </li>
         <li>
-            <a href="<?= Url::to('/reportes_1er_trimestre') ?>" class="<?php echo strpos($matchPath, '/reportes_1er_trimestre') === 0 ? 'active' : ''; ?>">
-                <i class="fa-solid fa-file-invoice"></i> Reportes 1er Trimestre
+            <a href="<?= Url::to('/evaluaciones_1er_trimestre') ?>" class="<?php echo strpos($matchPath, '/evaluaciones_1er_trimestre') === 0 ? 'active' : ''; ?>">
+                <i class="fa-solid fa-file-invoice"></i> Evaluaciones 1er Trimestre
+            </a>
+        </li>
+        <li>
+            <a href="<?= Url::to('/evaluaciones_2do_trimestre') ?>" class="<?php echo strpos($matchPath, '/evaluaciones_2do_trimestre') === 0 ? 'active' : ''; ?>">
+                <i class="fa-solid fa-file-invoice"></i> Evaluaciones 2do Trimestre
+            </a>
+        </li>
+        <li>
+            <a href="<?= Url::to('/evaluaciones_3er_trimestre') ?>" class="<?php echo strpos($matchPath, '/evaluaciones_3er_trimestre') === 0 ? 'active' : ''; ?>">
+                <i class="fa-solid fa-file-invoice"></i> Evaluaciones 3er Trimestre
             </a>
         </li>
         <?php endif; ?>

@@ -20,6 +20,9 @@ require_once __DIR__ . '/controllers/PerfilController.php';
 require_once __DIR__ . '/controllers/InformesExploracionController.php';
 require_once __DIR__ . '/controllers/ConsultaController.php';
 require_once __DIR__ . '/controllers/Reportes1erTrimestreController.php';
+require_once __DIR__ . '/controllers/Evaluaciones1erTrimestreController.php';
+require_once __DIR__ . '/controllers/Evaluaciones2doTrimestreController.php';
+require_once __DIR__ . '/controllers/Evaluaciones3erTrimestreController.php';
 require_once __DIR__ . '/controllers/ConsentimientoController.php';
 
 $router = new Router();
@@ -82,6 +85,36 @@ $router->get('/reportes_1er_trimestre/edit', [Reportes1erTrimestreController::cl
 $router->post('/reportes_1er_trimestre/update', [Reportes1erTrimestreController::class, 'update']);
 $router->get('/reportes_1er_trimestre/print', [Reportes1erTrimestreController::class, 'print']);
 $router->post('/reportes_1er_trimestre/delete', [Reportes1erTrimestreController::class, 'delete']);
+
+// Evaluaciones 1er Trimestre (nuevo sistema)
+$router->get('/evaluaciones_1er_trimestre', [Evaluaciones1erTrimestreController::class, 'index']);
+$router->get('/evaluaciones_1er_trimestre/create', [Evaluaciones1erTrimestreController::class, 'create']);
+$router->post('/evaluaciones_1er_trimestre/store', [Evaluaciones1erTrimestreController::class, 'store']);
+$router->get('/evaluaciones_1er_trimestre/show', [Evaluaciones1erTrimestreController::class, 'show']);
+$router->get('/evaluaciones_1er_trimestre/edit', [Evaluaciones1erTrimestreController::class, 'edit']);
+$router->post('/evaluaciones_1er_trimestre/update', [Evaluaciones1erTrimestreController::class, 'update']);
+$router->get('/evaluaciones_1er_trimestre/print', [Evaluaciones1erTrimestreController::class, 'print']);
+$router->post('/evaluaciones_1er_trimestre/delete', [Evaluaciones1erTrimestreController::class, 'delete']);
+
+// Evaluaciones 2do Trimestre
+$router->get('/evaluaciones_2do_trimestre', [Evaluaciones2doTrimestreController::class, 'index']);
+$router->get('/evaluaciones_2do_trimestre/create', [Evaluaciones2doTrimestreController::class, 'create']);
+$router->post('/evaluaciones_2do_trimestre/store', [Evaluaciones2doTrimestreController::class, 'store']);
+$router->get('/evaluaciones_2do_trimestre/show', [Evaluaciones2doTrimestreController::class, 'show']);
+$router->get('/evaluaciones_2do_trimestre/edit', [Evaluaciones2doTrimestreController::class, 'edit']);
+$router->post('/evaluaciones_2do_trimestre/update', [Evaluaciones2doTrimestreController::class, 'update']);
+$router->get('/evaluaciones_2do_trimestre/print', [Evaluaciones2doTrimestreController::class, 'print']);
+$router->post('/evaluaciones_2do_trimestre/delete', [Evaluaciones2doTrimestreController::class, 'delete']);
+
+// Evaluaciones 3er Trimestre
+$router->get('/evaluaciones_3er_trimestre', [Evaluaciones3erTrimestreController::class, 'index']);
+$router->get('/evaluaciones_3er_trimestre/create', [Evaluaciones3erTrimestreController::class, 'create']);
+$router->post('/evaluaciones_3er_trimestre/store', [Evaluaciones3erTrimestreController::class, 'store']);
+$router->get('/evaluaciones_3er_trimestre/show', [Evaluaciones3erTrimestreController::class, 'show']);
+$router->get('/evaluaciones_3er_trimestre/edit', [Evaluaciones3erTrimestreController::class, 'edit']);
+$router->post('/evaluaciones_3er_trimestre/update', [Evaluaciones3erTrimestreController::class, 'update']);
+$router->get('/evaluaciones_3er_trimestre/print', [Evaluaciones3erTrimestreController::class, 'print']);
+$router->post('/evaluaciones_3er_trimestre/delete', [Evaluaciones3erTrimestreController::class, 'delete']);
 
 // Consentimientos
 $router->get('/consentimientos', [ConsentimientoController::class, 'index']);

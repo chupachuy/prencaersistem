@@ -50,7 +50,7 @@ class ConsentimientoAsignado
         $stmt = $this->db->prepare("
             SELECT ca.*, 
                    u.nombre AS medico_nombre, u.apellido AS medico_apellido,
-                   cc.nombre_documento, cc.version, cc.requiere_firma_medico, cc.cantidad_testigos
+                   cc.nombre_documento, cc.version, cc.contenido, cc.requiere_firma_medico, cc.cantidad_testigos
             FROM consentimientos_asignados ca
             JOIN usuarios u ON ca.medico_id = u.id
             JOIN catalogo_consentimientos cc ON ca.documento_id = cc.id
@@ -68,7 +68,7 @@ class ConsentimientoAsignado
                    p.nombre AS paciente_nombre, p.apellido AS paciente_apellido,
                    u.nombre AS medico_nombre, u.apellido AS medico_apellido,
                    u.telefono AS medico_telefono,
-                   cc.nombre_documento, cc.version, cc.requiere_firma_medico, cc.cantidad_testigos
+                   cc.nombre_documento, cc.version, cc.contenido, cc.requiere_firma_medico, cc.cantidad_testigos
             FROM consentimientos_asignados ca
             JOIN pacientes p ON ca.paciente_id = p.id
             JOIN usuarios u ON ca.medico_id = u.id

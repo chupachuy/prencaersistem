@@ -83,6 +83,17 @@ require_once __DIR__ . '/../layouts/sidebar.php';
             </div>
         </div>
 
+        <?php if (!empty($consentimiento['contenido'])): ?>
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fa-solid fa-file-lines me-2"></i> Contenido del Consentimiento
+            </div>
+            <div class="card-body" style="max-height: 400px; overflow-y: auto; font-size: 14px; line-height: 1.7;">
+                <?php echo $consentimiento['contenido']; ?>
+            </div>
+        </div>
+        <?php endif; ?>
+
         <?php if ($datosDinamicos): ?>
         <div class="card mb-4">
             <div class="card-header">

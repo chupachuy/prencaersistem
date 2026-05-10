@@ -1,0 +1,29 @@
+<?php
+$title = "Evaluaciones 3er Trimestre";
+require_once __DIR__ . '/../layouts/header.php';
+require_once __DIR__ . '/../layouts/sidebar.php';
+?>
+<div class="page-header">
+    <div class="d-flex align-items-center gap-3"><h1 class="page-title mb-0">Evaluaciones 3er Trimestre</h1></div>
+    <div class="page-header-actions"><a href="<?php echo Url::to('/evaluaciones_3er_trimestre/create'); ?>" class="btn btn-apple btn-apple-primary"><i class="fa-solid fa-plus"></i> Nueva Evaluación</a></div>
+</div>
+<?php if($f=Session::getFlash('success')):?><div class="alert" style="background:#d1e7dd;color:#367d84;border-radius:12px;"><?php echo htmlspecialchars($f);?></div><?php endif;?>
+<?php if($f=Session::getFlash('error')):?><div class="alert" style="background:#ffebe6;color:#bf2b2b;border-radius:12px;"><?php echo htmlspecialchars($f);?></div><?php endif;?>
+<div class="card"><div class="card-body"><div class="table-responsive"><table class="table table-hover">
+<thead><tr><th>Código</th><th>Fecha</th><th>Paciente</th><th>Médico</th><th>Estado</th><th>Acciones</th></tr></thead>
+<tbody>
+<?php if(!empty($evaluaciones)): foreach($evaluaciones as $ev):?>
+<tr>
+<td><strong><?php echo htmlspecialchars($ev['codigo_reporte']);?></strong></td>
+<td><?php echo date('d/m/Y',strtotime($ev['fecha_evaluacion']));?></td>
+<td><?php echo htmlspecialchars($ev['paciente_nombre'].' '.$ev['paciente_apellido']);?></td>
+<td><?php echo htmlspecialchars($ev['medico_nombre'].' '.$ev['medico_apellido']);?></td>
+<td><?php $ec=match($ev['estado']){'Completado'=>'success','En proceso'=>'warning','Archivado'=>'secondary',default=>'info'};?><span class="badge bg-<?php echo $ec;?>"><?php echo htmlspecialchars($ev['estado']);?></span></td>
+<td><div class="btn-group btn-group-sm">
+<a href="<?php echo Url::to('/evaluaciones_3er_trimestre/show?id='.$ev['id']);?>" class="action-btn action-btn-view" title="Ver"><i class="fa-solid fa-eye"></i></a>
+<a href="<?php echo Url::to('/evaluaciones_3er_trimestre/edit?id='.$ev['id']);?>" class="action-btn action-btn-edit" title="Editar"><i class="fa-solid fa-edit"></i></a>
+<a href="<?php echo Url::to('/evaluaciones_3er_trimestre/print?id='.$ev['id']);?>" class="action-btn action-btn-view" target="_blank" title="Imprimir"><i class="fa-solid fa-print"></i></a>
+</div></td></tr>
+<?php endforeach; else:?><tr><td colspan="6" class="text-center text-muted">No hay evaluaciones registradas</td></tr><?php endif;?>
+</tbody></table></div></div></div>
+<?php require_once __DIR__ . '/../layouts/footer.php'; ?>

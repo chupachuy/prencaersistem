@@ -14,7 +14,7 @@ require_once __DIR__ . '/../../layouts/sidebar.php';
 </div>
 
 <div class="row justify-content-center">
-    <div class="col-lg-6">
+    <div class="col-lg-10">
         <div class="card">
             <div class="card-header">
                 <i class="fa-solid fa-file-medical me-2"></i> Datos del Documento
@@ -28,6 +28,11 @@ require_once __DIR__ . '/../../layouts/sidebar.php';
                     <div class="mb-3">
                         <label for="version" class="form-label">Versión</label>
                         <input type="text" class="form-control" id="version" name="version" placeholder="Ej: v1.0" value="v1.0">
+                    </div>
+                    <div class="mb-3">
+                        <label for="contenido" class="form-label">Contenido del Documento</label>
+                        <textarea class="form-control" id="contenido" name="contenido" placeholder="Escriba aquí el texto completo del consentimiento informado..."></textarea>
+                        <small class="text-muted">Texto que el paciente leerá antes de firmar. Puede usar formato con la barra de herramientas.</small>
                     </div>
                     <div class="mb-3">
                         <div class="form-check form-switch">
@@ -52,4 +57,22 @@ require_once __DIR__ . '/../../layouts/sidebar.php';
     </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/7.6.1/tinymce.min.js"></script>
+<script>
+tinymce.init({
+    selector: '#contenido',
+    height: 500,
+    menubar: false,
+    language: 'es',
+    plugins: 'advlist autolink lists link charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime table help wordcount',
+    toolbar: 'undo redo | blocks | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
+    block_formats: 'Parrafo=p; Encabezado 1=h2; Encabezado 2=h3; Encabezado 3=h4',
+    content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif; font-size: 14px; line-height: 1.7; }',
+    setup: function(editor) {
+        editor.on('change', function() {
+            editor.save();
+        });
+    }
+});
+</script>
 <?php require_once __DIR__ . '/../../layouts/footer.php'; ?>

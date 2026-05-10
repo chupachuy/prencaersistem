@@ -1,5 +1,6 @@
 -- Base de datos: prenacersistem
--- CREATE DATABASE IF NOT EXISTS prenacersistem; -- Usually not needed if already exists
+-- CREATE DATABASE IF NOT EXISTS prenacersistem DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -- Usually not needed if already exists
+SET NAMES utf8mb4;
 USE prenacersistem;
 
 -- Tabla de roles
@@ -232,6 +233,7 @@ CREATE TABLE IF NOT EXISTS catalogo_consentimientos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre_documento VARCHAR(150) NOT NULL,
     version VARCHAR(10),
+    contenido TEXT NULL,
     requiere_firma_medico BOOLEAN DEFAULT TRUE,
     cantidad_testigos INT DEFAULT 0,
     activo BOOLEAN DEFAULT TRUE,
@@ -281,6 +283,318 @@ INSERT IGNORE INTO catalogo_consentimientos (id, nombre_documento, version, requ
 (3, 'Consentimiento Informado Ultrasonido Nivel II', 'v1.0', TRUE, 2),
 (4, 'Consentimiento Informado Evaluación Ginecológica', 'v1.0', TRUE, 1),
 (5, 'Consentimiento Informado General', 'v1.0', TRUE, 1);
+
+-- ============================================================
+-- NUEVO SISTEMA: Evaluaciones 1er Trimestre
+-- ============================================================
+
+-- Tabla: historial_clinico (Antecedentes y Factores de Riesgo por paciente)
+CREATE TABLE IF NOT EXISTS historial_clinico (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    paciente_id INT NOT NULL,
+    hipertension_cronica BOOLEAN DEFAULT FALSE,
+    diabetes BOOLEAN DEFAULT FALSE,
+    lupus_les BOOLEAN DEFAULT FALSE,
+    sindrome_antifosfolipido_saf BOOLEAN DEFAULT FALSE,
+    antecedente_preeclampsia_rciu BOOLEAN DEFAULT FALSE,
+    fertilizacion_in_vitro BOOLEAN DEFAULT FALSE,
+    antecedente_parto_pretermino BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (paciente_id) REFERENCES pacientes(id),
+    UNIQUE KEY unique_paciente_historial (paciente_id),
+    INDEX idx_paciente_historial (paciente_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Tabla: evaluaciones_1er_trimestre (Central: signos vitales + biometría fetal)
+CREATE TABLE IF NOT EXISTS evaluaciones_1er_trimestre (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    paciente_id INT NOT NULL,
+    medico_id INT NOT NULL,
+    codigo_reporte VARCHAR(50) UNIQUE NOT NULL,
+    fecha_evaluacion DATE NOT NULL,
+    fecha_estudio DATE NULL,
+    peso_kg DECIMAL(5,2) NULL,
+    talla_cm DECIMAL(5,2) NULL,
+    ta_sistolica INT NULL,
+    ta_diastolica INT NULL,
+    fum DATE NULL COMMENT 'Fecha de última regla',
+    fpp_usg DATE NULL COMMENT 'Fecha probable de parto por USG',
+    embarazo_multiple BOOLEAN DEFAULT FALSE,
+    estado_feto ENUM('Vivo','Muerto') DEFAULT 'Vivo',
+    fcf_lpm INT NULL COMMENT 'Frecuencia Cardiaca Fetal',
+    lcc_mm DECIMAL(5,2) NULL COMMENT 'Longitud Cráneo Cauda',
+    edad_gestacional_semanas DECIMAL(4,1) NULL,
+    estado ENUM('Pendiente','En proceso','Completado','Archivado') DEFAULT 'Pendiente',
+    activo BOOLEAN DEFAULT TRUE,
+    created_by INT NULL,
+    updated_by INT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (paciente_id) REFERENCES pacientes(id),
+    FOREIGN KEY (medico_id) REFERENCES usuarios(id),
+    FOREIGN KEY (created_by) REFERENCES usuarios(id),
+    FOREIGN KEY (updated_by) REFERENCES usuarios(id),
+    INDEX idx_paciente_evaluacion (paciente_id),
+    INDEX idx_codigo (codigo_reporte)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Tabla: anatomia_fetal (Exploración estructural cualitativa)
+CREATE TABLE IF NOT EXISTS anatomia_fetal (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    evaluacion_id INT NOT NULL,
+    estado_exploracion ENUM('Completa','Incompleta') DEFAULT 'Completa',
+    snc_simetria_plexos BOOLEAN DEFAULT TRUE COMMENT 'Signo de mariposa - SNC',
+    macizo_facial_integro BOOLEAN DEFAULT TRUE,
+    torax_situs ENUM('Solitus','Inversus') DEFAULT 'Solitus',
+    torax_eje_cardiaco_grados INT NULL,
+    abdomen_camara_gastrica BOOLEAN DEFAULT TRUE,
+    extremidades_completas BOOLEAN DEFAULT TRUE,
+    observaciones_anomalias TEXT NULL,
+    FOREIGN KEY (evaluacion_id) REFERENCES evaluaciones_1er_trimestre(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_evaluacion_anatomia (evaluacion_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Tabla: marcadores_fmf (Checklist ecográfico estándar Fetal Medicine Foundation)
+CREATE TABLE IF NOT EXISTS marcadores_fmf (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    evaluacion_id INT NOT NULL,
+    translucencia_nucal_mm DECIMAL(4,2) NULL,
+    hueso_nasal_presente BOOLEAN DEFAULT TRUE,
+    ductus_venoso_onda_a ENUM('Positiva','Reversa','Ausente') NULL,
+    regurgitacion_tricuspidea_ausente BOOLEAN DEFAULT TRUE,
+    vejiga_fetal_mm DECIMAL(4,2) NULL,
+    uta_pi_promedio DECIMAL(4,2) NULL COMMENT 'Índice de pulsatilidad arterias uterinas',
+    muesca_bilateral BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (evaluacion_id) REFERENCES evaluaciones_1er_trimestre(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_evaluacion_marcadores (evaluacion_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Tabla: entorno_materno (Evaluación útero-placentaria)
+CREATE TABLE IF NOT EXISTS entorno_materno (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    evaluacion_id INT NOT NULL,
+    liquido_amniotico ENUM('Normal','Anormal') DEFAULT 'Normal',
+    placenta_posicion ENUM('Anterior','Posterior','Lateral Derecho','Lateral Izquierdo') NULL,
+    placenta_insercion ENUM('Normal','Baja Temprana','Previa Temprana') NULL,
+    longitud_cervical_mm DECIMAL(5,2) NULL,
+    indice_consistencia_cervical_pct INT NULL,
+    morfologia_uterina_eshre ENUM('U0','U1','U2','U3','U4','U5','U6') NULL COMMENT 'Clasificación ESHRE-ESGE',
+    miomas_visibles BOOLEAN DEFAULT FALSE,
+    miomas_figo_tipo VARCHAR(50) NULL,
+    FOREIGN KEY (evaluacion_id) REFERENCES evaluaciones_1er_trimestre(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_evaluacion_entorno (evaluacion_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Tabla: impresion_diagnostica (Resultados de tamizaje y semáforos de riesgo)
+CREATE TABLE IF NOT EXISTS impresion_diagnostica (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    evaluacion_id INT NOT NULL,
+    riesgo_basal_cromosomopatias VARCHAR(20) NULL,
+    riesgo_ajustado_cromosomopatias VARCHAR(20) NULL,
+    probabilidad_cromosomopatias ENUM('Baja','Intermedia','Alta') NULL,
+    riesgo_preeclampsia_temprana ENUM('Baja','Alta') NULL,
+    riesgo_enfermedad_placentaria_tardia ENUM('Baja','Alta') NULL,
+    riesgo_parto_pretermino ENUM('Bajo','Alto') NULL,
+    FOREIGN KEY (evaluacion_id) REFERENCES evaluaciones_1er_trimestre(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_evaluacion_diagnostica (evaluacion_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ============================================================
+-- EVALUACIONES 2DO TRIMESTRE
+-- ============================================================
+
+CREATE TABLE IF NOT EXISTS evaluaciones_2do_trimestre (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    paciente_id INT NOT NULL,
+    medico_id INT NOT NULL,
+    codigo_reporte VARCHAR(50) UNIQUE NOT NULL,
+    fecha_evaluacion DATE NOT NULL,
+    fecha_estudio DATE NULL,
+    edad_gestacional_semanas DECIMAL(4,1) NULL,
+    fpp_actual DATE NULL,
+    peso_kg DECIMAL(5,2) NULL,
+    talla_cm DECIMAL(5,2) NULL,
+    pam_mmhg DECIMAL(5,2) NULL COMMENT 'Presion Arterial Media',
+    uta_pi_promedio DECIMAL(4,2) NULL COMMENT 'Indice Pulsatilidad Arterias Uterinas',
+    estado ENUM('Pendiente','En proceso','Completado','Archivado') DEFAULT 'Pendiente',
+    activo BOOLEAN DEFAULT TRUE,
+    created_by INT NULL,
+    updated_by INT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (paciente_id) REFERENCES pacientes(id),
+    FOREIGN KEY (medico_id) REFERENCES usuarios(id),
+    FOREIGN KEY (created_by) REFERENCES usuarios(id),
+    FOREIGN KEY (updated_by) REFERENCES usuarios(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS biometria_2do_trimestre (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    evaluacion_id INT NOT NULL,
+    estado_feto ENUM('Vivo','Muerto') DEFAULT 'Vivo',
+    fcf_lpm INT NULL,
+    peso_fetal_estimado_gr INT NULL,
+    percentil_hadlock INT NULL,
+    crecimiento_armonico BOOLEAN DEFAULT TRUE,
+    indice_cefalico_ci DECIMAL(4,2) NULL,
+    fl_ac_pct DECIMAL(4,2) NULL,
+    hc_ac_campbell DECIMAL(4,2) NULL,
+    FOREIGN KEY (evaluacion_id) REFERENCES evaluaciones_2do_trimestre(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_evaluacion_biometria (evaluacion_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS anatomia_fetal_2do_trimestre (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    evaluacion_id INT NOT NULL,
+    craneo_snc_normal BOOLEAN DEFAULT TRUE,
+    cara_cuello_normal BOOLEAN DEFAULT TRUE,
+    corazon_normal BOOLEAN DEFAULT TRUE,
+    torax_diafragma_normal BOOLEAN DEFAULT TRUE,
+    abdomen_normal BOOLEAN DEFAULT TRUE,
+    genitourinario_normal BOOLEAN DEFAULT TRUE,
+    columna_normal BOOLEAN DEFAULT TRUE,
+    extremidades_normal BOOLEAN DEFAULT TRUE,
+    detalles_anomalias TEXT NULL,
+    FOREIGN KEY (evaluacion_id) REFERENCES evaluaciones_2do_trimestre(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_evaluacion_anatomia2 (evaluacion_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS marcadores_ecograficos_2do_trimestre (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    evaluacion_id INT NOT NULL,
+    ventriculomegalia_leve BOOLEAN DEFAULT FALSE,
+    quistes_plexos_coroideos BOOLEAN DEFAULT FALSE,
+    pliegue_nucal_aumentado BOOLEAN DEFAULT FALSE,
+    hueso_nasal_ausente BOOLEAN DEFAULT FALSE,
+    foco_ecogenico_cardiaco BOOLEAN DEFAULT FALSE,
+    intestino_hiperecogenico BOOLEAN DEFAULT FALSE,
+    femur_corto BOOLEAN DEFAULT FALSE,
+    arteria_umbilical_unica BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (evaluacion_id) REFERENCES evaluaciones_2do_trimestre(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_evaluacion_marcadores2 (evaluacion_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS entorno_placentario_2do_trimestre (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    evaluacion_id INT NOT NULL,
+    placenta_posicion VARCHAR(50) NULL,
+    distancia_borde_oci_mm DECIMAL(5,2) NULL,
+    acretismo_figo_grado ENUM('0','1','2','3') NULL COMMENT '0:Normal, 1:Parcial, 2:Invasion, 3:Percretismo',
+    bolsillo_max_liquido_mm INT NULL,
+    longitud_cervical_mm DECIMAL(5,2) NULL,
+    indice_consistencia_cervical INT NULL,
+    funneling_presente BOOLEAN DEFAULT FALSE,
+    funneling_mm DECIMAL(5,2) NULL,
+    sludge_intraamniotico ENUM('Si','No','Dudoso') NULL,
+    FOREIGN KEY (evaluacion_id) REFERENCES evaluaciones_2do_trimestre(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_evaluacion_entorno2 (evaluacion_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS impresion_diagnostica_2do_trimestre (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    evaluacion_id INT NOT NULL,
+    riesgo_cromosomopatias ENUM('Bajo','Intermedio','Alto') NULL,
+    riesgo_parto_pretermino ENUM('Bajo','Intermedio','Alto','Muy Alto') NULL,
+    riesgo_preeclampsia ENUM('Bajo','Intermedio','Alto','Muy Alto') NULL,
+    observaciones_medicas TEXT NULL,
+    FOREIGN KEY (evaluacion_id) REFERENCES evaluaciones_2do_trimestre(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_evaluacion_diagnostica2 (evaluacion_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ============================================================
+-- EVALUACIONES 3ER TRIMESTRE
+-- ============================================================
+
+CREATE TABLE IF NOT EXISTS evaluaciones_3er_trimestre (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    paciente_id INT NOT NULL,
+    medico_id INT NOT NULL,
+    codigo_reporte VARCHAR(50) UNIQUE NOT NULL,
+    fecha_evaluacion DATE NOT NULL,
+    fecha_estudio DATE NULL,
+    edad_gestacional_semanas DECIMAL(4,1) NULL,
+    peso_kg DECIMAL(5,2) NULL,
+    ta_sistolica INT NULL,
+    ta_diastolica INT NULL,
+    situacion_fetal ENUM('Longitudinal','Transversa') NULL,
+    presentacion_fetal ENUM('Cefalico','Pelvico') NULL,
+    posicion_fetal VARCHAR(50) NULL,
+    fcf_lpm INT NULL,
+    estado ENUM('Pendiente','En proceso','Completado','Archivado') DEFAULT 'Pendiente',
+    activo BOOLEAN DEFAULT TRUE,
+    created_by INT NULL,
+    updated_by INT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (paciente_id) REFERENCES pacientes(id),
+    FOREIGN KEY (medico_id) REFERENCES usuarios(id),
+    FOREIGN KEY (created_by) REFERENCES usuarios(id),
+    FOREIGN KEY (updated_by) REFERENCES usuarios(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS antecedentes_3er_trimestre (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    evaluacion_id INT NOT NULL,
+    curva_tolerancia_glucosa ENUM('Normal','Alterada','No realizada') DEFAULT 'No realizada',
+    diabetes_gestacional_actual BOOLEAN DEFAULT FALSE,
+    movimientos_fetales ENUM('Normales','Disminuidos') DEFAULT 'Normales',
+    signos_amenaza_parto_pretermino BOOLEAN DEFAULT FALSE,
+    plan_nacimiento_definido BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (evaluacion_id) REFERENCES evaluaciones_3er_trimestre(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_evaluacion_antecedentes3 (evaluacion_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS crecimiento_3er_trimestre (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    evaluacion_id INT NOT NULL,
+    peso_fetal_estimado_gr INT NULL,
+    percentil_ajustado INT NULL,
+    clasificacion_crecimiento ENUM('Adecuado','Mayor a lo esperado','Menor a lo esperado') NULL,
+    estadio_rciu_barcelona ENUM('Ninguno','Estadio I','Estadio II','Estadio III','Estadio IV') DEFAULT 'Ninguno',
+    FOREIGN KEY (evaluacion_id) REFERENCES evaluaciones_3er_trimestre(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_evaluacion_crecimiento3 (evaluacion_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS doppler_3er_trimestre (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    evaluacion_id INT NOT NULL,
+    au_pi DECIMAL(4,2) NULL,
+    au_flujo_diastolico ENUM('Presente','Ausente','Reverso') NULL,
+    acm_pi DECIMAL(4,2) NULL,
+    dv_onda_a ENUM('Positiva','Ausente','Reversa') NULL,
+    uta_pi_promedio DECIMAL(4,2) NULL,
+    ratio_cu_icp DECIMAL(4,2) NULL,
+    alteracion_doppler_detectada BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (evaluacion_id) REFERENCES evaluaciones_3er_trimestre(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_evaluacion_doppler3 (evaluacion_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS anatomia_liquido_3er_trimestre (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    evaluacion_id INT NOT NULL,
+    circular_cordon_cuello ENUM('Negativo','Simple','Doble') DEFAULT 'Negativo',
+    liquido_amniotico_mm INT NULL,
+    metodo_medicion_liquido ENUM('Phelan','Bolsillo Maximo') DEFAULT 'Bolsillo Maximo',
+    diagnostico_liquido ENUM('Normal','Oligohidramnios','Polihidramnios') DEFAULT 'Normal',
+    estructuras_normales BOOLEAN DEFAULT TRUE,
+    FOREIGN KEY (evaluacion_id) REFERENCES evaluaciones_3er_trimestre(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_evaluacion_anatomia3 (evaluacion_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS evaluacion_placentaria_3er_trimestre (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    evaluacion_id INT NOT NULL,
+    distancia_oci_mm DECIMAL(5,2) NULL,
+    grosor_placentario_mm INT NULL,
+    grado_madurez ENUM('Grado 0-1','Grado 2','Grado 3') NULL,
+    lagunas_vasculares ENUM('Ausentes/minimas','Si','Extensas') DEFAULT 'Ausentes/minimas',
+    interfase_miometrial ENUM('Intacta','Adelgazada','Discontinua') DEFAULT 'Intacta',
+    vasos_puente BOOLEAN DEFAULT FALSE,
+    acretismo_figo_pas ENUM('Grado 0','Grado 1','Grado 2','Grado 3') DEFAULT 'Grado 0',
+    FOREIGN KEY (evaluacion_id) REFERENCES evaluaciones_3er_trimestre(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_evaluacion_placentaria3 (evaluacion_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Insertar Superadministrador por defecto (password: Admin123!)
 INSERT IGNORE INTO usuarios (id, nombre, apellido, email, password, rol_id, email_verified) VALUES

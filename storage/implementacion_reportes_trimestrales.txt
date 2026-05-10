@@ -1,0 +1,229 @@
+==============================================================================
+INFORME DE IMPLEMENTACIÓN: SISTEMA DE EVALUACIONES TRIMESTRALES
+PreNacer — Sistema de Gestión Médico Prenatal
+Fecha: mayo 2026
+==============================================================================
+
+1. RESUMEN GENERAL
+==============================================================================
+
+Se implementó un sistema completo de evaluaciones prenatales estructuradas
+en 3 trimestres, reemplazando el antiguo módulo monolítico "Reportes 1er
+Trimestre" por una arquitectura relacional normalizada. El sistema utiliza
+datos estructurados (BOOLEAN, ENUM, DECIMAL) en lugar de texto libre,
+alineándose a estándares médicos internacionales (FMF, ESHRE-ESGE, FIGO,
+RCIU Barcelona, Doppler).
+
+
+2. ARQUITECTURA
+==============================================================================
+
+2.1 Tabla compartida (1)
+
+   historial_clinico
+   - Vinculada a pacientes (1:1)
+   - Factores de riesgo: hipertensión, diabetes, lupus, SAF, preeclampsia,
+     fertilización in vitro, parto pretérmino
+   - Compartida por los 3 trimestres — se autocompleta al cambiar de
+     trimestre para el mismo paciente
+
+2.2 1er Trimestre (6 tablas, código EV1T-XXXX-YYYY)
+
+   evaluaciones_1er_trimestre      Central: signos vitales, FUM, FPP, LCC
+   anatomia_fetal                  SNC simetría plexos, situs, eje cardíaco
+   marcadores_fmf                  TN, hueso nasal, ductus venoso, UTA PI
+   entorno_materno                 Placenta, cérvix, ESHRE-ESGE, miomas
+   impresion_diagnostica           Cromosomopatías, preeclampsia temprana
+
+2.3 2do Trimestre (6 tablas, código EV2T-XXXX-YYYY)
+
+   evaluaciones_2do_trimestre      Central: PAM, UTA PI, FPP actual, EG
+   biometria_2do_trimestre         Peso fetal, percentil Hadlock, CI, FL/AC
+   anatomia_fetal_2do_trimestre    8 órganos: cráneo, cara, corazón, tórax,
+                                   abdomen, genitourinario, columna, extrem.
+   marcadores_ecograficos_2do_trimestre  8 marcadores cromosomopatías
+   entorno_placentario_2do_trimestre  OCI, acretismo FIGO, funneling, sludge
+   impresion_diagnostica_2do_trimestre  Cromosomopatías, preeclampsia,
+                                         parto pretérmino (4 niveles)
+
+2.4 3er Trimestre (6 tablas, código EV3T-XXXX-YYYY)
+
+   evaluaciones_3er_trimestre      Central: situación/presentación/posición
+                                   fetal, TA, EG, FCF
+   antecedentes_3er_trimestre      CTG, diabetes gestacional, mov. fetales,
+                                   amenaza parto pretérmino, plan nacimiento
+   crecimiento_3er_trimestre       Peso fetal, percentil, RCIU Barcelona
+                                   (Estadio I-IV)
+   doppler_3er_trimestre           AU PI, flujo diastólico, ACM PI, DV onda
+                                   A, UTA PI, ratio CU/ICP, alteración detect.
+   anatomia_liquido_3er_trimestre  Circular cordón, líquido amniótico
+                                   (Phelan/Bolsillo Máximo), oligo/polihidr.
+   evaluacion_placentaria_3er_trimestre  OCI, grosor, madurez (0-3), lagunas
+                                         vasculares, interfase, vasos puente,
+                                         acretismo FIGO PAS (Grado 0-3)
+
+2.5 Total: 19 tablas
+
+
+3. ARCHIVOS CREADOS
+==============================================================================
+
+3.1 Modelos PHP (19 archivos)
+
+   models/HistorialClinico.php
+   models/Evaluacion1erTrimestre.php
+   models/AnatomiaFetal.php
+   models/MarcadoresFmf.php
+   models/EntornoMaterno.php
+   models/ImpresionDiagnostica.php
+   models/Evaluacion2doTrimestre.php
+   models/Biometria2doTrimestre.php
+   models/AnatomiaFetal2doTrimestre.php
+   models/MarcadoresEcograficos2doTrimestre.php
+   models/EntornoPlacentario2doTrimestre.php
+   models/ImpresionDiagnostica2doTrimestre.php
+   models/Evaluacion3erTrimestre.php
+   models/Antecedentes3erTrimestre.php
+   models/Crecimiento3erTrimestre.php
+   models/Doppler3erTrimestre.php
+   models/AnatomiaLiquido3erTrimestre.php
+   models/EvaluacionPlacentaria3erTrimestre.php
+
+3.2 Controladores (3 archivos)
+
+   controllers/Evaluaciones1erTrimestreController.php
+   controllers/Evaluaciones2doTrimestreController.php
+   controllers/Evaluaciones3erTrimestreController.php
+
+   Cada controlador implementa 8 métodos:
+   - index()    Listado de evaluaciones con joins (paciente, médico)
+   - create()   Formulario de alta con selects de pacientes/médicos
+   - store()    Guarda en todas las tablas vinculadas en una transacción
+                + crea/actualiza historial_clinico automáticamente
+   - show()     Vista detalle con badges de riesgo (verde/amarillo/rojo)
+   - edit()     Formulario pre-cargado desde todas las tablas
+   - update()   Actualiza todas las tablas vinculadas
+   - delete()   Soft-delete (activo = 0) con ON DELETE CASCADE
+   - print()    Vista de impresión libre de botones y CSS externo
+
+3.3 Vistas (15 archivos, 5 por trimestre)
+
+   views/evaluaciones_1er_trimestre/{index,create,edit,show,print}.php
+   views/evaluaciones_2do_trimestre/{index,create,edit,show,print}.php
+   views/evaluaciones_3er_trimestre/{index,create,edit,show,print}.php
+
+   Características de las vistas:
+   - Formularios multi-sección con cards colapsables
+   - Badges de Bootstrap 5 para estados y semáforos de riesgo
+   - Selects con ENUMs precargados desde las tablas
+   - Historial clínico con checkboxes pre-marcados si ya existe
+   - Plantillas print.php independientes (sin botones, sin FontAwesome)
+
+3.4 Archivos SQL (3 archivos)
+
+   database/create_evaluaciones_1er_trimestre.sql
+   database/create_evaluaciones_2do_trimestre.sql
+   database/create_evaluaciones_3er_trimestre.sql
+
+
+4. ARCHIVOS MODIFICADOS
+==============================================================================
+
+   init_db.sql                    +19 CREATE TABLE (utf8mb4)
+   index.php                      +3 require, +24 rutas
+   views/layouts/sidebar.php      +3 enlaces (1 por trimestre)
+   views/dashboard/superadmin.php Card apunta a evaluaciones 1er trimestre
+   core/Database.php              SET NAMES utf8mb4 (corrección encoding)
+
+
+5. CARACTERÍSTICAS TÉCNICAS
+==============================================================================
+
+5.1 Base de datos
+   - Charset: utf8mb4 con collation utf8mb4_unicode_ci
+   - Engine: InnoDB con foreign keys y ON DELETE CASCADE
+   - UNIQUE KEY en cada tabla vinculada (1 evaluación = 1 registro hijo)
+   - Índices en paciente_id y codigo_reporte
+   - Soft-delete (activo = 0) — no se borran datos físicamente
+
+5.2 Seguridad
+   - Auth::check() en todos los métodos del controlador
+   - Prepared statements PDO (sin inyección SQL)
+   - htmlspecialchars() en toda salida de datos
+   - Auditoría: created_by y updated_by en tablas principales
+
+5.3 Códigos de reporte
+   - 1er Trimestre: EV1T-0001-2026
+   - 2do Trimestre: EV2T-0001-2026
+   - 3er Trimestre: EV3T-0001-2026
+   - Autogenerados con contador anual + relleno de ceros
+
+5.4 Estados del reporte
+   - Pendiente → En proceso → Completado / Archivado
+   - Badges de Bootstrap: info / warning / success / secondary
+
+5.5 Semáforos de riesgo (ENUM con badges de color)
+   - Bajo/Ninguno   → badge bg-success (verde)
+   - Intermedio      → badge bg-warning (amarillo)
+   - Alto/Muy Alto   → badge bg-danger (rojo)
+
+
+6. FLUJO DE USUARIO
+==============================================================================
+
+6.1 Crear evaluación
+   1. Sidebar → Evaluaciones X Trimestre → Nueva Evaluación
+   2. Seleccionar paciente (el historial clínico se precarga si existe)
+   3. Seleccionar médico
+   4. Llenar las secciones del formulario (signos vitales, biometría,
+      anatomía, marcadores, entorno, impresión diagnóstica)
+   5. Guardar → se crean/actualizan registros en todas las tablas vinculadas
+
+6.2 Editar evaluación
+   1. Listado → Editar (ícono lápiz)
+   2. Formulario con todos los datos pre-cargados desde las 6 tablas
+   3. Modificar y guardar
+
+6.3 Ver evaluación
+   1. Listado → Ver (ícono ojo)
+   2. Vista detalle con badges de riesgo coloreados
+   3. Opciones: Editar, Imprimir
+
+6.4 Imprimir
+   1. Listado → Imprimir (ícono impresora)
+   2. Plantilla de impresión en HTML sin Bootstrap CDN ni FontAwesome
+   3. Dos columnas en formato documento médico
+
+
+7. COMPATIBILIDAD
+==============================================================================
+
+- El sistema antiguo (reportes_1er_trimestre) se conserva intacto
+- Rutas antiguas (/reportes_1er_trimestre/*) siguen funcionando
+- Sidebar apunta al nuevo sistema (evaluaciones_X_trimestre)
+- La tabla de pacientes no se modificó (compatible con todo el sistema)
+
+
+8. PRÓXIMOS PASOS SUGERIDOS
+==============================================================================
+
+8.1 Cálculo automático de riesgos
+    Cruzar historial_clinico con marcadores del trimestre para sugerir
+    el semáforo de riesgo (ej: antecedente_parto_pretermino + funneling
+    + longitud_cervical baja = riesgo Alto)
+
+8.2 Tabla de miomas compartida
+    Extraer los campos de miomas de entorno_materno a una tabla
+    registro_miomas vinculada a paciente_id para seguimiento longitudinal
+
+8.3 Generación de PDF
+    Usar Dompdf (ya instalado) para convertir print.php a PDF descargable
+    con las firmas correspondientes
+
+8.4 Dashboard de riesgos
+    Vista de administrador con conteo de pacientes por nivel de riesgo
+    en cada trimestre
+
+==============================================================================
+                           FIN DEL INFORME
+==============================================================================

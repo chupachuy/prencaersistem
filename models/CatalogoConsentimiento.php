@@ -23,17 +23,17 @@ class CatalogoConsentimiento
         return $stmt->fetch();
     }
 
-    public function create($nombreDocumento, $version = null, $requiereFirmaMedico = true, $cantidadTestigos = 0)
+    public function create($nombreDocumento, $version = null, $contenido = null, $requiereFirmaMedico = true, $cantidadTestigos = 0)
     {
-        $stmt = $this->db->prepare("INSERT INTO catalogo_consentimientos (nombre_documento, version, requiere_firma_medico, cantidad_testigos) VALUES (?, ?, ?, ?)");
-        $stmt->execute([$nombreDocumento, $version, $requiereFirmaMedico, $cantidadTestigos]);
+        $stmt = $this->db->prepare("INSERT INTO catalogo_consentimientos (nombre_documento, version, contenido, requiere_firma_medico, cantidad_testigos) VALUES (?, ?, ?, ?, ?)");
+        $stmt->execute([$nombreDocumento, $version, $contenido, $requiereFirmaMedico, $cantidadTestigos]);
         return $this->db->lastInsertId();
     }
 
-    public function update($id, $nombreDocumento, $version = null, $requiereFirmaMedico = true, $cantidadTestigos = 0)
+    public function update($id, $nombreDocumento, $version = null, $contenido = null, $requiereFirmaMedico = true, $cantidadTestigos = 0)
     {
-        $stmt = $this->db->prepare("UPDATE catalogo_consentimientos SET nombre_documento = ?, version = ?, requiere_firma_medico = ?, cantidad_testigos = ? WHERE id = ?");
-        return $stmt->execute([$nombreDocumento, $version, $requiereFirmaMedico, $cantidadTestigos, $id]);
+        $stmt = $this->db->prepare("UPDATE catalogo_consentimientos SET nombre_documento = ?, version = ?, contenido = ?, requiere_firma_medico = ?, cantidad_testigos = ? WHERE id = ?");
+        return $stmt->execute([$nombreDocumento, $version, $contenido, $requiereFirmaMedico, $cantidadTestigos, $id]);
     }
 
     public function delete($id)

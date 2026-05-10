@@ -26,24 +26,13 @@ $fechaHoy = date('d/m/Y H:i');
         .signature-name { font-size: 12px; margin-top: 4px; }
         .signature-date { font-size: 10px; color: #888; }
         .footer { margin-top: 40px; font-size: 10px; color: #999; text-align: center; border-top: 1px solid #eee; padding-top: 10px; }
-        .no-print { margin-bottom: 15px; }
         .denegacion { color: #d00; font-weight: bold; }
         @media print {
-            .no-print { display: none; }
             body { padding: 15px; }
         }
     </style>
 </head>
 <body>
-
-<div class="no-print" style="text-align:right;">
-    <button onclick="window.print()" class="btn btn-primary btn-sm">
-        <i class="fa-solid fa-print"></i> Imprimir / Guardar PDF
-    </button>
-    <button onclick="window.close()" class="btn btn-secondary btn-sm">
-        <i class="fa-solid fa-xmark"></i> Cerrar
-    </button>
-</div>
 
 <div class="document">
     <div class="doc-header">
@@ -64,6 +53,15 @@ $fechaHoy = date('d/m/Y H:i');
             <div class="value"><?php echo htmlspecialchars($consentimiento['estado']); ?></div>
         </div>
     </div>
+
+    <?php if (!empty($consentimiento['contenido'])): ?>
+    <div class="section">
+        <h2>Contenido del Consentimiento</h2>
+        <div style="font-size: 12px; line-height: 1.8;">
+            <?php echo $consentimiento['contenido']; ?>
+        </div>
+    </div>
+    <?php endif; ?>
 
     <div class="section">
         <h2>Paciente</h2>
@@ -112,8 +110,16 @@ $fechaHoy = date('d/m/Y H:i');
         <?php else: ?>
             <?php foreach ($firmas as $firma): ?>
                 <div class="signature-block">
-                    <?php if (file_exists(__DIR__ . '/../../' . ltrim($firma['ruta_imagen_firma'], '/'))): ?>
-                        <img src="<?php echo Url::to($firma['ruta_imagen_firma']); ?>" alt="Firma">
+                    <?php 
+                    $rutaFisica = __DIR__ . '/../../' . $firma['ruta_imagen_firma'];
+                    if (file_exists($rutaFisica)): 
+                        $imagenData = base64_encode(file_get_contents($rutaFisica));
+                    ?>
+                        <img src="data:image/png;base64,<?php echo $imagenData; ?>" alt="Firma">
+                    <?php else: ?>
+                        <div style="width:180px; height:60px; border:1px dashed #ccc; display:flex; align-items:center; justify-content:center; color:#999; font-size:11px;">
+                            [ Firma no disponible ]
+                        </div>
                     <?php endif; ?>
                     <div class="signature-name">
                         <strong><?php echo htmlspecialchars($firma['rol_firmante']); ?>:</strong>
@@ -136,6 +142,5 @@ $fechaHoy = date('d/m/Y H:i');
     </div>
 </div>
 
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </body>
 </html>

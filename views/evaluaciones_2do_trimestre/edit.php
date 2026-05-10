@@ -1,0 +1,150 @@
+<?php
+$title = "Editar Evaluación 2do Trimestre";
+require_once __DIR__ . '/../layouts/header.php';
+require_once __DIR__ . '/../layouts/sidebar.php';
+
+$chk = fn($v) => ($v == 1 || $v === true) ? 'checked' : '';
+$sel = fn($v, $t) => ($v == $t) ? 'selected' : '';
+$ev = $evaluacion;
+?>
+
+<div class="page-header">
+    <div class="d-flex align-items-center gap-3">
+        <a href="<?php echo Url::to('/evaluaciones_2do_trimestre'); ?>" class="btn btn-apple btn-apple-secondary"><i class="fa-solid fa-arrow-left"></i> Volver</a>
+        <h1 class="page-title mb-0">Editar: <?php echo htmlspecialchars($ev['codigo_reporte']); ?></h1>
+    </div>
+</div>
+
+<form action="<?php echo Url::to('/evaluaciones_2do_trimestre/update'); ?>" method="POST">
+    <input type="hidden" name="id" value="<?php echo $ev['id']; ?>">
+
+    <!-- Datos Generales -->
+    <div class="card mb-4"><div class="card-header"><i class="fa-solid fa-id-card me-2"></i> Datos Generales</div><div class="card-body">
+        <div class="row">
+            <div class="col-md-3 mb-3"><label class="form-label">Código</label><input type="text" class="form-control" value="<?php echo htmlspecialchars($ev['codigo_reporte']); ?>" readonly></div>
+            <div class="col-md-3 mb-3"><label for="fecha_evaluacion" class="form-label">Fecha Evaluación *</label><input type="date" class="form-control" name="fecha_evaluacion" value="<?php echo htmlspecialchars($ev['fecha_evaluacion']); ?>" readonly></div>
+            <div class="col-md-3 mb-3"><label for="fecha_estudio" class="form-label">Fecha Estudio</label><input type="date" class="form-control" name="fecha_estudio" value="<?php echo htmlspecialchars($ev['fecha_estudio'] ?? ''); ?>"></div>
+            <div class="col-md-3 mb-3"><label for="estado" class="form-label">Estado</label><select class="form-select" name="estado"><?php foreach(['Pendiente','En proceso','Completado','Archivado'] as $o): ?><option value="<?php echo $o; ?>" <?php echo $sel($ev['estado'],$o); ?>><?php echo $o; ?></option><?php endforeach; ?></select></div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3"><label for="paciente_id" class="form-label">Paciente *</label><select class="form-select" name="paciente_id" required><option value="">Seleccione</option><?php foreach($pacientes as $p): ?><option value="<?php echo $p['id']; ?>" <?php echo $sel($ev['paciente_id'],$p['id']); ?>><?php echo htmlspecialchars($p['nombre'].' '.$p['apellido']); ?></option><?php endforeach; ?></select></div>
+            <div class="col-md-6 mb-3"><label for="medico_id" class="form-label">Médico *</label><select class="form-select" name="medico_id" required><option value="">Seleccione</option><?php foreach($medicos as $m): ?><option value="<?php echo $m['id']; ?>" <?php echo $sel($ev['medico_id'],$m['id']); ?>><?php echo htmlspecialchars($m['nombre'].' '.$m['apellido'].($m['especialidad']?' - '.$m['especialidad']:'')); ?></option><?php endforeach; ?></select></div>
+        </div>
+    </div></div>
+
+    <!-- Datos Clínicos -->
+    <div class="card mb-4"><div class="card-header"><i class="fa-solid fa-heart-pulse me-2"></i> Datos Clínicos y Obstétricos</div><div class="card-body">
+        <div class="row">
+            <div class="col-md-3 mb-3"><label for="peso_kg" class="form-label">Peso (kg)</label><input type="number" step="0.01" class="form-control" name="peso_kg" value="<?php echo htmlspecialchars($ev['peso_kg']??''); ?>"></div>
+            <div class="col-md-3 mb-3"><label for="talla_cm" class="form-label">Talla (cm)</label><input type="number" step="0.01" class="form-control" name="talla_cm" value="<?php echo htmlspecialchars($ev['talla_cm']??''); ?>"></div>
+            <div class="col-md-3 mb-3"><label for="pam_mmhg" class="form-label">PAM (mmHg)</label><input type="number" step="0.01" class="form-control" name="pam_mmhg" value="<?php echo htmlspecialchars($ev['pam_mmhg']??''); ?>"></div>
+            <div class="col-md-3 mb-3"><label for="uta_pi_promedio" class="form-label">UTA PI Promedio</label><input type="number" step="0.01" class="form-control" name="uta_pi_promedio" value="<?php echo htmlspecialchars($ev['uta_pi_promedio']??''); ?>"></div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-3"><label for="edad_gestacional_semanas" class="form-label">Edad Gestacional (sem)</label><input type="number" step="0.1" class="form-control" name="edad_gestacional_semanas" value="<?php echo htmlspecialchars($ev['edad_gestacional_semanas']??''); ?>"></div>
+            <div class="col-md-4 mb-3"><label for="fpp_actual" class="form-label">FPP Actual</label><input type="date" class="form-control" name="fpp_actual" value="<?php echo htmlspecialchars($ev['fpp_actual']??''); ?>"></div>
+            <div class="col-md-4 mb-3"><label for="estado_feto" class="form-label">Estado del Feto</label><select class="form-select" name="estado_feto"><option value="Vivo" <?php echo $sel($biometria['estado_feto']??'Vivo','Vivo'); ?>>Vivo</option><option value="Muerto" <?php echo $sel($biometria['estado_feto']??'','Muerto'); ?>>Muerto</option></select></div>
+        </div>
+    </div></div>
+
+    <!-- Biometría -->
+    <div class="card mb-4"><div class="card-header"><i class="fa-solid fa-weight-scale me-2"></i> Biometría y Crecimiento</div><div class="card-body">
+        <div class="row">
+            <div class="col-md-3 mb-3"><label for="fcf_lpm" class="form-label">FCF (lpm)</label><input type="number" class="form-control" name="fcf_lpm" value="<?php echo htmlspecialchars($biometria['fcf_lpm']??''); ?>"></div>
+            <div class="col-md-3 mb-3"><label for="peso_fetal_estimado_gr" class="form-label">Peso Fetal (gr)</label><input type="number" class="form-control" name="peso_fetal_estimado_gr" value="<?php echo htmlspecialchars($biometria['peso_fetal_estimado_gr']??''); ?>"></div>
+            <div class="col-md-3 mb-3"><label for="percentil_hadlock" class="form-label">Percentil Hadlock</label><input type="number" class="form-control" name="percentil_hadlock" value="<?php echo htmlspecialchars($biometria['percentil_hadlock']??''); ?>"></div>
+            <div class="col-md-3 mb-3"><label class="form-label">&nbsp;</label><div class="form-check mt-2"><input class="form-check-input" type="checkbox" name="crecimiento_armonico" <?php echo $chk($biometria['crecimiento_armonico']??true); ?>><label class="form-check-label">Crecimiento Armónico</label></div></div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-3"><label for="indice_cefalico_ci" class="form-label">Índice Cefálico (CI)</label><input type="number" step="0.01" class="form-control" name="indice_cefalico_ci" value="<?php echo htmlspecialchars($biometria['indice_cefalico_ci']??''); ?>"></div>
+            <div class="col-md-4 mb-3"><label for="fl_ac_pct" class="form-label">FL/AC (%)</label><input type="number" step="0.01" class="form-control" name="fl_ac_pct" value="<?php echo htmlspecialchars($biometria['fl_ac_pct']??''); ?>"></div>
+            <div class="col-md-4 mb-3"><label for="hc_ac_campbell" class="form-label">HC/AC (Campbell)</label><input type="number" step="0.01" class="form-control" name="hc_ac_campbell" value="<?php echo htmlspecialchars($biometria['hc_ac_campbell']??''); ?>"></div>
+        </div>
+    </div></div>
+
+    <!-- Anatomía Fetal -->
+    <div class="card mb-4"><div class="card-header"><i class="fa-solid fa-baby me-2"></i> Anatomía Fetal</div><div class="card-body">
+        <div class="row">
+            <div class="col-md-3 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="craneo_snc_normal" <?php echo $chk($anatomia['craneo_snc_normal']??true); ?>><label class="form-check-label">Cráneo/SNC Normal</label></div></div>
+            <div class="col-md-3 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="cara_cuello_normal" <?php echo $chk($anatomia['cara_cuello_normal']??true); ?>><label class="form-check-label">Cara/Cuello Normal</label></div></div>
+            <div class="col-md-3 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="corazon_normal" <?php echo $chk($anatomia['corazon_normal']??true); ?>><label class="form-check-label">Corazón Normal</label></div></div>
+            <div class="col-md-3 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="torax_diafragma_normal" <?php echo $chk($anatomia['torax_diafragma_normal']??true); ?>><label class="form-check-label">Tórax/Diafragma Normal</label></div></div>
+            <div class="col-md-3 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="abdomen_normal" <?php echo $chk($anatomia['abdomen_normal']??true); ?>><label class="form-check-label">Abdomen Normal</label></div></div>
+            <div class="col-md-3 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="genitourinario_normal" <?php echo $chk($anatomia['genitourinario_normal']??true); ?>><label class="form-check-label">Genitourinario Normal</label></div></div>
+            <div class="col-md-3 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="columna_normal" <?php echo $chk($anatomia['columna_normal']??true); ?>><label class="form-check-label">Columna Normal</label></div></div>
+            <div class="col-md-3 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="extremidades_normal" <?php echo $chk($anatomia['extremidades_normal']??true); ?>><label class="form-check-label">Extremidades Normal</label></div></div>
+        </div>
+        <div class="mt-3"><label for="detalles_anomalias" class="form-label">Detalles de Anomalías</label><textarea class="form-control" name="detalles_anomalias" rows="2"><?php echo htmlspecialchars($anatomia['detalles_anomalias']??''); ?></textarea></div>
+    </div></div>
+
+    <!-- Marcadores -->
+    <div class="card mb-4"><div class="card-header"><i class="fa-solid fa-magnifying-glass me-2"></i> Marcadores Ecográficos</div><div class="card-body">
+        <div class="row">
+            <div class="col-md-3 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="ventriculomegalia_leve" <?php echo $chk($marcadores['ventriculomegalia_leve']??false); ?>><label class="form-check-label">Ventriculomegalia Leve</label></div></div>
+            <div class="col-md-3 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="quistes_plexos_coroideos" <?php echo $chk($marcadores['quistes_plexos_coroideos']??false); ?>><label class="form-check-label">Quistes Plexos Coroideos</label></div></div>
+            <div class="col-md-3 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="pliegue_nucal_aumentado" <?php echo $chk($marcadores['pliegue_nucal_aumentado']??false); ?>><label class="form-check-label">Pliegue Nucal Aumentado</label></div></div>
+            <div class="col-md-3 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="hueso_nasal_ausente" <?php echo $chk($marcadores['hueso_nasal_ausente']??false); ?>><label class="form-check-label">Hueso Nasal Ausente</label></div></div>
+            <div class="col-md-3 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="foco_ecogenico_cardiaco" <?php echo $chk($marcadores['foco_ecogenico_cardiaco']??false); ?>><label class="form-check-label">Foco Ecogénico Cardíaco</label></div></div>
+            <div class="col-md-3 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="intestino_hiperecogenico" <?php echo $chk($marcadores['intestino_hiperecogenico']??false); ?>><label class="form-check-label">Intestino Hiperecogénico</label></div></div>
+            <div class="col-md-3 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="femur_corto" <?php echo $chk($marcadores['femur_corto']??false); ?>><label class="form-check-label">Fémur Corto</label></div></div>
+            <div class="col-md-3 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="arteria_umbilical_unica" <?php echo $chk($marcadores['arteria_umbilical_unica']??false); ?>><label class="form-check-label">Arteria Umbilical Única</label></div></div>
+        </div>
+    </div></div>
+
+    <!-- Entorno Placentario -->
+    <div class="card mb-4"><div class="card-header"><i class="fa-solid fa-uterus me-2"></i> Entorno Placentario</div><div class="card-body">
+        <div class="row">
+            <div class="col-md-4 mb-3"><label for="placenta_posicion" class="form-label">Posición Placenta</label><select class="form-select" name="placenta_posicion"><option value="">No evaluado</option><?php foreach(['Anterior','Posterior','Lateral Derecho','Lateral Izquierdo'] as $o): ?><option value="<?php echo $o; ?>" <?php echo $sel($entorno['placenta_posicion']??'',$o); ?>><?php echo $o; ?></option><?php endforeach; ?></select></div>
+            <div class="col-md-4 mb-3"><label for="distancia_borde_oci_mm" class="form-label">Distancia Borde OCI (mm)</label><input type="number" step="0.01" class="form-control" name="distancia_borde_oci_mm" value="<?php echo htmlspecialchars($entorno['distancia_borde_oci_mm']??''); ?>"></div>
+            <div class="col-md-4 mb-3"><label for="acretismo_figo_grado" class="form-label">Acretismo FIGO</label><select class="form-select" name="acretismo_figo_grado"><option value="">No evaluado</option><?php foreach(['0'=>'0 - Normal','1'=>'1 - Parcial','2'=>'2 - Invasión','3'=>'3 - Percretismo'] as $k=>$l): ?><option value="<?php echo $k; ?>" <?php echo $sel($entorno['acretismo_figo_grado']??'',$k); ?>><?php echo $l; ?></option><?php endforeach; ?></select></div>
+        </div>
+        <div class="row">
+            <div class="col-md-3 mb-3"><label for="bolsillo_max_liquido_mm" class="form-label">Bolsillo Máx. Líquido</label><input type="number" class="form-control" name="bolsillo_max_liquido_mm" value="<?php echo htmlspecialchars($entorno['bolsillo_max_liquido_mm']??''); ?>"></div>
+            <div class="col-md-3 mb-3"><label for="longitud_cervical_mm" class="form-label">Longitud Cervical (mm)</label><input type="number" step="0.01" class="form-control" name="longitud_cervical_mm" value="<?php echo htmlspecialchars($entorno['longitud_cervical_mm']??''); ?>"></div>
+            <div class="col-md-3 mb-3"><label for="indice_consistencia_cervical" class="form-label">Índice Consistencia Cx</label><input type="number" class="form-control" name="indice_consistencia_cervical" value="<?php echo htmlspecialchars($entorno['indice_consistencia_cervical']??''); ?>"></div>
+            <div class="col-md-3 mb-3"><label for="sludge_intraamniotico" class="form-label">Sludge Intraamniótico</label><select class="form-select" name="sludge_intraamniotico"><option value="">No evaluado</option><?php foreach(['Si','No','Dudoso'] as $o): ?><option value="<?php echo $o; ?>" <?php echo $sel($entorno['sludge_intraamniotico']??'',$o); ?>><?php echo $o; ?></option><?php endforeach; ?></select></div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="funneling_presente" <?php echo $chk($entorno['funneling_presente']??false); ?>><label class="form-check-label">Funneling Presente</label></div></div>
+            <div class="col-md-4 mb-2"><label for="funneling_mm" class="form-label">Funneling (mm)</label><input type="number" step="0.01" class="form-control form-control-sm" name="funneling_mm" value="<?php echo htmlspecialchars($entorno['funneling_mm']??''); ?>"></div>
+        </div>
+    </div></div>
+
+    <!-- Historial -->
+    <div class="card mb-4"><div class="card-header"><i class="fa-solid fa-notes-medical me-2"></i> Historial Clínico</div><div class="card-body">
+        <div class="row">
+            <div class="col-md-4 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="hipertension_cronica" <?php echo $chk($historial['hipertension_cronica']??false); ?>><label class="form-check-label">Hipertensión Crónica</label></div></div>
+            <div class="col-md-4 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="diabetes" <?php echo $chk($historial['diabetes']??false); ?>><label class="form-check-label">Diabetes</label></div></div>
+            <div class="col-md-4 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="lupus_les" <?php echo $chk($historial['lupus_les']??false); ?>><label class="form-check-label">Lupus / LES</label></div></div>
+            <div class="col-md-4 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="sindrome_antifosfolipido_saf" <?php echo $chk($historial['sindrome_antifosfolipido_saf']??false); ?>><label class="form-check-label">Síndrome Antifosfolípido</label></div></div>
+            <div class="col-md-4 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="antecedente_preeclampsia_rciu" <?php echo $chk($historial['antecedente_preeclampsia_rciu']??false); ?>><label class="form-check-label">Ant. Preeclampsia/RCIU</label></div></div>
+            <div class="col-md-4 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="fertilizacion_in_vitro" <?php echo $chk($historial['fertilizacion_in_vitro']??false); ?>><label class="form-check-label">Fertilización In Vitro</label></div></div>
+            <div class="col-md-4 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="antecedente_parto_pretermino" <?php echo $chk($historial['antecedente_parto_pretermino']??false); ?>><label class="form-check-label">Ant. Parto Pretérmino</label></div></div>
+        </div>
+    </div></div>
+
+    <!-- Impresión Diagnóstica -->
+    <div class="card mb-4"><div class="card-header"><i class="fa-solid fa-clipboard-check me-2"></i> Impresión Diagnóstica</div><div class="card-body">
+        <div class="row">
+            <div class="col-md-4 mb-3"><label for="riesgo_cromosomopatias" class="form-label">Riesgo Cromosomopatías</label><select class="form-select" name="riesgo_cromosomopatias"><option value="">No evaluado</option><?php foreach(['Bajo','Intermedio','Alto'] as $o): ?><option value="<?php echo $o; ?>" <?php echo $sel($diagnostica['riesgo_cromosomopatias']??'',$o); ?>><?php echo $o; ?></option><?php endforeach; ?></select></div>
+            <div class="col-md-4 mb-3"><label for="riesgo_parto_pretermino" class="form-label">Riesgo Parto Pretérmino</label><select class="form-select" name="riesgo_parto_pretermino"><option value="">No evaluado</option><?php foreach(['Bajo','Intermedio','Alto','Muy Alto'] as $o): ?><option value="<?php echo $o; ?>" <?php echo $sel($diagnostica['riesgo_parto_pretermino']??'',$o); ?>><?php echo $o; ?></option><?php endforeach; ?></select></div>
+            <div class="col-md-4 mb-3"><label for="riesgo_preeclampsia" class="form-label">Riesgo Preeclampsia</label><select class="form-select" name="riesgo_preeclampsia"><option value="">No evaluado</option><?php foreach(['Bajo','Intermedio','Alto','Muy Alto'] as $o): ?><option value="<?php echo $o; ?>" <?php echo $sel($diagnostica['riesgo_preeclampsia']??'',$o); ?>><?php echo $o; ?></option><?php endforeach; ?></select></div>
+        </div>
+        <div class="mt-2"><label for="observaciones_medicas" class="form-label">Observaciones Médicas</label><textarea class="form-control" name="observaciones_medicas" rows="2"><?php echo htmlspecialchars($diagnostica['observaciones_medicas']??''); ?></textarea></div>
+    </div></div>
+
+    <div class="card mb-4"><div class="card-body">
+        <div class="row align-items-end">
+            <div class="col-md-8 text-end">
+                <form action="<?php echo Url::to('/evaluaciones_2do_trimestre/delete'); ?>" method="POST" style="display:inline;" onsubmit="return confirm('¿Eliminar?');">
+                    <input type="hidden" name="id" value="<?php echo $ev['id']; ?>">
+                    <button type="submit" class="btn btn-apple btn-apple-danger me-2"><i class="fa-solid fa-trash"></i> Eliminar</button>
+                </form>
+                <a href="<?php echo Url::to('/evaluaciones_2do_trimestre'); ?>" class="btn btn-apple btn-apple-secondary me-2">Cancelar</a>
+                <button type="submit" class="btn btn-apple btn-apple-primary btn-lg"><i class="fa-solid fa-save"></i> Actualizar</button>
+            </div>
+        </div>
+    </div></div>
+</form>
+
+<?php require_once __DIR__ . '/../layouts/footer.php'; ?>

@@ -273,6 +273,7 @@ class ConsentimientoController extends Controller
         $html = ob_get_clean();
 
         $dompdf = new Dompdf();
+        $dompdf->setBasePath(__DIR__ . '/../');
         $dompdf->loadHtml($html);
         $dompdf->setPaper('A4', 'portrait');
         $dompdf->render();
@@ -327,6 +328,7 @@ class ConsentimientoController extends Controller
 
         $nombre = $_POST['nombre_documento'] ?? '';
         $version = $_POST['version'] ?? null;
+        $contenido = $_POST['contenido'] ?? null;
         $requiereFirma = isset($_POST['requiere_firma_medico']) ? 1 : 0;
         $cantidadTestigos = (int) ($_POST['cantidad_testigos'] ?? 0);
 
@@ -335,7 +337,7 @@ class ConsentimientoController extends Controller
             $this->redirect('/consentimientos/catalogo/create');
         }
 
-        if ($this->catalogoModel->create($nombre, $version, $requiereFirma, $cantidadTestigos)) {
+        if ($this->catalogoModel->create($nombre, $version, $contenido, $requiereFirma, $cantidadTestigos)) {
             Session::set('success', 'Documento creado correctamente.');
         } else {
             Session::set('error', 'Error al crear el documento.');
@@ -381,6 +383,7 @@ class ConsentimientoController extends Controller
 
         $nombre = $_POST['nombre_documento'] ?? '';
         $version = $_POST['version'] ?? null;
+        $contenido = $_POST['contenido'] ?? null;
         $requiereFirma = isset($_POST['requiere_firma_medico']) ? 1 : 0;
         $cantidadTestigos = (int) ($_POST['cantidad_testigos'] ?? 0);
 
@@ -389,7 +392,7 @@ class ConsentimientoController extends Controller
             $this->redirect('/consentimientos/catalogo/edit?id=' . $id);
         }
 
-        if ($this->catalogoModel->update($id, $nombre, $version, $requiereFirma, $cantidadTestigos)) {
+        if ($this->catalogoModel->update($id, $nombre, $version, $contenido, $requiereFirma, $cantidadTestigos)) {
             Session::set('success', 'Documento actualizado correctamente.');
         } else {
             Session::set('error', 'Error al actualizar el documento.');

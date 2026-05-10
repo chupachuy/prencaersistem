@@ -16,6 +16,7 @@ class Database
                 PDO::ATTR_EMULATE_PREPARES => false,
             ];
             $this->pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
+            $this->pdo->exec("SET NAMES utf8mb4");
         }
         catch (PDOException $e) {
             die("Database Connection Error: " . $e->getMessage());

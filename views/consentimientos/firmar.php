@@ -115,6 +115,18 @@ require_once __DIR__ . '/../layouts/sidebar.php';
     </div>
 
     <div class="col-lg-8">
+        <?php if (!empty($consentimiento['contenido'])): ?>
+        <div class="card mb-4 border-primary">
+            <div class="card-header bg-primary bg-opacity-10 text-primary">
+                <i class="fa-solid fa-file-lines me-2"></i> Contenido del Consentimiento
+                <small class="text-muted float-end">Lea cuidadosamente antes de firmar</small>
+            </div>
+            <div class="card-body" style="max-height: 450px; overflow-y: auto; font-size: 14px; line-height: 1.7;">
+                <?php echo $consentimiento['contenido']; ?>
+            </div>
+        </div>
+        <?php endif; ?>
+
         <?php if ($consentimiento['estado'] !== 'Completado' && $consentimiento['estado'] !== 'Revocado'): ?>
         <form method="POST" action="<?php echo Url::to('/consentimientos/storeFirma'); ?>" id="formFirmas">
             <input type="hidden" name="asignacion_id" value="<?php echo $consentimiento['id']; ?>">
