@@ -33,15 +33,41 @@ class ConsentimientoController extends Controller
             $this->redirect('/login');
         }
 
-        $roleId = Session::get('user_role_id');
+        $this->render('consentimientos/index');
+    }
 
-        if ($roleId == Auth::ROLE_SUPERADMIN || $roleId == Auth::ROLE_JEFE || $roleId == Auth::ROLE_ADMINISTRADOR) {
-            $consentimientos = $this->asignacionModel->getAll();
-        } else {
-            $consentimientos = $this->asignacionModel->getAllByMedico(Auth::id());
+    public function search()
+    {
+        if (!Auth::check()) {
+            http_response_code(401);
+            echo json_encode(['error' => 'No autorizado']);
+            exit;
         }
 
-        $this->render('consentimientos/index', ['consentimientos' => $consentimientos]);
+        $search = trim($_GET['q'] ?? '');
+        $page = max(1, (int) ($_GET['page'] ?? 1));
+        $perPage = 10;
+
+        $roleId = Session::get('user_role_id');
+        $medicoId = null;
+
+        if (!in_array($roleId, [Auth::ROLE_SUPERADMIN, Auth::ROLE_JEFE, Auth::ROLE_ADMINISTRADOR])) {
+            $medicoId = Auth::id();
+        }
+
+        $data = $this->asignacionModel->getAllPaginated($search, $page, $perPage, $medicoId);
+        $total = $this->asignacionModel->countAll($search, $medicoId);
+        $totalPages = (int) ceil($total / $perPage);
+
+        header('Content-Type: application/json');
+        echo json_encode([
+            'data' => $data,
+            'total' => $total,
+            'page' => $page,
+            'perPage' => $perPage,
+            'totalPages' => $totalPages
+        ]);
+        exit;
     }
 
     public function create()

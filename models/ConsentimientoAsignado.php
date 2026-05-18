@@ -98,6 +98,83 @@ class ConsentimientoAsignado
         return $stmt->execute([$ruta, $id]);
     }
 
+    public function getAllPaginated($search = '', $page = 1, $perPage = 10, $medicoId = null)
+    {
+        $offset = ($page - 1) * $perPage;
+        $conditions = ['ca.activo = 1'];
+        $params = [];
+
+        if ($medicoId !== null) {
+            $conditions[] = 'ca.medico_id = ?';
+            $params[] = $medicoId;
+        }
+
+        if (!empty($search)) {
+            $conditions[] = '(p.nombre LIKE ? OR p.apellido LIKE ? OR u.nombre LIKE ? OR u.apellido LIKE ? OR cc.nombre_documento LIKE ?)';
+            $s = '%' . $search . '%';
+            $params[] = $s;
+            $params[] = $s;
+            $params[] = $s;
+            $params[] = $s;
+            $params[] = $s;
+        }
+
+        $where = implode(' AND ', $conditions);
+        $params[] = $perPage;
+        $params[] = $offset;
+
+        $stmt = $this->db->prepare("
+            SELECT ca.*, 
+                   p.nombre AS paciente_nombre, p.apellido AS paciente_apellido,
+                   u.nombre AS medico_nombre, u.apellido AS medico_apellido,
+                   cc.nombre_documento, cc.version
+            FROM consentimientos_asignados ca
+            JOIN pacientes p ON ca.paciente_id = p.id
+            JOIN usuarios u ON ca.medico_id = u.id
+            JOIN catalogo_consentimientos cc ON ca.documento_id = cc.id
+            WHERE $where
+            ORDER BY ca.fecha_generacion DESC
+            LIMIT ? OFFSET ?
+        ");
+        $stmt->execute($params);
+        return $stmt->fetchAll();
+    }
+
+    public function countAll($search = '', $medicoId = null)
+    {
+        $conditions = ['ca.activo = 1'];
+        $params = [];
+
+        if ($medicoId !== null) {
+            $conditions[] = 'ca.medico_id = ?';
+            $params[] = $medicoId;
+        }
+
+        if (!empty($search)) {
+            $conditions[] = '(p.nombre LIKE ? OR p.apellido LIKE ? OR u.nombre LIKE ? OR u.apellido LIKE ? OR cc.nombre_documento LIKE ?)';
+            $s = '%' . $search . '%';
+            $params[] = $s;
+            $params[] = $s;
+            $params[] = $s;
+            $params[] = $s;
+            $params[] = $s;
+        }
+
+        $where = implode(' AND ', $conditions);
+
+        $stmt = $this->db->prepare("
+            SELECT COUNT(*) as total
+            FROM consentimientos_asignados ca
+            JOIN pacientes p ON ca.paciente_id = p.id
+            JOIN usuarios u ON ca.medico_id = u.id
+            JOIN catalogo_consentimientos cc ON ca.documento_id = cc.id
+            WHERE $where
+        ");
+        $stmt->execute($params);
+        $result = $stmt->fetch();
+        return $result ? (int) $result['total'] : 0;
+    }
+
     public function delete($id)
     {
         $stmt = $this->db->prepare("UPDATE consentimientos_asignados SET activo = 0 WHERE id = ?");

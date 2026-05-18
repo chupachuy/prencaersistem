@@ -118,6 +118,7 @@ $router->post('/evaluaciones_3er_trimestre/delete', [Evaluaciones3erTrimestreCon
 
 // Consentimientos
 $router->get('/consentimientos', [ConsentimientoController::class, 'index']);
+$router->get('/consentimientos/search', [ConsentimientoController::class, 'search']);
 $router->get('/consentimientos/create', [ConsentimientoController::class, 'create']);
 $router->post('/consentimientos/store', [ConsentimientoController::class, 'store']);
 $router->get('/consentimientos/firmar', [ConsentimientoController::class, 'firmar']);
