@@ -57,6 +57,10 @@ class AsignacionController extends Controller
             $this->redirect('/asignaciones');
         }
 
+        if (!Auth::check()) {
+            $this->redirect('/login');
+        }
+
         $data = [
             'medico_id' => $_POST['medico_id'],
             'paciente_id' => $_POST['paciente_id'], // In real app, from select or hidden input

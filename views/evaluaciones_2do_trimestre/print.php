@@ -25,6 +25,21 @@ function si($x){return $x?'Sí':'No';}
 <div class="row-item"><div class="label">Estado:</div><div class="value"><?php echo htmlspecialchars($ev['estado']); ?></div></div>
 </div>
 
+<?php if (!empty($data1er)): ?>
+<div class="section"><h2>Datos del 1er Trimestre (referencia)</h2>
+<div class="row-item"><div class="label">FPP USG:</div><div class="value"><?php echo !empty($data1er['fpp_usg']) ? date('d/m/Y', strtotime($data1er['fpp_usg'])) : '—'; ?></div></div>
+<div class="row-item"><div class="label">EG 1T:</div><div class="value"><?php echo !empty($data1er['edad_gestacional_semanas']) ? $data1er['edad_gestacional_semanas'].' sem' : '—'; ?></div></div>
+<div class="row-item"><div class="label">Peso 1T:</div><div class="value"><?php echo !empty($data1er['peso_kg']) ? $data1er['peso_kg'].' kg' : '—'; ?></div></div>
+<div class="row-item"><div class="label">Talla 1T:</div><div class="value"><?php echo !empty($data1er['talla_cm']) ? $data1er['talla_cm'].' cm' : '—'; ?></div></div>
+<div class="row-item"><div class="label">Riesgo Preeclampsia:</div><div class="value"><?php echo $data1er['riesgo_preeclampsia_temprana'] ?? '—'; ?></div></div>
+<div class="row-item"><div class="label">Riesgo Cromosomopatías:</div><div class="value"><?php echo $data1er['probabilidad_cromosomopatias'] ?? '—'; ?></div></div>
+<div class="row-item"><div class="label">Riesgo Parto Pretérmino:</div><div class="value"><?php echo $data1er['riesgo_parto_pretermino'] ?? '—'; ?></div></div>
+<?php if (!empty($evaluacion['ganancia_peso_kg'])): ?>
+<div class="row-item"><div class="label">Ganancia de Peso:</div><div class="value"><?php echo $evaluacion['ganancia_peso_kg']; ?> kg (desde 1T: <?php echo $evaluacion['peso_1er_trimestre_kg'] ?? '—'; ?> kg → actual: <?php echo $evaluacion['peso_kg'] ?? '—'; ?> kg)</div></div>
+<?php endif; ?>
+</div>
+<?php endif; ?>
+
 <div class="two-col"><div class="col">
 <div class="section"><h2>Datos Clínicos</h2>
 <div class="row-item"><div class="label">Peso:</div><div class="value"><?php echo v($ev['peso_kg'],' kg'); ?></div></div>

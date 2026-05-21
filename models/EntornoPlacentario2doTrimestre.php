@@ -24,15 +24,19 @@ class EntornoPlacentario2doTrimestre
                 evaluacion_id, placenta_posicion, distancia_borde_oci_mm,
                 acretismo_figo_grado, bolsillo_max_liquido_mm, longitud_cervical_mm,
                 indice_consistencia_cervical, funneling_presente, funneling_mm,
-                sludge_intraamniotico
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                sludge_intraamniotico, morfologia_uterina_eshre, miomas_visibles,
+                miomas_figo_tipo, miomas_dimensiones_mm, miomas_vascularizacion
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ");
         return $stmt->execute([
             $data['evaluacion_id'], $data['placenta_posicion'] ?? null,
             $data['distancia_borde_oci_mm'] ?? null, $data['acretismo_figo_grado'] ?? null,
             $data['bolsillo_max_liquido_mm'] ?? null, $data['longitud_cervical_mm'] ?? null,
             $data['indice_consistencia_cervical'] ?? null, $data['funneling_presente'] ?? 0,
-            $data['funneling_mm'] ?? null, $data['sludge_intraamniotico'] ?? null
+            $data['funneling_mm'] ?? null, $data['sludge_intraamniotico'] ?? null,
+            $data['morfologia_uterina_eshre'] ?? null, $data['miomas_visibles'] ?? 0,
+            $data['miomas_figo_tipo'] ?? null, $data['miomas_dimensiones_mm'] ?? null,
+            $data['miomas_vascularizacion'] ?? null
         ]);
     }
 
@@ -43,7 +47,9 @@ class EntornoPlacentario2doTrimestre
                 placenta_posicion = ?, distancia_borde_oci_mm = ?, acretismo_figo_grado = ?,
                 bolsillo_max_liquido_mm = ?, longitud_cervical_mm = ?,
                 indice_consistencia_cervical = ?, funneling_presente = ?,
-                funneling_mm = ?, sludge_intraamniotico = ?
+                funneling_mm = ?, sludge_intraamniotico = ?,
+                morfologia_uterina_eshre = ?, miomas_visibles = ?,
+                miomas_figo_tipo = ?, miomas_dimensiones_mm = ?, miomas_vascularizacion = ?
             WHERE evaluacion_id = ?
         ");
         return $stmt->execute([
@@ -51,7 +57,10 @@ class EntornoPlacentario2doTrimestre
             $data['acretismo_figo_grado'] ?? null, $data['bolsillo_max_liquido_mm'] ?? null,
             $data['longitud_cervical_mm'] ?? null, $data['indice_consistencia_cervical'] ?? null,
             $data['funneling_presente'] ?? 0, $data['funneling_mm'] ?? null,
-            $data['sludge_intraamniotico'] ?? null, $data['evaluacion_id']
+            $data['sludge_intraamniotico'] ?? null, $data['morfologia_uterina_eshre'] ?? null,
+            $data['miomas_visibles'] ?? 0, $data['miomas_figo_tipo'] ?? null,
+            $data['miomas_dimensiones_mm'] ?? null, $data['miomas_vascularizacion'] ?? null,
+            $data['evaluacion_id']
         ]);
     }
 }

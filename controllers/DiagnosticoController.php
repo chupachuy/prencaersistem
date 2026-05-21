@@ -48,6 +48,10 @@ class DiagnosticoController extends Controller
     // Skipped full implementation of create, store, show, edit for brevity but here are stubs:
     public function create()
     {
+        if (!Auth::check()) {
+            $this->redirect('/login');
+        }
+
         $medicos = [];
         $roleId = Session::get('user_role_id');
         if ($roleId == Auth::ROLE_SUPERADMIN || $roleId == Auth::ROLE_JEFE) {
@@ -60,6 +64,10 @@ class DiagnosticoController extends Controller
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->redirect('/diagnosticos/create');
+        }
+
+        if (!Auth::check()) {
+            $this->redirect('/login');
         }
 
         $pacienteInput = trim($_POST['paciente'] ?? '');
@@ -130,6 +138,10 @@ class DiagnosticoController extends Controller
 
     public function show()
     {
+        if (!Auth::check()) {
+            $this->redirect('/login');
+        }
+
         $id = $_GET['id'] ?? 0;
         $diagnostico = $this->diagnosticoModel->findById($id);
         $this->render('diagnosticos/show', ['diagnostico' => $diagnostico]);
@@ -137,6 +149,10 @@ class DiagnosticoController extends Controller
 
     public function edit()
     {
+        if (!Auth::check()) {
+            $this->redirect('/login');
+        }
+
         $id = $_GET['id'] ?? 0;
         $diagnostico = $this->diagnosticoModel->findById($id);
 
@@ -161,6 +177,10 @@ class DiagnosticoController extends Controller
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->redirect('/diagnosticos');
+        }
+
+        if (!Auth::check()) {
+            $this->redirect('/login');
         }
 
         $id = intval($_POST['id'] ?? 0);

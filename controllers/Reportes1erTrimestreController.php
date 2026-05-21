@@ -55,6 +55,10 @@ class Reportes1erTrimestreController extends Controller
             $this->redirect('/pacientes');
         }
 
+        if (!Auth::check()) {
+            $this->redirect('/login');
+        }
+
         $user = Session::get('user');
         
         $data = [
@@ -170,6 +174,10 @@ class Reportes1erTrimestreController extends Controller
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->redirect('/reportes_1er_trimestre');
+        }
+
+        if (!Auth::check()) {
+            $this->redirect('/login');
         }
 
         $id = $_POST['id'] ?? null;

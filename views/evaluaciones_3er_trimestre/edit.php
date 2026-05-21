@@ -19,6 +19,39 @@ $ev=$evaluacion;$a=$antecedentes;$c=$crecimiento;$d=$doppler;$an=$anatomia;$pl=$
 <div class="col-md-6 mb-3"><label for="medico_id" class="form-label">Médico *</label><select class="form-select" name="medico_id" required><option value="">Seleccione</option><?php foreach($medicos as $m):?><option value="<?php echo $m['id'];?>" <?php echo $sel($ev['medico_id'],$m['id']);?>><?php echo htmlspecialchars($m['nombre'].' '.$m['apellido'].($m['especialidad']?' - '.$m['especialidad']:''));?></option><?php endforeach;?></select></div></div>
 </div></div>
 
+<?php if (!empty($data1er) || !empty($data2do)): ?>
+<div class="accordion mb-4" id="refTrimestresPrevios">
+    <?php if (!empty($data1er)): ?>
+    <div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1er3T"><i class="fa-solid fa-folder-open me-2"></i> Datos del 1er Trimestre</button></h2>
+    <div id="collapse1er3T" class="accordion-collapse collapse" data-bs-parent="#refTrimestresPrevios"><div class="accordion-body">
+    <div class="row">
+        <div class="col-md-3"><strong>FPP USG:</strong> <?php echo !empty($data1er['fpp_usg'])?date('d/m/Y',strtotime($data1er['fpp_usg'])):'—';?></div>
+        <div class="col-md-3"><strong>EG 1T:</strong> <?php echo !empty($data1er['edad_gestacional_semanas'])?$data1er['edad_gestacional_semanas'].' sem':'—';?></div>
+        <div class="col-md-3"><strong>Peso 1T:</strong> <?php echo !empty($data1er['peso_kg'])?$data1er['peso_kg'].' kg':'—';?></div>
+        <div class="col-md-3"><strong>LCC:</strong> <?php echo !empty($data1er['lcc_mm'])?$data1er['lcc_mm'].' mm':'—';?></div>
+        <div class="col-md-4 mt-2"><strong>Riesgo Preeclampsia:</strong> <?php echo $data1er['riesgo_preeclampsia_temprana']??'—';?></div>
+        <div class="col-md-4 mt-2"><strong>Doppler UT PI:</strong> <?php echo !empty($data1er['uta_pi_promedio'])?$data1er['uta_pi_promedio']:'—';?> <?php echo !empty($data1er['muesca_bilateral'])?'<span class="text-danger">(Muesca)</span>':'';?></div>
+        <div class="col-md-4 mt-2"><strong>Tamizaje Genético:</strong> <?php echo !empty($data1er['tamizaje_genetico_tipo'])?$data1er['tamizaje_genetico_tipo'].' — '.($data1er['tamizaje_genetico_resultado']??'—'):'—';?></div>
+    </div></div></div></div><?php endif;?>
+    <?php if (!empty($data2do)): ?>
+    <div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2do3T"><i class="fa-solid fa-folder-open me-2"></i> Datos del 2do Trimestre</button></h2>
+    <div id="collapse2do3T" class="accordion-collapse collapse" data-bs-parent="#refTrimestresPrevios"><div class="accordion-body">
+    <div class="row">
+        <div class="col-md-4"><strong>Morfología Fetal:</strong> <?php
+            $morfNormal=true;
+            $cmf=['craneo_snc_normal','cara_cuello_normal','corazon_normal','torax_diafragma_normal','abdomen_normal','genitourinario_normal','columna_normal','extremidades_normal'];
+            foreach($cmf as $cm)if(isset($data2do[$cm])&&$data2do[$cm]==0){$morfNormal=false;break;}
+            echo $morfNormal?'<span class="text-success">Normal</span>':'<span class="text-danger">Alterada</span>';
+        ?></div>
+        <div class="col-md-4"><strong>Doppler UT PI 2T:</strong> <?php echo !empty($data2do['uta_pi_promedio'])?$data2do['uta_pi_promedio']:'—';?></div>
+        <div class="col-md-4"><strong>Placenta:</strong> <?php echo $data2do['placenta_posicion']??'—';?></div>
+        <div class="col-md-4 mt-2"><strong>Long. Cervical 2T:</strong> <?php echo !empty($data2do['longitud_cervical_mm'])?$data2do['longitud_cervical_mm'].' mm':'—';?></div>
+        <div class="col-md-4 mt-2"><strong>Funneling:</strong> <?php echo !empty($data2do['funneling_presente'])?'Sí ('.$data2do['funneling_mm'].' mm)':'No';?></div>
+        <div class="col-md-4 mt-2"><strong>Signos RCIU:</strong> <?php $rciu=false;if(!empty($data2do['percentil_hadlock'])&&$data2do['percentil_hadlock']<10)$rciu=true;if(!empty($data2do['crecimiento_armonico'])&&$data2do['crecimiento_armonico']==0)$rciu=true;echo $rciu?'<span class="text-danger">Sí</span>':'<span class="text-success">No</span>';?></div>
+    </div></div></div></div><?php endif;?>
+</div>
+<?php endif; ?>
+
 <div class="card mb-4"><div class="card-header"><i class="fa-solid fa-heart-pulse me-2"></i> Signos Vitales y Estática Fetal</div><div class="card-body">
 <div class="row"><div class="col-md-3 mb-3"><label for="edad_gestacional_semanas" class="form-label">Edad Gestacional (sem)</label><input type="number" step="0.1" class="form-control" name="edad_gestacional_semanas" value="<?php echo htmlspecialchars($ev['edad_gestacional_semanas']??'');?>"></div>
 <div class="col-md-3 mb-3"><label for="peso_kg" class="form-label">Peso Materno (kg)</label><input type="number" step="0.01" class="form-control" name="peso_kg" value="<?php echo htmlspecialchars($ev['peso_kg']??'');?>"></div>
@@ -71,6 +104,14 @@ $ev=$evaluacion;$a=$antecedentes;$c=$crecimiento;$d=$doppler;$an=$anatomia;$pl=$
 <div class="col-md-4 mb-3"><label class="form-label">Interfase Miometrial</label><select class="form-select" name="interfase_miometrial"><?php foreach(['Intacta','Adelgazada','Discontinua'] as $o):?><option value="<?php echo $o;?>" <?php echo $sel($pl['interfase_miometrial']??'Intacta',$o);?>><?php echo $o;?></option><?php endforeach;?></select></div>
 <div class="col-md-4 mb-3"><label class="form-label">Acretismo FIGO (PAS)</label><select class="form-select" name="acretismo_figo_pas"><?php foreach(['Grado 0','Grado 1','Grado 2','Grado 3'] as $o):?><option value="<?php echo $o;?>" <?php echo $sel($pl['acretismo_figo_pas']??'Grado 0',$o);?>><?php echo $o;?></option><?php endforeach;?></select></div></div>
 <div class="row"><div class="col-md-4 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="vasos_puente" <?php echo $chk($pl['vasos_puente']??false);?>><label class="form-check-label">Vasos Puente</label></div></div></div>
+<hr><h6 class="text-muted">Miomas Uterinos y Morfología</h6>
+<div class="row">
+    <div class="col-md-4 mb-3"><label class="form-label">Morfología Uterina <?php if(!empty($data1er['morfologia_uterina_eshre'])):?><small class="text-muted">| 1T: <?php echo $data1er['morfologia_uterina_eshre'];?></small><?php endif;?></label><select class="form-select" name="morfologia_uterina_eshre"><option value="">No evaluado</option><?php foreach(['U0','U1','U2','U3','U4','U5','U6'] as $o):?><option value="<?php echo $o;?>" <?php echo $sel($pl['morfologia_uterina_eshre']??'',$o);?>><?php echo $o;?></option><?php endforeach;?></select></div>
+    <div class="col-md-4 mb-3"><label class="form-label">Miomas <?php if(!empty($data1er['miomas_visibles'])):?><small class="text-muted">| 1T: FIGO <?php echo $data1er['miomas_figo_tipo']??'—';?></small><?php endif;?></label><div class="form-check"><input class="form-check-input" type="checkbox" name="miomas_visibles" <?php echo $chk($pl['miomas_visibles']??false);?>><label class="form-check-label">Miomas Visibles</label></div></div>
+    <div class="col-md-4 mb-3"><label class="form-label">FIGO Tipo</label><select class="form-select" name="miomas_figo_tipo"><option value="">No aplica</option><?php for($i=0;$i<=8;$i++):?><option value="<?php echo $i;?>" <?php echo $sel($pl['miomas_figo_tipo']??'',$i);?>>Tipo <?php echo $i;?></option><?php endfor;?></select></div>
+    <div class="col-md-4 mb-3"><label class="form-label">Dimensiones (mm)</label><input type="text" class="form-control" name="miomas_dimensiones_mm" value="<?php echo htmlspecialchars($pl['miomas_dimensiones_mm']??'');?>" placeholder="Ej: 30x25"></div>
+    <div class="col-md-4 mb-3"><div class="form-check mt-4"><input class="form-check-input" type="checkbox" name="miomas_obstruyen_canal" <?php echo $chk($pl['miomas_obstruyen_canal']??false);?>><label class="form-check-label">Obstruyen Canal de Parto</label></div></div>
+</div>
 </div></div>
 
 <div class="card mb-4"><div class="card-header"><i class="fa-solid fa-notes-medical me-2"></i> Historial Clínico</div><div class="card-body"><div class="row">

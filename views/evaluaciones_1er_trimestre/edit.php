@@ -221,6 +221,35 @@ $sel = function($val, $target) { return ($val == $target) ? 'selected' : ''; };
                 <div class="col-md-4 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="regurgitacion_tricuspidea_ausente" <?php echo $chk($marcadores['regurgitacion_tricuspidea_ausente'] ?? true); ?>><label class="form-check-label">Regurgitación Tricuspídea Ausente</label></div></div>
                 <div class="col-md-4 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="muesca_bilateral" <?php echo $chk($marcadores['muesca_bilateral'] ?? false); ?>><label class="form-check-label">Muesca Bilateral (A. Uterinas)</label></div></div>
             </div>
+            <hr>
+            <h6 class="text-muted">Marcadores Bioquímicos y Tamizaje Genético</h6>
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <label for="papp_a_mom" class="form-label">PAPP-A (MoM)</label>
+                    <input type="number" step="0.01" class="form-control" id="papp_a_mom" name="papp_a_mom" value="<?php echo htmlspecialchars($marcadores['papp_a_mom'] ?? ''); ?>">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="plgf_mom" class="form-label">PLGF (MoM)</label>
+                    <input type="number" step="0.01" class="form-control" id="plgf_mom" name="plgf_mom" value="<?php echo htmlspecialchars($marcadores['plgf_mom'] ?? ''); ?>">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="tamizaje_genetico_tipo" class="form-label">Tamizaje Genético</label>
+                    <select class="form-select" id="tamizaje_genetico_tipo" name="tamizaje_genetico_tipo">
+                        <option value="No realizado" <?php echo $sel($marcadores['tamizaje_genetico_tipo'] ?? 'No realizado', 'No realizado'); ?>>No realizado</option>
+                        <option value="DNA Fetal" <?php echo $sel($marcadores['tamizaje_genetico_tipo'] ?? '', 'DNA Fetal'); ?>>DNA Fetal</option>
+                        <option value="Combinado 1T" <?php echo $sel($marcadores['tamizaje_genetico_tipo'] ?? '', 'Combinado 1T'); ?>>Combinado 1T</option>
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="tamizaje_genetico_resultado" class="form-label">Resultado Tamizaje</label>
+                    <select class="form-select" id="tamizaje_genetico_resultado" name="tamizaje_genetico_resultado">
+                        <option value="" <?php echo $sel($marcadores['tamizaje_genetico_resultado'] ?? '', ''); ?>>No evaluado</option>
+                        <option value="Bajo Riesgo" <?php echo $sel($marcadores['tamizaje_genetico_resultado'] ?? '', 'Bajo Riesgo'); ?>>Bajo Riesgo</option>
+                        <option value="Alto Riesgo" <?php echo $sel($marcadores['tamizaje_genetico_resultado'] ?? '', 'Alto Riesgo'); ?>>Alto Riesgo</option>
+                        <option value="No concluyente" <?php echo $sel($marcadores['tamizaje_genetico_resultado'] ?? '', 'No concluyente'); ?>>No concluyente</option>
+                    </select>
+                </div>
+            </div>
         </div>
     </div>
 

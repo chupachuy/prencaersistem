@@ -24,6 +24,44 @@ $r('Paciente',htmlspecialchars($ev['paciente_nombre'].' '.$ev['paciente_apellido
 $r('Médico',htmlspecialchars($ev['medico_nombre'].' '.$ev['medico_apellido']));?>
 </div></div>
 
+<?php if (!empty($data1er) || !empty($data2do)): ?>
+<?php if (!empty($data1er)): ?>
+<div class="card mb-4"><div class="card-header"><i class="fa-solid fa-folder-open me-2"></i> Checklist Prenacer – Antecedentes 1er Trimestre</div><div class="card-body">
+<div class="row">
+    <div class="col-md-3"><strong>Riesgo Preeclampsia (FMF):</strong> <?php echo $data1er['riesgo_preeclampsia_temprana'] ?? '—'; ?></div>
+    <div class="col-md-3"><strong>Doppler UT PI:</strong> <?php echo !empty($data1er['uta_pi_promedio']) ? $data1er['uta_pi_promedio'] : '—'; ?> <?php echo !empty($data1er['muesca_bilateral'])?'(Muesca bilateral)':''; ?></div>
+    <div class="col-md-3"><strong>PAPP-A MoM:</strong> <?php echo !empty($data1er['papp_a_mom'])?$data1er['papp_a_mom']:'—'; ?></div>
+    <div class="col-md-3"><strong>PLGF MoM:</strong> <?php echo !empty($data1er['plgf_mom'])?$data1er['plgf_mom']:'—'; ?></div>
+    <div class="col-md-4 mt-2"><strong>Tamizaje Genético:</strong> <?php echo !empty($data1er['tamizaje_genetico_tipo'])?$data1er['tamizaje_genetico_tipo'].' — '.($data1er['tamizaje_genetico_resultado']??'—'):'—'; ?></div>
+    <div class="col-md-4 mt-2"><strong>Longitud Cervical 1T:</strong> <?php echo !empty($data1er['longitud_cervical_mm'])?$data1er['longitud_cervical_mm'].' mm':'—'; ?></div>
+    <div class="col-md-4 mt-2"><strong>Miomas 1T:</strong> <?php echo !empty($data1er['miomas_visibles'])?'Sí (FIGO: '.($data1er['miomas_figo_tipo']??'—').')':'No'; ?></div>
+</div></div></div>
+<?php endif; ?>
+<?php if (!empty($data2do)): ?>
+<div class="card mb-4"><div class="card-header"><i class="fa-solid fa-folder-open me-2"></i> Checklist Prenacer – Antecedentes 2do Trimestre</div><div class="card-body">
+<div class="row">
+    <div class="col-md-4"><strong>Morfología Fetal:</strong> <?php
+        $morfNormal=true;
+        $cmf=['craneo_snc_normal','cara_cuello_normal','corazon_normal','torax_diafragma_normal','abdomen_normal','genitourinario_normal','columna_normal','extremidades_normal'];
+        foreach($cmf as $cm) if(isset($data2do[$cm])&&$data2do[$cm]==0){$morfNormal=false;break;}
+        echo $morfNormal?'<span class="text-success">Normal</span>':'<span class="text-danger">Alterada</span>';
+    ?></div>
+    <div class="col-md-4"><strong>Doppler UT PI 2T:</strong> <?php echo !empty($data2do['uta_pi_promedio'])?$data2do['uta_pi_promedio']:'—'; ?></div>
+    <div class="col-md-4"><strong>Placenta 2T:</strong> <?php echo $data2do['placenta_posicion']??'—'; ?> | Acretismo: <?php echo $data2do['acretismo_figo_grado']??'—'; ?></div>
+    <div class="col-md-4 mt-2"><strong>Longitud Cervical 2T:</strong> <?php echo !empty($data2do['longitud_cervical_mm'])?$data2do['longitud_cervical_mm'].' mm':'—'; ?></div>
+    <div class="col-md-4 mt-2"><strong>ICC 2T:</strong> <?php echo !empty($data2do['indice_consistencia_cervical'])?$data2do['indice_consistencia_cervical'].'%':'—'; ?></div>
+    <div class="col-md-4 mt-2"><strong>Funneling 2T:</strong> <?php echo !empty($data2do['funneling_presente'])?'Sí ('.$data2do['funneling_mm'].' mm)':'No'; ?></div>
+    <div class="col-md-4 mt-2"><strong>Sludge 2T:</strong> <?php echo $data2do['sludge_intraamniotico']??'—'; ?></div>
+    <div class="col-md-4 mt-2"><strong>Signos RCIU 2T:</strong> <?php
+        $rciu=false;
+        if(!empty($data2do['percentil_hadlock'])&&$data2do['percentil_hadlock']<10)$rciu=true;
+        if(!empty($data2do['crecimiento_armonico'])&&$data2do['crecimiento_armonico']==0)$rciu=true;
+        echo $rciu?'<span class="text-danger">Sí</span>':'<span class="text-success">No</span>';
+    ?></div>
+</div></div></div>
+<?php endif; ?>
+<?php endif; ?>
+
 <div class="card mb-4"><div class="card-header"><i class="fa-solid fa-heart-pulse me-2"></i> Signos Vitales y Estática Fetal</div><div class="card-body">
 <?php $r('Edad Gestacional',sv3($ev['edad_gestacional_semanas'],' sem'));$r('Peso Materno',sv3($ev['peso_kg'],' kg'));
 $r('TA Sistólica',sv3($ev['ta_sistolica'],' mmHg'));$r('TA Diastólica',sv3($ev['ta_diastolica'],' mmHg'));

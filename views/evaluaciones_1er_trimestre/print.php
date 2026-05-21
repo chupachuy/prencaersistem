@@ -93,6 +93,9 @@ function pBadge($val) {
                 <div class="row-item"><div class="label">Vejiga Fetal:</div><div class="value"><?php echo pVal($marcadores['vejiga_fetal_mm'], ' mm'); ?></div></div>
                 <div class="row-item"><div class="label">UTA PI:</div><div class="value"><?php echo pVal($marcadores['uta_pi_promedio']); ?></div></div>
                 <div class="row-item"><div class="label">Muesca Bilateral:</div><div class="value"><?php echo ($marcadores['muesca_bilateral'] ?? 0) ? 'Presente' : 'Ausente'; ?></div></div>
+                <div class="row-item"><div class="label">PAPP-A (MoM):</div><div class="value"><?php echo pVal($marcadores['papp_a_mom']); ?></div></div>
+                <div class="row-item"><div class="label">PLGF (MoM):</div><div class="value"><?php echo pVal($marcadores['plgf_mom']); ?></div></div>
+                <div class="row-item"><div class="label">Tamizaje Genético:</div><div class="value"><?php echo ($marcadores['tamizaje_genetico_tipo'] ?? 'No realizado') !== 'No realizado' ? htmlspecialchars($marcadores['tamizaje_genetico_tipo'] . ' — ' . ($marcadores['tamizaje_genetico_resultado'] ?? '—')) : 'No realizado'; ?></div></div>
             </div>
         </div>
         <div class="col">

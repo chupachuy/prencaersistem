@@ -23,8 +23,9 @@ class MarcadoresFmf
             INSERT INTO marcadores_fmf (
                 evaluacion_id, translucencia_nucal_mm, hueso_nasal_presente,
                 ductus_venoso_onda_a, regurgitacion_tricuspidea_ausente,
-                vejiga_fetal_mm, uta_pi_promedio, muesca_bilateral
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                vejiga_fetal_mm, uta_pi_promedio, muesca_bilateral,
+                papp_a_mom, plgf_mom, tamizaje_genetico_tipo, tamizaje_genetico_resultado
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ");
         return $stmt->execute([
             $data['evaluacion_id'],
@@ -34,7 +35,11 @@ class MarcadoresFmf
             $data['regurgitacion_tricuspidea_ausente'] ?? 1,
             $data['vejiga_fetal_mm'] ?? null,
             $data['uta_pi_promedio'] ?? null,
-            $data['muesca_bilateral'] ?? 0
+            $data['muesca_bilateral'] ?? 0,
+            $data['papp_a_mom'] ?? null,
+            $data['plgf_mom'] ?? null,
+            $data['tamizaje_genetico_tipo'] ?? 'No realizado',
+            $data['tamizaje_genetico_resultado'] ?? null
         ]);
     }
 
@@ -44,7 +49,8 @@ class MarcadoresFmf
             UPDATE marcadores_fmf SET
                 translucencia_nucal_mm = ?, hueso_nasal_presente = ?,
                 ductus_venoso_onda_a = ?, regurgitacion_tricuspidea_ausente = ?,
-                vejiga_fetal_mm = ?, uta_pi_promedio = ?, muesca_bilateral = ?
+                vejiga_fetal_mm = ?, uta_pi_promedio = ?, muesca_bilateral = ?,
+                papp_a_mom = ?, plgf_mom = ?, tamizaje_genetico_tipo = ?, tamizaje_genetico_resultado = ?
             WHERE evaluacion_id = ?
         ");
         return $stmt->execute([
@@ -55,6 +61,10 @@ class MarcadoresFmf
             $data['vejiga_fetal_mm'] ?? null,
             $data['uta_pi_promedio'] ?? null,
             $data['muesca_bilateral'] ?? 0,
+            $data['papp_a_mom'] ?? null,
+            $data['plgf_mom'] ?? null,
+            $data['tamizaje_genetico_tipo'] ?? 'No realizado',
+            $data['tamizaje_genetico_resultado'] ?? null,
             $data['evaluacion_id']
         ]);
     }

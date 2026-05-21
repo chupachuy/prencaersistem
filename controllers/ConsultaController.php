@@ -39,6 +39,10 @@ class ConsultaController extends Controller
             $this->redirect('/consultas/create');
         }
 
+        if (!Auth::check()) {
+            $this->redirect('/login');
+        }
+
         $data = [
             'id_paciente' => $_POST['id_paciente'] ?? null,
             'motivo_consulta' => $_POST['motivo_consulta'] ?? null,
@@ -54,7 +58,7 @@ class ConsultaController extends Controller
 
         if ($consultaId) {
             Session::set('success', 'Consulta registrada correctamente.');
-            $this->redirect('/reportes_1er_trimestre/create?paciente_id=' . $consultaId);
+            $this->redirect('/evaluaciones_1er_trimestre/create?paciente_id=' . $consultaId);
         } else {
             Session::set('error', 'Error al registrar la consulta.');
             $this->redirect('/consultas/create');

@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
 	password VARCHAR(255) NOT NULL,
 	telefono VARCHAR(20),
 	especialidad VARCHAR(100),
+	ruta_firma VARCHAR(255) NULL,
 	rol_id INT,
 	activo BOOLEAN DEFAULT TRUE,
 	email_verified BOOLEAN DEFAULT FALSE,
@@ -129,35 +130,18 @@ CREATE TABLE IF NOT EXISTS asignaciones (
 	FOREIGN KEY (medico_id) REFERENCES usuarios(id),
 	FOREIGN KEY (paciente_id) REFERENCES pacientes(id),
 	FOREIGN KEY (asignado_por) REFERENCES usuarios(id),
-	UNIQUE KEY unique_asignacion_activa (medico_id, paciente_id, activo)
+    UNIQUE KEY unique_asignacion_activa (medico_id, paciente_id, activo)
 );
- 
--- Tabla de sesiones activas (para control)
-CREATE TABLE IF NOT EXISTS user_sessions (
-	id INT PRIMARY KEY AUTO_INCREMENT,
-	user_id INT NOT NULL,
-	session_token VARCHAR(255) NOT NULL,
-	ip_address VARCHAR(45),
-	user_agent TEXT,
-	expires_at TIMESTAMP NOT NULL,
-	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	FOREIGN KEY (user_id) REFERENCES usuarios(id) ON DELETE CASCADE,
-	INDEX idx_token (session_token)
-);
- 
--- Tabla de bitácora (logs)
-CREATE TABLE IF NOT EXISTS bitacora (
-	id INT PRIMARY KEY AUTO_INCREMENT,
-	usuario_id INT,
-	accion VARCHAR(100) NOT NULL,
-	tabla_afectada VARCHAR(50),
-	registro_id INT,
-	datos_anteriores TEXT,
-	datos_nuevos TEXT,
-	ip_address VARCHAR(45),
-	user_agent TEXT,
-	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+  
+-- Tabla de consultas médicas
+CREATE TABLE IF NOT EXISTS Consultas (
+	id_consulta INT PRIMARY KEY AUTO_INCREMENT,
+	id_paciente INT NOT NULL,
+	motivo_consulta VARCHAR(255) NULL,
+	observaciones TEXT NULL,
+	fecha_consulta DATETIME DEFAULT CURRENT_TIMESTAMP,
+	FOREIGN KEY (id_paciente) REFERENCES pacientes(id),
+	INDEX idx_paciente_consulta (id_paciente)
 );
  
 -- Insertar roles iniciales
@@ -366,6 +350,10 @@ CREATE TABLE IF NOT EXISTS marcadores_fmf (
     vejiga_fetal_mm DECIMAL(4,2) NULL,
     uta_pi_promedio DECIMAL(4,2) NULL COMMENT 'Índice de pulsatilidad arterias uterinas',
     muesca_bilateral BOOLEAN DEFAULT FALSE,
+    papp_a_mom DECIMAL(5,2) NULL COMMENT 'PAPP-A MoM',
+    plgf_mom DECIMAL(5,2) NULL COMMENT 'PlGF MoM',
+    tamizaje_genetico_tipo VARCHAR(50) DEFAULT 'No realizado',
+    tamizaje_genetico_resultado VARCHAR(100) NULL,
     FOREIGN KEY (evaluacion_id) REFERENCES evaluaciones_1er_trimestre(id) ON DELETE CASCADE,
     UNIQUE KEY unique_evaluacion_marcadores (evaluacion_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -417,6 +405,8 @@ CREATE TABLE IF NOT EXISTS evaluaciones_2do_trimestre (
     talla_cm DECIMAL(5,2) NULL,
     pam_mmhg DECIMAL(5,2) NULL COMMENT 'Presion Arterial Media',
     uta_pi_promedio DECIMAL(4,2) NULL COMMENT 'Indice Pulsatilidad Arterias Uterinas',
+    peso_1er_trimestre_kg DECIMAL(5,2) NULL,
+    ganancia_peso_kg DECIMAL(5,2) NULL,
     estado ENUM('Pendiente','En proceso','Completado','Archivado') DEFAULT 'Pendiente',
     activo BOOLEAN DEFAULT TRUE,
     created_by INT NULL,
@@ -487,6 +477,11 @@ CREATE TABLE IF NOT EXISTS entorno_placentario_2do_trimestre (
     funneling_presente BOOLEAN DEFAULT FALSE,
     funneling_mm DECIMAL(5,2) NULL,
     sludge_intraamniotico ENUM('Si','No','Dudoso') NULL,
+    morfologia_uterina_eshre ENUM('U0','U1','U2','U3','U4','U5','U6') NULL COMMENT 'Clasificacion ESHRE-ESGE',
+    miomas_visibles BOOLEAN DEFAULT FALSE,
+    miomas_figo_tipo VARCHAR(50) NULL,
+    miomas_dimensiones_mm VARCHAR(100) NULL,
+    miomas_vascularizacion VARCHAR(100) NULL,
     FOREIGN KEY (evaluacion_id) REFERENCES evaluaciones_2do_trimestre(id) ON DELETE CASCADE,
     UNIQUE KEY unique_evaluacion_entorno2 (evaluacion_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -541,6 +536,22 @@ CREATE TABLE IF NOT EXISTS antecedentes_3er_trimestre (
     movimientos_fetales ENUM('Normales','Disminuidos') DEFAULT 'Normales',
     signos_amenaza_parto_pretermino BOOLEAN DEFAULT FALSE,
     plan_nacimiento_definido BOOLEAN DEFAULT FALSE,
+    checklist_riesgo_preeclampsia_1t VARCHAR(20) NULL,
+    checklist_doppler_uterino_1t_pi DECIMAL(4,2) NULL,
+    checklist_doppler_uterino_1t_muesca BOOLEAN NULL,
+    checklist_papp_a_mom DECIMAL(5,2) NULL,
+    checklist_plgf_mom DECIMAL(5,2) NULL,
+    checklist_tamizaje_genetico_resultado VARCHAR(100) NULL,
+    checklist_longitud_cervical_1t_mm DECIMAL(5,2) NULL,
+    checklist_morfologia_fetal_2t_normal BOOLEAN NULL,
+    checklist_doppler_uterino_2t_pi DECIMAL(4,2) NULL,
+    checklist_placenta_2t_posicion VARCHAR(50) NULL,
+    checklist_placenta_2t_acretismo VARCHAR(20) NULL,
+    checklist_longitud_cervical_2t_mm DECIMAL(5,2) NULL,
+    checklist_funneling_2t_presente BOOLEAN NULL,
+    checklist_sludge_2t ENUM('Si','No','Dudoso') NULL,
+    checklist_icc_2t_pct INT NULL,
+    checklist_rciu_2t_signos BOOLEAN NULL,
     FOREIGN KEY (evaluacion_id) REFERENCES evaluaciones_3er_trimestre(id) ON DELETE CASCADE,
     UNIQUE KEY unique_evaluacion_antecedentes3 (evaluacion_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -592,6 +603,11 @@ CREATE TABLE IF NOT EXISTS evaluacion_placentaria_3er_trimestre (
     interfase_miometrial ENUM('Intacta','Adelgazada','Discontinua') DEFAULT 'Intacta',
     vasos_puente BOOLEAN DEFAULT FALSE,
     acretismo_figo_pas ENUM('Grado 0','Grado 1','Grado 2','Grado 3') DEFAULT 'Grado 0',
+    morfologia_uterina_eshre ENUM('U0','U1','U2','U3','U4','U5','U6') NULL COMMENT 'Clasificacion ESHRE-ESGE',
+    miomas_visibles BOOLEAN DEFAULT FALSE,
+    miomas_figo_tipo VARCHAR(50) NULL,
+    miomas_dimensiones_mm VARCHAR(100) NULL,
+    miomas_obstruyen_canal BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (evaluacion_id) REFERENCES evaluaciones_3er_trimestre(id) ON DELETE CASCADE,
     UNIQUE KEY unique_evaluacion_placentaria3 (evaluacion_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

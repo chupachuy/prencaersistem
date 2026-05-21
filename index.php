@@ -24,6 +24,7 @@ require_once __DIR__ . '/controllers/Evaluaciones1erTrimestreController.php';
 require_once __DIR__ . '/controllers/Evaluaciones2doTrimestreController.php';
 require_once __DIR__ . '/controllers/Evaluaciones3erTrimestreController.php';
 require_once __DIR__ . '/controllers/ConsentimientoController.php';
+require_once __DIR__ . '/controllers/EvaluacionesController.php';
 
 $router = new Router();
 
@@ -32,9 +33,12 @@ $router->get('/dashboard', [DashboardController::class, 'index']);
 
 // Perfil
 $router->get('/perfil', [PerfilController::class, 'index']);
+$router->get('/perfil/edit', [PerfilController::class, 'edit']);
+$router->post('/perfil/update', [PerfilController::class, 'update']);
 
 // Usuarios / Medicos
 $router->get('/usuarios', [UserController::class, 'index']);
+$router->get('/usuarios/search', [UserController::class, 'search']);
 $router->get('/usuarios/create', [UserController::class, 'create']);
 $router->post('/usuarios/store', [UserController::class, 'store']);
 $router->get('/usuarios/edit', [UserController::class, 'edit']);
@@ -76,17 +80,10 @@ $router->get('/consultas/create', [ConsultaController::class, 'create']);
 $router->post('/consultas/store', [ConsultaController::class, 'store']);
 $router->get('/consultas/show', [ConsultaController::class, 'show']);
 
-// Reportes 1er Trimestre
-$router->get('/reportes_1er_trimestre', [Reportes1erTrimestreController::class, 'index']);
-$router->get('/reportes_1er_trimestre/create', [Reportes1erTrimestreController::class, 'create']);
-$router->post('/reportes_1er_trimestre/store', [Reportes1erTrimestreController::class, 'store']);
-$router->get('/reportes_1er_trimestre/show', [Reportes1erTrimestreController::class, 'show']);
-$router->get('/reportes_1er_trimestre/edit', [Reportes1erTrimestreController::class, 'edit']);
-$router->post('/reportes_1er_trimestre/update', [Reportes1erTrimestreController::class, 'update']);
-$router->get('/reportes_1er_trimestre/print', [Reportes1erTrimestreController::class, 'print']);
-$router->post('/reportes_1er_trimestre/delete', [Reportes1erTrimestreController::class, 'delete']);
+// Evaluaciones (vista unificada)
+$router->get('/evaluaciones', [EvaluacionesController::class, 'index']);
 
-// Evaluaciones 1er Trimestre (nuevo sistema)
+// Evaluaciones 1er Trimestre
 $router->get('/evaluaciones_1er_trimestre', [Evaluaciones1erTrimestreController::class, 'index']);
 $router->get('/evaluaciones_1er_trimestre/create', [Evaluaciones1erTrimestreController::class, 'create']);
 $router->post('/evaluaciones_1er_trimestre/store', [Evaluaciones1erTrimestreController::class, 'store']);

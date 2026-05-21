@@ -29,6 +29,22 @@ $ev=$evaluacion;
             <div class="row mb-2"><div class="col-md-4 fw-bold">Paciente:</div><div class="col-md-8"><?php echo htmlspecialchars($ev['paciente_nombre'].' '.$ev['paciente_apellido']); ?></div></div>
             <div class="row mb-2"><div class="col-md-4 fw-bold">Médico:</div><div class="col-md-8"><?php echo htmlspecialchars($ev['medico_nombre'].' '.$ev['medico_apellido']); ?></div></div>
         </div></div>
+        <?php if (!empty($data1er)): ?>
+        <div class="card mb-4"><div class="card-header"><i class="fa-solid fa-folder-open me-2"></i> Datos del 1er Trimestre (referencia)</div><div class="card-body">
+        <div class="row">
+            <div class="col-md-3"><strong>FPP USG:</strong> <?php echo !empty($data1er['fpp_usg']) ? date('d/m/Y', strtotime($data1er['fpp_usg'])) : '—'; ?></div>
+            <div class="col-md-3"><strong>EG 1T:</strong> <?php echo !empty($data1er['edad_gestacional_semanas']) ? $data1er['edad_gestacional_semanas'].' sem' : '—'; ?></div>
+            <div class="col-md-3"><strong>Peso 1T:</strong> <?php echo !empty($data1er['peso_kg']) ? $data1er['peso_kg'].' kg' : '—'; ?></div>
+            <div class="col-md-3"><strong>Talla 1T:</strong> <?php echo !empty($data1er['talla_cm']) ? $data1er['talla_cm'].' cm' : '—'; ?></div>
+            <div class="col-md-4 mt-2"><strong>Riesgo Preeclampsia:</strong> <?php echo $data1er['riesgo_preeclampsia_temprana'] ?? '—'; ?></div>
+            <div class="col-md-4 mt-2"><strong>Riesgo Cromosomopatías:</strong> <?php echo $data1er['probabilidad_cromosomopatias'] ?? '—'; ?></div>
+            <div class="col-md-4 mt-2"><strong>Riesgo Parto Pretérmino:</strong> <?php echo $data1er['riesgo_parto_pretermino'] ?? '—'; ?></div>
+        </div>
+        <?php if (!empty($evaluacion['ganancia_peso_kg'])): ?>
+        <hr><div class="row"><div class="col-12"><strong>Ganancia de Peso:</strong> <span class="text-primary"><?php echo $evaluacion['ganancia_peso_kg']; ?> kg</span> (desde 1T: <?php echo $evaluacion['peso_1er_trimestre_kg'] ?? '—'; ?> kg → actual: <?php echo $evaluacion['peso_kg'] ?? '—'; ?> kg)</div></div>
+        <?php endif; ?>
+        </div></div>
+        <?php endif; ?>
         <div class="card mb-4"><div class="card-header"><i class="fa-solid fa-heart-pulse me-2"></i> Datos Clínicos</div><div class="card-body">
             <div class="row mb-2"><div class="col-md-4 fw-bold">Peso:</div><div class="col-md-8"><?php echo sv($ev['peso_kg'],' kg'); ?></div></div>
             <div class="row mb-2"><div class="col-md-4 fw-bold">Talla:</div><div class="col-md-8"><?php echo sv($ev['talla_cm'],' cm'); ?></div></div>

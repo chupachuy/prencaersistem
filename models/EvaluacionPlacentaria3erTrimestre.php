@@ -13,12 +13,12 @@ class EvaluacionPlacentaria3erTrimestre
     }
 
     public function create($data) {
-        $stmt = $this->db->prepare("INSERT INTO evaluacion_placentaria_3er_trimestre (evaluacion_id, distancia_oci_mm, grosor_placentario_mm, grado_madurez, lagunas_vasculares, interfase_miometrial, vasos_puente, acretismo_figo_pas) VALUES (?,?,?,?,?,?,?,?)");
-        return $stmt->execute([$data['evaluacion_id'], $data['distancia_oci_mm']??null, $data['grosor_placentario_mm']??null, $data['grado_madurez']??null, $data['lagunas_vasculares']??'Ausentes/minimas', $data['interfase_miometrial']??'Intacta', $data['vasos_puente']??0, $data['acretismo_figo_pas']??'Grado 0']);
+        $stmt = $this->db->prepare("INSERT INTO evaluacion_placentaria_3er_trimestre (evaluacion_id, distancia_oci_mm, grosor_placentario_mm, grado_madurez, lagunas_vasculares, interfase_miometrial, vasos_puente, acretismo_figo_pas, morfologia_uterina_eshre, miomas_visibles, miomas_figo_tipo, miomas_dimensiones_mm, miomas_obstruyen_canal) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)");
+        return $stmt->execute([$data['evaluacion_id'], $data['distancia_oci_mm']??null, $data['grosor_placentario_mm']??null, $data['grado_madurez']??null, $data['lagunas_vasculares']??'Ausentes/minimas', $data['interfase_miometrial']??'Intacta', $data['vasos_puente']??0, $data['acretismo_figo_pas']??'Grado 0', $data['morfologia_uterina_eshre']??null, $data['miomas_visibles']??0, $data['miomas_figo_tipo']??null, $data['miomas_dimensiones_mm']??null, $data['miomas_obstruyen_canal']??0]);
     }
 
     public function update($data) {
-        $stmt = $this->db->prepare("UPDATE evaluacion_placentaria_3er_trimestre SET distancia_oci_mm=?, grosor_placentario_mm=?, grado_madurez=?, lagunas_vasculares=?, interfase_miometrial=?, vasos_puente=?, acretismo_figo_pas=? WHERE evaluacion_id=?");
-        return $stmt->execute([$data['distancia_oci_mm']??null, $data['grosor_placentario_mm']??null, $data['grado_madurez']??null, $data['lagunas_vasculares']??'Ausentes/minimas', $data['interfase_miometrial']??'Intacta', $data['vasos_puente']??0, $data['acretismo_figo_pas']??'Grado 0', $data['evaluacion_id']]);
+        $stmt = $this->db->prepare("UPDATE evaluacion_placentaria_3er_trimestre SET distancia_oci_mm=?, grosor_placentario_mm=?, grado_madurez=?, lagunas_vasculares=?, interfase_miometrial=?, vasos_puente=?, acretismo_figo_pas=?, morfologia_uterina_eshre=?, miomas_visibles=?, miomas_figo_tipo=?, miomas_dimensiones_mm=?, miomas_obstruyen_canal=? WHERE evaluacion_id=?");
+        return $stmt->execute([$data['distancia_oci_mm']??null, $data['grosor_placentario_mm']??null, $data['grado_madurez']??null, $data['lagunas_vasculares']??'Ausentes/minimas', $data['interfase_miometrial']??'Intacta', $data['vasos_puente']??0, $data['acretismo_figo_pas']??'Grado 0', $data['morfologia_uterina_eshre']??null, $data['miomas_visibles']??0, $data['miomas_figo_tipo']??null, $data['miomas_dimensiones_mm']??null, $data['miomas_obstruyen_canal']??0, $data['evaluacion_id']]);
     }
 }

@@ -11,7 +11,7 @@ require_once __DIR__ . '/../layouts/sidebar.php';
 
 <div class="row">
     <div class="col-md-4 mb-4">
-        <div class="stats-card" style="cursor: pointer; transition: all 0.2s;" onclick="window.location.href='<?php echo Url::to('/reportes_1er_trimestre'); ?>'">
+        <div class="stats-card" style="cursor: pointer; transition: all 0.2s;" onclick="window.location.href='<?php echo Url::to('/evaluaciones_1er_trimestre'); ?>'">
             <div class="stats-icon" style="background: #d1e7dd; color: #367d84;">
                 <i class="fa-solid fa-file-invoice"></i>
             </div>

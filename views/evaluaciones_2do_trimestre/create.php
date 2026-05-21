@@ -31,10 +31,43 @@ require_once __DIR__ . '/../layouts/sidebar.php';
         </div>
     </div></div>
 
+    <?php if (!empty($data1er)): ?>
+    <div class="accordion mb-4" id="ref1erTrimestre2T">
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1er2T">
+                    <i class="fa-solid fa-folder-open me-2"></i> Datos del 1er Trimestre (referencia)
+                </button>
+            </h2>
+            <div id="collapse1er2T" class="accordion-collapse collapse" data-bs-parent="#ref1erTrimestre2T">
+                <div class="accordion-body">
+                    <div class="row">
+                        <div class="col-md-3"><strong>FPP por USG:</strong> <?php echo !empty($data1er['fpp_usg']) ? date('d/m/Y', strtotime($data1er['fpp_usg'])) : '—'; ?></div>
+                        <div class="col-md-3"><strong>Edad Gestacional 1T:</strong> <?php echo !empty($data1er['edad_gestacional_semanas']) ? $data1er['edad_gestacional_semanas'].' sem' : '—'; ?></div>
+                        <div class="col-md-3"><strong>Peso:</strong> <?php echo !empty($data1er['peso_kg']) ? $data1er['peso_kg'].' kg' : '—'; ?></div>
+                        <div class="col-md-3"><strong>Talla:</strong> <?php echo !empty($data1er['talla_cm']) ? $data1er['talla_cm'].' cm' : '—'; ?></div>
+                        <div class="col-md-3 mt-2"><strong>TA Sistólica:</strong> <?php echo !empty($data1er['ta_sistolica']) ? $data1er['ta_sistolica'].' mmHg' : '—'; ?></div>
+                        <div class="col-md-3 mt-2"><strong>TA Diastólica:</strong> <?php echo !empty($data1er['ta_diastolica']) ? $data1er['ta_diastolica'].' mmHg' : '—'; ?></div>
+                        <div class="col-md-3 mt-2"><strong>LCC:</strong> <?php echo !empty($data1er['lcc_mm']) ? $data1er['lcc_mm'].' mm' : '—'; ?></div>
+                        <div class="col-md-3 mt-2"><strong>FUM:</strong> <?php echo !empty($data1er['fum']) ? date('d/m/Y', strtotime($data1er['fum'])) : '—'; ?></div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-3"><strong>Riesgo Preeclampsia (FMF):</strong> <?php echo $data1er['riesgo_preeclampsia_temprana'] ?? '—'; ?></div>
+                        <div class="col-md-3"><strong>Riesgo Cromosomopatías:</strong> <?php echo $data1er['probabilidad_cromosomopatias'] ?? '—'; ?></div>
+                        <div class="col-md-3"><strong>Riesgo Parto Pretérmino:</strong> <?php echo $data1er['riesgo_parto_pretermino'] ?? '—'; ?></div>
+                        <div class="col-md-3"><strong>Miomas:</strong> <?php echo !empty($data1er['miomas_visibles']) ? 'Sí (FIGO: '.($data1er['miomas_figo_tipo'] ?? '—').')' : 'No'; ?></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
+
     <!-- Datos Clínicos -->
     <div class="card mb-4"><div class="card-header"><i class="fa-solid fa-heart-pulse me-2"></i> Datos Clínicos y Obstétricos</div><div class="card-body">
         <div class="row">
-            <div class="col-md-3 mb-3"><label for="peso_kg" class="form-label">Peso (kg)</label><input type="number" step="0.01" class="form-control" name="peso_kg" placeholder="Ej: 72.0"></div>
+            <div class="col-md-3 mb-3"><label for="peso_kg" class="form-label">Peso (kg) <?php if(!empty($data1er['peso_kg'])): ?><small class="text-muted">| 1T: <?php echo $data1er['peso_kg']; ?> kg</small><?php endif; ?></label><input type="number" step="0.01" class="form-control" name="peso_kg" placeholder="Ej: 72.0"></div>
             <div class="col-md-3 mb-3"><label for="talla_cm" class="form-label">Talla (cm)</label><input type="number" step="0.01" class="form-control" name="talla_cm" placeholder="Ej: 165"></div>
             <div class="col-md-3 mb-3"><label for="pam_mmhg" class="form-label">PAM (mmHg)</label><input type="number" step="0.01" class="form-control" name="pam_mmhg" placeholder="Presión Arterial Media"></div>
             <div class="col-md-3 mb-3"><label for="uta_pi_promedio" class="form-label">UTA PI Promedio</label><input type="number" step="0.01" class="form-control" name="uta_pi_promedio" placeholder="Índice Pulsatilidad"></div>
@@ -106,6 +139,14 @@ require_once __DIR__ . '/../layouts/sidebar.php';
         <div class="row">
             <div class="col-md-4 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="funneling_presente"><label class="form-check-label">Funneling Presente</label></div></div>
             <div class="col-md-4 mb-2"><label for="funneling_mm" class="form-label">Funneling (mm)</label><input type="number" step="0.01" class="form-control form-control-sm" name="funneling_mm" placeholder="Ej: 8.0"></div>
+        </div>
+        <hr><h6 class="text-muted">Miomas Uterinos y Morfología</h6>
+        <div class="row">
+            <div class="col-md-4 mb-3"><label for="morfologia_uterina_eshre" class="form-label">Morfología Uterina (ESHRE-ESGE) <?php if(!empty($data1er['morfologia_uterina_eshre'])): ?><small class="text-muted">| 1T: <?php echo $data1er['morfologia_uterina_eshre']; ?></small><?php endif; ?></label><select class="form-select" name="morfologia_uterina_eshre"><option value="">No evaluado</option><?php foreach(['U0','U1','U2','U3','U4','U5','U6'] as $o): ?><option><?php echo $o; ?></option><?php endforeach; ?></select></div>
+            <div class="col-md-4 mb-3"><label class="form-label">Miomas <?php if(!empty($data1er['miomas_visibles'])): ?><small class="text-muted">| 1T: Sí (FIGO: <?php echo $data1er['miomas_figo_tipo']??'—'; ?>)</small><?php endif; ?></label><div class="form-check"><input class="form-check-input" type="checkbox" name="miomas_visibles"><label class="form-check-label">Miomas Visibles</label></div></div>
+            <div class="col-md-4 mb-3"><label for="miomas_figo_tipo" class="form-label">FIGO Tipo</label><select class="form-select" name="miomas_figo_tipo"><option value="">No aplica</option><?php for($i=0;$i<=8;$i++): ?><option value="<?php echo $i; ?>">Tipo <?php echo $i; ?></option><?php endfor; ?></select></div>
+            <div class="col-md-4 mb-3"><label for="miomas_dimensiones_mm" class="form-label">Dimensiones (mm)</label><input type="text" class="form-control" name="miomas_dimensiones_mm" placeholder="Ej: 25x20"></div>
+            <div class="col-md-4 mb-3"><label for="miomas_vascularizacion" class="form-label">Vascularización</label><input type="text" class="form-control" name="miomas_vascularizacion" placeholder="Ej: Moderada"></div>
         </div>
     </div></div>
 

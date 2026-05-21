@@ -15,8 +15,7 @@ require_once __DIR__ . '/../layouts/sidebar.php';
     </div>
     <div class="page-header-actions">
         <span class="text-muted"><i class="fa-regular fa-calendar me-1"></i><?php echo $fecha_hoy; ?></span>
-    </div>
-</div>
+
 
 <form action="<?php echo Url::to('/evaluaciones_1er_trimestre/store'); ?>" method="POST" id="formEvaluacion">
     <input type="hidden" name="codigo_reporte" value="<?php echo htmlspecialchars($codigo_reporte); ?>">
@@ -301,6 +300,35 @@ require_once __DIR__ . '/../layouts/sidebar.php';
                         <input class="form-check-input" type="checkbox" id="muesca_bilateral" name="muesca_bilateral">
                         <label class="form-check-label" for="muesca_bilateral">Muesca Bilateral (A. Uterinas)</label>
                     </div>
+                </div>
+            </div>
+            <hr>
+            <h6 class="text-muted">Marcadores Bioquímicos y Tamizaje Genético</h6>
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <label for="papp_a_mom" class="form-label">PAPP-A (MoM)</label>
+                    <input type="number" step="0.01" class="form-control" id="papp_a_mom" name="papp_a_mom" placeholder="Ej: 1.05">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="plgf_mom" class="form-label">PLGF (MoM)</label>
+                    <input type="number" step="0.01" class="form-control" id="plgf_mom" name="plgf_mom" placeholder="Ej: 0.95">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="tamizaje_genetico_tipo" class="form-label">Tamizaje Genético</label>
+                    <select class="form-select" id="tamizaje_genetico_tipo" name="tamizaje_genetico_tipo">
+                        <option value="No realizado">No realizado</option>
+                        <option value="DNA Fetal">DNA Fetal</option>
+                        <option value="Combinado 1T">Combinado 1T</option>
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="tamizaje_genetico_resultado" class="form-label">Resultado Tamizaje</label>
+                    <select class="form-select" id="tamizaje_genetico_resultado" name="tamizaje_genetico_resultado">
+                        <option value="">No evaluado</option>
+                        <option value="Bajo Riesgo">Bajo Riesgo</option>
+                        <option value="Alto Riesgo">Alto Riesgo</option>
+                        <option value="No concluyente">No concluyente</option>
+                    </select>
                 </div>
             </div>
         </div>

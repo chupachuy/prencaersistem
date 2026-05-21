@@ -111,6 +111,9 @@ function showVal($val, $suffix = '') {
                 <div class="row mb-2"><div class="col-md-5 fw-bold">Vejiga Fetal:</div><div class="col-md-7"><?php echo showVal($marcadores['vejiga_fetal_mm'], ' mm'); ?></div></div>
                 <div class="row mb-2"><div class="col-md-5 fw-bold">UTA PI Promedio:</div><div class="col-md-7"><?php echo showVal($marcadores['uta_pi_promedio']); ?></div></div>
                 <div class="row mb-2"><div class="col-md-5 fw-bold">Muesca Bilateral:</div><div class="col-md-7"><?php echo ($marcadores['muesca_bilateral'] ?? false) ? '<span class="badge bg-danger">Presente</span>' : '<span class="badge bg-success">Ausente</span>'; ?></div></div>
+                <div class="row mb-2"><div class="col-md-5 fw-bold">PAPP-A (MoM):</div><div class="col-md-7"><?php echo showVal($marcadores['papp_a_mom']); ?></div></div>
+                <div class="row mb-2"><div class="col-md-5 fw-bold">PLGF (MoM):</div><div class="col-md-7"><?php echo showVal($marcadores['plgf_mom']); ?></div></div>
+                <div class="row mb-2"><div class="col-md-5 fw-bold">Tamizaje Genético:</div><div class="col-md-7"><?php echo ($marcadores['tamizaje_genetico_tipo'] ?? 'No realizado') !== 'No realizado' ? htmlspecialchars($marcadores['tamizaje_genetico_tipo'] . ' — ' . ($marcadores['tamizaje_genetico_resultado'] ?? '—')) : 'No realizado'; ?></div></div>
             </div>
         </div>
     </div>

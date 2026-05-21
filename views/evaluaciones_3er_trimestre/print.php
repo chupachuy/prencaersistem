@@ -19,6 +19,46 @@ function si($x){return$x?'Sí':'No';}
 <div class="row-item"><div class="label">Médico:</div><div class="value"><?php echo htmlspecialchars($ev['medico_nombre'].' '.$ev['medico_apellido']);?></div></div>
 <div class="row-item"><div class="label">Estado:</div><div class="value"><?php echo htmlspecialchars($ev['estado']);?></div></div></div>
 
+<?php if (!empty($data1er) || !empty($data2do)): ?>
+<?php if (!empty($data1er)): ?>
+<div class="section"><h2>Checklist Prenacer – Antecedentes 1er Trimestre</h2>
+<div class="two-col"><div class="col">
+<div class="row-item"><div class="label">Riesgo Preeclampsia:</div><div class="value"><?php echo vx($data1er['riesgo_preeclampsia_temprana']??null);?></div></div>
+<div class="row-item"><div class="label">Doppler UT PI:</div><div class="value"><?php echo vx($data1er['uta_pi_promedio']??null);?> <?php echo !empty($data1er['muesca_bilateral'])?'(Muesca bilateral)':'';?></div></div>
+<div class="row-item"><div class="label">PAPP-A MoM:</div><div class="value"><?php echo vx($data1er['papp_a_mom']??null);?></div></div>
+<div class="row-item"><div class="label">PLGF MoM:</div><div class="value"><?php echo vx($data1er['plgf_mom']??null);?></div></div>
+</div><div class="col">
+<div class="row-item"><div class="label">Tamizaje Genético:</div><div class="value"><?php echo !empty($data1er['tamizaje_genetico_tipo'])?vx($data1er['tamizaje_genetico_tipo']).' — '.vx($data1er['tamizaje_genetico_resultado']??null):'—';?></div></div>
+<div class="row-item"><div class="label">Longitud Cervical:</div><div class="value"><?php echo !empty($data1er['longitud_cervical_mm'])?$data1er['longitud_cervical_mm'].' mm':'—';?></div></div>
+<div class="row-item"><div class="label">Miomas:</div><div class="value"><?php echo !empty($data1er['miomas_visibles'])?'Sí (FIGO: '.($data1er['miomas_figo_tipo']??'—').')':'No';?></div></div>
+</div></div></div>
+<?php endif; ?>
+<?php if (!empty($data2do)): ?>
+<div class="section"><h2>Checklist Prenacer – Antecedentes 2do Trimestre</h2>
+<div class="two-col"><div class="col">
+<div class="row-item"><div class="label">Morfología Fetal:</div><div class="value"><?php
+    $morfNormal=true;
+    $cmf=['craneo_snc_normal','cara_cuello_normal','corazon_normal','torax_diafragma_normal','abdomen_normal','genitourinario_normal','columna_normal','extremidades_normal'];
+    foreach($cmf as $cm) if(isset($data2do[$cm])&&$data2do[$cm]==0){$morfNormal=false;break;}
+    echo $morfNormal?'Normal':'<strong>Alterada</strong>';
+?></div></div>
+<div class="row-item"><div class="label">Doppler UT PI:</div><div class="value"><?php echo vx($data2do['uta_pi_promedio']??null);?></div></div>
+<div class="row-item"><div class="label">Placenta:</div><div class="value"><?php echo vx($data2do['placenta_posicion']??null);?> | Acretismo: <?php echo vx($data2do['acretismo_figo_grado']??null);?></div></div>
+<div class="row-item"><div class="label">Longitud Cervical:</div><div class="value"><?php echo !empty($data2do['longitud_cervical_mm'])?$data2do['longitud_cervical_mm'].' mm':'—';?></div></div>
+</div><div class="col">
+<div class="row-item"><div class="label">ICC:</div><div class="value"><?php echo !empty($data2do['indice_consistencia_cervical'])?$data2do['indice_consistencia_cervical'].'%':'—';?></div></div>
+<div class="row-item"><div class="label">Funneling:</div><div class="value"><?php echo !empty($data2do['funneling_presente'])?'Sí ('.$data2do['funneling_mm'].' mm)':'No';?></div></div>
+<div class="row-item"><div class="label">Sludge:</div><div class="value"><?php echo vx($data2do['sludge_intraamniotico']??null);?></div></div>
+<div class="row-item"><div class="label">Signos RCIU:</div><div class="value"><?php
+    $rciu=false;
+    if(!empty($data2do['percentil_hadlock'])&&$data2do['percentil_hadlock']<10)$rciu=true;
+    if(!empty($data2do['crecimiento_armonico'])&&$data2do['crecimiento_armonico']==0)$rciu=true;
+    echo $rciu?'Sí':'No';
+?></div></div>
+</div></div></div>
+<?php endif; ?>
+<?php endif; ?>
+
 <div class="two-col"><div class="col">
 <div class="section"><h2>Signos Vitales y Estática</h2>
 <div class="row-item"><div class="label">Edad Gestacional:</div><div class="value"><?php echo vx($ev['edad_gestacional_semanas'],' sem');?></div></div>

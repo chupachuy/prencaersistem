@@ -22,8 +22,36 @@ class UserController extends Controller
             $this->redirect('/dashboard');
         }
 
-        $usuarios = $this->userModel->getAll();
-        $this->render('usuarios/index', ['medicos' => $usuarios]);
+        $roles = $this->rolModel->getAll();
+        $this->render('usuarios/index', ['roles' => $roles]);
+    }
+
+    public function search()
+    {
+        if (!Auth::check()) {
+            http_response_code(401);
+            echo json_encode(['error' => 'No autorizado']);
+            exit;
+        }
+
+        $search = trim($_GET['q'] ?? '');
+        $rolId = ($_GET['rol_id'] ?? '') !== '' ? (int) $_GET['rol_id'] : null;
+        $page = max(1, (int) ($_GET['page'] ?? 1));
+        $perPage = 10;
+
+        $data = $this->userModel->getAllPaginated($search, $rolId, $page, $perPage);
+        $total = $this->userModel->countAll($search, $rolId);
+        $totalPages = (int) ceil($total / $perPage);
+
+        header('Content-Type: application/json');
+        echo json_encode([
+            'data' => $data,
+            'total' => $total,
+            'page' => $page,
+            'perPage' => $perPage,
+            'totalPages' => $totalPages
+        ]);
+        exit;
     }
 
     public function create()
@@ -40,6 +68,10 @@ class UserController extends Controller
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->redirect('/usuarios');
+        }
+
+        if (!Auth::check() || (!Auth::hasRole(Auth::ROLE_SUPERADMIN) && !Auth::hasRole(Auth::ROLE_ADMINISTRADOR))) {
+            $this->redirect('/dashboard');
         }
 
         $data = [

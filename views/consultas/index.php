@@ -54,7 +54,7 @@ require_once __DIR__ . '/../layouts/sidebar.php';
                                                 <a href="<?php echo Url::to('/consultas/show?id=' . $consulta['id_consulta']); ?>" class="btn btn-sm btn-apple btn-apple-secondary" title="Ver">
                                                     <i class="fa-solid fa-eye"></i>
                                                 </a>
-                                                <a href="<?php echo Url::to('/reportes_1er_trimestre/create?paciente_id=' . $consulta['id_paciente']); ?>" class="btn btn-sm btn-apple btn-apple-primary" title="Reporte 1er Trimestre">
+                                                <a href="<?php echo Url::to('/evaluaciones_1er_trimestre/create?paciente_id=' . $consulta['id_paciente']); ?>" class="btn btn-sm btn-apple btn-apple-primary" title="Evaluacion 1er Trimestre">
                                                     <i class="fa-solid fa-baby"></i> 1er Trimestre
                                                 </a>
                                             </div>

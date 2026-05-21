@@ -41,27 +41,18 @@ if ($matchPath === '') $matchPath = '/';
                 <i class="fa-solid fa-list-check"></i> Asignaciones
             </a>
         </li>
+        <?php endif; ?>
+
         <li>
             <a href="<?= Url::to('/informes_exploracion') ?>" class="<?php echo strpos($matchPath, '/informes_exploracion') === 0 ? 'active' : ''; ?>">
                 <i class="fa-solid fa-file-medical-alt"></i> Informes Exploracion
             </a>
         </li>
         <li>
-            <a href="<?= Url::to('/evaluaciones_1er_trimestre') ?>" class="<?php echo strpos($matchPath, '/evaluaciones_1er_trimestre') === 0 ? 'active' : ''; ?>">
-                <i class="fa-solid fa-file-invoice"></i> Evaluaciones 1er Trimestre
+            <a href="<?= Url::to('/evaluaciones') ?>" class="<?php echo strpos($matchPath, '/evaluaciones') === 0 ? 'active' : ''; ?>">
+                <i class="fa-solid fa-file-invoice"></i> Evaluaciones
             </a>
         </li>
-        <li>
-            <a href="<?= Url::to('/evaluaciones_2do_trimestre') ?>" class="<?php echo strpos($matchPath, '/evaluaciones_2do_trimestre') === 0 ? 'active' : ''; ?>">
-                <i class="fa-solid fa-file-invoice"></i> Evaluaciones 2do Trimestre
-            </a>
-        </li>
-        <li>
-            <a href="<?= Url::to('/evaluaciones_3er_trimestre') ?>" class="<?php echo strpos($matchPath, '/evaluaciones_3er_trimestre') === 0 ? 'active' : ''; ?>">
-                <i class="fa-solid fa-file-invoice"></i> Evaluaciones 3er Trimestre
-            </a>
-        </li>
-        <?php endif; ?>
 
         <?php if ($roleId == Auth::ROLE_MEDICO || $roleId == Auth::ROLE_JEFE || $roleId == Auth::ROLE_SUPERADMIN || $roleId == Auth::ROLE_ADMINISTRADOR): ?>
         <li>

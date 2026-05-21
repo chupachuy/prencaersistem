@@ -49,6 +49,10 @@ class PacienteController extends Controller
             $this->redirect('/pacientes/create');
         }
 
+        if (!Auth::check()) {
+            $this->redirect('/login');
+        }
+
         $nombre = trim($_POST['nombre'] ?? '');
         $apellido = trim($_POST['apellido'] ?? '');
         $fecha_nacimiento = trim($_POST['fecha_nacimiento'] ?? '');

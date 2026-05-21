@@ -89,6 +89,10 @@ class User
             $setParts[] = "activo = ?";
             $params[] = $data['activo'];
         }
+        if (isset($data['ruta_firma'])) {
+            $setParts[] = "ruta_firma = ?";
+            $params[] = $data['ruta_firma'];
+        }
 
         if (empty($setParts)) {
             return false;
@@ -107,6 +111,74 @@ class User
         return $stmt->fetchAll();
     }
 
+    public function getAllPaginated($search = '', $rolId = null, $page = 1, $perPage = 10)
+    {
+        $offset = ($page - 1) * $perPage;
+        $conditions = [];
+        $params = [];
+
+        if ($rolId !== null) {
+            $conditions[] = 'u.rol_id = ?';
+            $params[] = $rolId;
+        }
+
+        if (!empty($search)) {
+            $conditions[] = '(u.nombre LIKE ? OR u.apellido LIKE ? OR u.email LIKE ? OR u.especialidad LIKE ?)';
+            $s = '%' . $search . '%';
+            $params[] = $s;
+            $params[] = $s;
+            $params[] = $s;
+            $params[] = $s;
+        }
+
+        $where = !empty($conditions) ? 'WHERE ' . implode(' AND ', $conditions) : '';
+        $params[] = $perPage;
+        $params[] = $offset;
+
+        $stmt = $this->db->prepare("
+            SELECT u.*, r.nombre as rol_nombre
+            FROM usuarios u
+            JOIN roles r ON u.rol_id = r.id
+            $where
+            ORDER BY u.nombre ASC
+            LIMIT ? OFFSET ?
+        ");
+        $stmt->execute($params);
+        return $stmt->fetchAll();
+    }
+
+    public function countAll($search = '', $rolId = null)
+    {
+        $conditions = [];
+        $params = [];
+
+        if ($rolId !== null) {
+            $conditions[] = 'u.rol_id = ?';
+            $params[] = $rolId;
+        }
+
+        if (!empty($search)) {
+            $conditions[] = '(u.nombre LIKE ? OR u.apellido LIKE ? OR u.email LIKE ? OR u.especialidad LIKE ?)';
+            $s = '%' . $search . '%';
+            $params[] = $s;
+            $params[] = $s;
+            $params[] = $s;
+            $params[] = $s;
+        }
+
+        $where = !empty($conditions) ? 'WHERE ' . implode(' AND ', $conditions) : '';
+
+        $stmt = $this->db->prepare("
+            SELECT COUNT(*) as total
+            FROM usuarios u
+            JOIN roles r ON u.rol_id = r.id
+            $where
+        ");
+        $stmt->execute($params);
+        $result = $stmt->fetch();
+        return $result ? (int) $result['total'] : 0;
+    }
+
     public function getAllDoctors()
     {
         $stmt = $this->db->query("SELECT u.*, r.nombre as rol_nombre FROM usuarios u JOIN roles r ON u.rol_id = r.id WHERE u.rol_id = 4");
@@ -117,5 +189,19 @@ class User
     {
         $stmt = $this->db->query("SELECT id, nombre, apellido, especialidad FROM usuarios WHERE rol_id = 4 AND activo = 1 ORDER BY nombre ASC");
         return $stmt->fetchAll();
+    }
+
+    public function updateFirma($id, $rutaFirma)
+    {
+        $stmt = $this->db->prepare("UPDATE usuarios SET ruta_firma = ? WHERE id = ?");
+        return $stmt->execute([$rutaFirma, $id]);
+    }
+
+    public function getFirma($id)
+    {
+        $stmt = $this->db->prepare("SELECT ruta_firma FROM usuarios WHERE id = ?");
+        $stmt->execute([$id]);
+        $row = $stmt->fetch();
+        return $row ? $row['ruta_firma'] : null;
     }
 }
