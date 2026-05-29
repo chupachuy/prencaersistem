@@ -14,7 +14,16 @@ class HistorialClinico
     {
         $stmt = $this->db->prepare("SELECT * FROM historial_clinico WHERE paciente_id = ?");
         $stmt->execute([$pacienteId]);
-        return $stmt->fetch();
+        $row = $stmt->fetch();
+        return $row ?: [
+            'hipertension_cronica' => false,
+            'diabetes' => false,
+            'lupus_les' => false,
+            'sindrome_antifosfolipido_saf' => false,
+            'antecedente_preeclampsia_rciu' => false,
+            'fertilizacion_in_vitro' => false,
+            'antecedente_parto_pretermino' => false
+        ];
     }
 
     public function create($data)

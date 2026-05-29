@@ -124,6 +124,27 @@ class Evaluacion1erTrimestre
         return $stmt->execute([$id]);
     }
 
+    public function getLatestFullData($pacienteId)
+    {
+        $stmt = $this->db->prepare("
+            SELECT e.*,
+                   mf.uta_pi_promedio, mf.muesca_bilateral, mf.papp_a_mom, mf.plgf_mom,
+                   mf.tamizaje_genetico_tipo, mf.tamizaje_genetico_resultado,
+                   em.placenta_posicion, em.longitud_cervical_mm, em.indice_consistencia_cervical_pct,
+                   em.morfologia_uterina_eshre, em.miomas_visibles, em.miomas_figo_tipo,
+                   id1.riesgo_preeclampsia_temprana
+            FROM evaluaciones_1er_trimestre e
+            LEFT JOIN marcadores_fmf mf ON e.id = mf.evaluacion_id
+            LEFT JOIN entorno_materno em ON e.id = em.evaluacion_id
+            LEFT JOIN impresion_diagnostica id1 ON e.id = id1.evaluacion_id
+            WHERE e.paciente_id = ? AND e.activo = 1
+            ORDER BY e.fecha_evaluacion DESC
+            LIMIT 1
+        ");
+        $stmt->execute([$pacienteId]);
+        return $stmt->fetch();
+    }
+
     public function generateCodigoReporte()
     {
         $year = date('Y');

@@ -17,7 +17,11 @@ require_once __DIR__.'/../layouts/sidebar.php';
 <div class="row">
 <div class="col-md-3 mb-3"><label class="form-label">Código</label><input type="text" class="form-control" value="<?php echo htmlspecialchars($codigo_reporte);?>" readonly></div>
 <div class="col-md-3 mb-3"><label for="fecha_evaluacion" class="form-label">Fecha Evaluación *</label><input type="date" class="form-control" name="fecha_evaluacion" value="<?php echo date('Y-m-d');?>" required></div>
-<div class="col-md-3 mb-3"><label for="fecha_estudio" class="form-label">Fecha Estudio</label><input type="date" class="form-control" name="fecha_estudio"></div>
+<div class="col-md-3 mb-3"><label for="fecha_estudio" class="form-label">Fecha Estudio</label><input type="date" class="form-control" name="fecha_estudio" value="<?php echo date('Y-m-d');?>"></div>
+<div class="col-md-3 mb-3"><label for="estudio_solicitado" class="form-label">Estudio Solicitado</label><input type="text" class="form-control" name="estudio_solicitado" placeholder="Ej: Crecimiento Fetal, Evaluación placentaria"></div>
+</div>
+<div class="row">
+<div class="col-md-3 mb-3"><label for="equipo_ultrasonido" class="form-label">Equipo Ultrasonográfico</label><input type="text" class="form-control" name="equipo_ultrasonido" placeholder="Ej: GE Volusson Expert"></div>
 <div class="col-md-3 mb-3"><label for="estado" class="form-label">Estado</label><select class="form-select" name="estado"><?php foreach(['Pendiente','En proceso','Completado','Archivado'] as $o):?><option value="<?php echo $o;?>"><?php echo $o;?></option><?php endforeach;?></select></div>
 </div>
 <div class="row">
@@ -94,16 +98,20 @@ require_once __DIR__.'/../layouts/sidebar.php';
     <!-- Signos Vitales y Estática Fetal -->
 <div class="card mb-4"><div class="card-header"><i class="fa-solid fa-heart-pulse me-2"></i> Signos Vitales y Estática Fetal</div><div class="card-body">
 <div class="row">
-<div class="col-md-3 mb-3"><label for="edad_gestacional_semanas" class="form-label">Edad Gestacional (sem)</label><input type="number" step="0.1" class="form-control" name="edad_gestacional_semanas" placeholder="Ej: 32.0"></div>
-<div class="col-md-3 mb-3"><label for="peso_kg" class="form-label">Peso Materno (kg)</label><input type="number" step="0.01" class="form-control" name="peso_kg" placeholder="Ej: 78.5"></div>
-<div class="col-md-3 mb-3"><label for="ta_sistolica" class="form-label">TA Sistólica</label><input type="number" class="form-control" name="ta_sistolica" placeholder="Ej: 120"></div>
-<div class="col-md-3 mb-3"><label for="ta_diastolica" class="form-label">TA Diastólica</label><input type="number" class="form-control" name="ta_diastolica" placeholder="Ej: 80"></div>
+<div class="col-md-2 mb-3"><label for="feto_unico_vivo" class="form-label">Condición Fetal</label><select class="form-select" name="feto_unico_vivo"><option value="">No evaluado</option><option value="Vivo">Vivo</option><option value="Muerto">Muerto</option></select></div>
+<div class="col-md-2 mb-3"><label for="fcf_lpm" class="form-label">FCF (lpm)<i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="FCF = Frecuencia Cardíaca Fetal en latidos por minuto"></i></label><input type="number" class="form-control" name="fcf_lpm" placeholder="Ej: 140"></div>
+<div class="col-md-2 mb-3"><label for="situacion_fetal" class="form-label">Situación Fetal</label><select class="form-select" name="situacion_fetal"><option value="">No evaluado</option><option value="Longitudinal">Longitudinal</option><option value="Transversa">Transversa</option></select></div>
+<div class="col-md-2 mb-3"><label for="presentacion_fetal" class="form-label">Presentación</label><select class="form-select" name="presentacion_fetal"><option value="">No evaluado</option><option value="Cefalico">Cefálico</option><option value="Pelvico">Pélvico</option></select></div>
+<div class="col-md-4 mb-3"><label for="posicion_fetal" class="form-label">Posición Fetal</label><input type="text" class="form-control" name="posicion_fetal" placeholder="Dorso anterior/posterior, polo cefálico derecho/izquierdo"></div>
 </div>
 <div class="row">
-<div class="col-md-3 mb-3"><label for="fcf_lpm" class="form-label">FCF (lpm)</label><input type="number" class="form-control" name="fcf_lpm" placeholder="Ej: 140"></div>
-<div class="col-md-3 mb-3"><label for="situacion_fetal" class="form-label">Situación Fetal</label><select class="form-select" name="situacion_fetal"><option value="">No evaluado</option><option value="Longitudinal">Longitudinal</option><option value="Transversa">Transversa</option></select></div>
-<div class="col-md-3 mb-3"><label for="presentacion_fetal" class="form-label">Presentación</label><select class="form-select" name="presentacion_fetal"><option value="">No evaluado</option><option value="Cefalico">Cefálico</option><option value="Pelvico">Pélvico</option></select></div>
-<div class="col-md-3 mb-3"><label for="posicion_fetal" class="form-label">Posición Fetal</label><input type="text" class="form-control" name="posicion_fetal" placeholder="Dorso anterior/posterior"></div>
+<div class="col-md-2 mb-3"><label for="edad_gestacional_semanas" class="form-label">EG (sem)<i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="EG = Edad Gestacional en semanas"></i></label><input type="number" step="0.1" class="form-control" name="edad_gestacional_semanas" placeholder="Ej: 32.0"></div>
+<div class="col-md-2 mb-3"><label for="fpp_fum" class="form-label">FPP por FUM<i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="FPP = Fecha Probable de Parto · FUM = Fecha de Última Menstruación"></i></label><input type="date" class="form-control" name="fpp_fum"></div>
+<div class="col-md-2 mb-3"><label for="fpp_usg" class="form-label">FPP por USG<i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="FPP = Fecha Probable de Parto · USG = Ultrasonografía"></i></label><input type="date" class="form-control" name="fpp_usg"></div>
+<div class="col-md-2 mb-3"><label for="peso_kg" class="form-label">Peso Materno (kg)</label><input type="number" step="0.01" class="form-control" name="peso_kg" placeholder="Ej: 78.5"></div>
+<div class="col-md-2 mb-3"><label for="talla_cm" class="form-label">Talla (cm)</label><input type="number" step="0.01" class="form-control" name="talla_cm" placeholder="Ej: 164"></div>
+<div class="col-md-2 mb-3"><label for="ta_sistolica" class="form-label">TA Sistólica</label><input type="number" class="form-control" name="ta_sistolica" placeholder="Ej: 120"></div>
+<div class="col-md-2 mb-3"><label for="ta_diastolica" class="form-label">TA Diastólica</label><input type="number" class="form-control" name="ta_diastolica" placeholder="Ej: 80"></div>
 </div>
 </div></div>
 
@@ -121,26 +129,27 @@ require_once __DIR__.'/../layouts/sidebar.php';
 </div></div>
 
 <!-- Crecimiento y RCIU -->
-<div class="card mb-4"><div class="card-header"><i class="fa-solid fa-weight-scale me-2"></i> Crecimiento y RCIU</div><div class="card-body">
+<div class="card mb-4" id="card-crecimiento"><div class="card-header"><i class="fa-solid fa-weight-scale me-2"></i> Crecimiento y RCIU</div><div class="card-body">
 <div class="row">
 <div class="col-md-3 mb-3"><label for="peso_fetal_estimado_gr" class="form-label">Peso Fetal Estimado (gr)</label><input type="number" class="form-control" name="peso_fetal_estimado_gr" placeholder="Ej: 2100"></div>
 <div class="col-md-3 mb-3"><label for="percentil_ajustado" class="form-label">Percentil Ajustado</label><input type="number" class="form-control" name="percentil_ajustado" placeholder="Ej: 35"></div>
 <div class="col-md-3 mb-3"><label for="clasificacion_crecimiento" class="form-label">Clasificación</label><select class="form-select" name="clasificacion_crecimiento"><option value="">No evaluado</option><option value="Adecuado">Adecuado</option><option value="Mayor a lo esperado">Mayor a lo esperado</option><option value="Menor a lo esperado">Menor a lo esperado</option></select></div>
-<div class="col-md-3 mb-3"><label for="estadio_rciu_barcelona" class="form-label">RCIU Barcelona</label><select class="form-select" name="estadio_rciu_barcelona"><option value="Ninguno">Ninguno</option><option value="Estadio I">Estadio I</option><option value="Estadio II">Estadio II</option><option value="Estadio III">Estadio III</option><option value="Estadio IV">Estadio IV</option></select></div>
+<div class="col-md-3 mb-3"><label for="estadio_rciu_barcelona" class="form-label">RCIU Barcelona<i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="RCIU = Restricción Crecimiento Intrauterino · Estadios I-IV según Clasificación de Barcelona (gravedad creciente)"></i></label><select class="form-select" name="estadio_rciu_barcelona"><option value="Ninguno">Ninguno</option><option value="Estadio I">Estadio I</option><option value="Estadio II">Estadio II</option><option value="Estadio III">Estadio III</option><option value="Estadio IV">Estadio IV</option></select></div>
 </div>
 </div></div>
 
 <!-- Doppler -->
-<div class="card mb-4"><div class="card-header"><i class="fa-solid fa-wave-square me-2"></i> Doppler / Hemodinamia</div><div class="card-body">
+<div class="card mb-4" id="card-doppler"><div class="card-header"><i class="fa-solid fa-wave-square me-2"></i> Doppler / Hemodinamia</div><div class="card-body">
 <div class="row">
-<div class="col-md-3 mb-3"><label for="au_pi" class="form-label">AU PI</label><input type="number" step="0.01" class="form-control" name="au_pi" placeholder="A. Umbilical"></div>
-<div class="col-md-3 mb-3"><label for="au_flujo_diastolico" class="form-label">Flujo Diastólico AU</label><select class="form-select" name="au_flujo_diastolico"><option value="">No evaluado</option><option value="Presente">Presente</option><option value="Ausente">Ausente</option><option value="Reverso">Reverso</option></select></div>
-<div class="col-md-3 mb-3"><label for="acm_pi" class="form-label">ACM PI</label><input type="number" step="0.01" class="form-control" name="acm_pi" placeholder="A. Cerebral Media"></div>
-<div class="col-md-3 mb-3"><label for="dv_onda_a" class="form-label">DV Onda A</label><select class="form-select" name="dv_onda_a"><option value="">No evaluado</option><option value="Positiva">Positiva</option><option value="Ausente">Ausente</option><option value="Reversa">Reversa</option></select></div>
+<div class="col-md-3 mb-3"><label for="au_pi" class="form-label">AU PI<i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="AU = Arteria Umbilical · PI = Índice de Pulsatilidad; mide resistencia en el cordón umbilical"></i></label><input type="number" step="0.01" class="form-control" name="au_pi" placeholder="A. Umbilical"></div>
+<div class="col-md-3 mb-3"><label for="au_flujo_diastolico" class="form-label">Flujo Diastólico AU<i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="AU = Arteria Umbilical; flujo ausente o reverso indica compromiso fetal severo"></i></label><select class="form-select" name="au_flujo_diastolico"><option value="">No evaluado</option><option value="Presente">Presente</option><option value="Ausente">Ausente</option><option value="Reverso">Reverso</option></select></div>
+<div class="col-md-3 mb-3"><label for="acm_pi" class="form-label">ACM PI<i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="ACM = Arteria Cerebral Media · PI = Índice de Pulsatilidad; disminuido indica redistribución hemodiniámica fetal"></i></label><input type="number" step="0.01" class="form-control" name="acm_pi" placeholder="A. Cerebral Media"></div>
+<div class="col-md-3 mb-3"><label for="dv_onda_a" class="form-label">DV Onda A<i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="DV = Ductus Venoso · Onda A refleja función cardíaca fetal; reversa indica fallo cardíaco"></i></label><select class="form-select" name="dv_onda_a"><option value="">No evaluado</option><option value="Positiva">Positiva</option><option value="Ausente">Ausente</option><option value="Reversa">Reversa</option></select></div>
 </div>
 <div class="row">
-<div class="col-md-3 mb-3"><label for="uta_pi_promedio" class="form-label">UTA PI Promedio</label><input type="number" step="0.01" class="form-control" name="uta_pi_promedio" placeholder="A. Uterinas"></div>
-<div class="col-md-3 mb-3"><label for="ratio_cu_icp" class="form-label">Ratio CU/ICP</label><input type="number" step="0.01" class="form-control" name="ratio_cu_icp" placeholder="Cerebro-placentario"></div>
+<div class="col-md-3 mb-3"><label for="uta_pi_promedio" class="form-label">UTA PI Promedio<i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="UTA = Arterias Uterinas · PI = Índice de Pulsatilidad; elevado indica resistencia placentaria alta"></i></label><input type="number" step="0.01" class="form-control" name="uta_pi_promedio" placeholder="A. Uterinas"></div>
+    <div class="col-md-3 mb-3"><label for="ratio_cu_icp" class="form-label">Ratio CU/ICP<i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="CU = Cerebro-Umbilical (AU/ACM PI); ICP = Índice Cerebro-Placentario; &lt;1 indica redistribución"></i></label><input type="number" step="0.01" class="form-control" name="ratio_cu_icp" placeholder="Cerebro-placentario"></div>
+<div class="col-md-3 mb-3"><label for="vena_umbilical" class="form-label">Vena Umbilical</label><select class="form-select" name="vena_umbilical"><option value="">No evaluado</option><option value="Normal">Normal</option><option value="Pulsatil">Pulsátil</option></select></div>
 <div class="col-md-3 mb-3"><label class="form-label">&nbsp;</label><div class="form-check mt-2"><input class="form-check-input" type="checkbox" name="alteracion_doppler_detectada"><label class="form-check-label">Alteración Doppler Detectada</label></div></div>
 </div>
 </div></div>
@@ -156,36 +165,65 @@ require_once __DIR__.'/../layouts/sidebar.php';
 <div class="row"><div class="col-md-4 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="estructuras_normales" checked><label class="form-check-label">Estructuras Generales Normales</label></div></div></div>
 </div></div>
 
-<!-- Evaluación Placentaria -->
-<div class="card mb-4"><div class="card-header"><i class="fa-solid fa-uterus me-2"></i> Evaluación Placentaria (PAS)</div><div class="card-body">
+<!-- Evaluación Placentaria AJOG 2025 / FIGO 2023 -->
+<div class="card mb-4"><div class="card-header"><i class="fa-solid fa-uterus me-2"></i> Evaluación Placentaria (AJOG 2025 / FIGO 2023)</div><div class="card-body">
+<!-- Fila 1 -->
 <div class="row">
-<div class="col-md-4 mb-3"><label for="distancia_oci_mm" class="form-label">Distancia OCI (mm)</label><input type="number" step="0.01" class="form-control" name="distancia_oci_mm" placeholder="Ej: 30.0"></div>
-<div class="col-md-4 mb-3"><label for="grosor_placentario_mm" class="form-label">Grosor Placentario (mm)</label><input type="number" class="form-control" name="grosor_placentario_mm" placeholder="Ej: 35"></div>
-<div class="col-md-4 mb-3"><label for="grado_madurez" class="form-label">Grado Madurez</label><select class="form-select" name="grado_madurez"><option value="">No evaluado</option><option value="Grado 0-1">Grado 0-1</option><option value="Grado 2">Grado 2</option><option value="Grado 3">Grado 3</option></select></div>
+<div class="col-md-4 mb-3"><label for="localizacion_placentaria" class="form-label">Localización</label><select class="form-select" name="localizacion_placentaria"><option value="">No evaluada</option><option value="Anterior">Anterior</option><option value="Posterior">Posterior</option><option value="Fundica">Fúndica</option><option value="Lateral Derecha">Lateral Derecha</option><option value="Lateral Izquierda">Lateral Izquierda</option></select></div>
+<div class="col-md-4 mb-3"><label for="distancia_oci_mm" class="form-label">Distancia OCI (mm)<i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="OCI = Orificio Cervical Interno; &ge;20mm = normal, &lt;20mm = placenta baja/previa"></i></label><input type="number" step="0.01" class="form-control" name="distancia_oci_mm" placeholder="≥20mm = normal"></div>
+<div class="col-md-4 mb-3"><label for="grado_madurez" class="form-label">Grado de Madurez</label><select class="form-select" name="grado_madurez"><option value="">No evaluado</option><option value="Grado 0-1">Grado 0-1 (normal ≤34 sem)</option><option value="Grado 2">Grado 2</option><option value="Grado 3">Grado 3</option></select></div>
 </div>
+<!-- Fila 2 -->
 <div class="row">
-<div class="col-md-4 mb-3"><label for="lagunas_vasculares" class="form-label">Lagunas Vasculares</label><select class="form-select" name="lagunas_vasculares"><option value="Ausentes/minimas">Ausentes/mínimas</option><option value="Si">Sí</option><option value="Extensas">Extensas</option></select></div>
-<div class="col-md-4 mb-3"><label for="interfase_miometrial" class="form-label">Interfase Miometrial</label><select class="form-select" name="interfase_miometrial"><option value="Intacta">Intacta</option><option value="Adelgazada">Adelgazada</option><option value="Discontinua">Discontinua</option></select></div>
-<div class="col-md-4 mb-3"><label for="acretismo_figo_pas" class="form-label">Acretismo FIGO (PAS)</label><select class="form-select" name="acretismo_figo_pas"><option value="Grado 0">Grado 0 - Normal</option><option value="Grado 1">Grado 1</option><option value="Grado 2">Grado 2</option><option value="Grado 3">Grado 3</option></select></div>
+<div class="col-md-3 mb-3"><label for="grosor_placentario_mm" class="form-label">Grosor Placentario (mm)</label><input type="number" class="form-control" name="grosor_placentario_mm" placeholder="25-50 mm"></div>
+<div class="col-md-3 mb-3"><label for="ecogenicidad" class="form-label">Ecogenicidad</label><select class="form-select" name="ecogenicidad"><option value="">No evaluada</option><option value="Homogenea">Homogénea</option><option value="Heterogenea">Heterogénea</option></select></div>
+<div class="col-md-3 mb-3"><label for="insercion_cordon" class="form-label">Inserción del Cordón</label><select class="form-select" name="insercion_cordon"><option value="">No evaluada</option><option value="Central">Central</option><option value="Paracentral">Paracentral</option><option value="Marginal">Marginal</option><option value="Velamentosa">Velamentosa</option></select></div>
+<div class="col-md-3 mb-3"><label for="numero_vasos_umbilicales" class="form-label">N° Vasos Umbilicales</label><select class="form-select" name="numero_vasos_umbilicales"><option value="">No evaluado</option><option value="3">3 vasos</option><option value="2">2 vasos</option></select></div>
 </div>
-        <div class="row"><div class="col-md-4 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="vasos_puente"><label class="form-check-label">Vasos Puente</label></div></div></div>
-        <hr><h6 class="text-muted">Miomas Uterinos y Morfología</h6>
-        <div class="row">
-            <div class="col-md-4 mb-3"><label for="morfologia_uterina_eshre" class="form-label">Morfología Uterina <?php if(!empty($data1er['morfologia_uterina_eshre'])): ?><small class="text-muted">| 1T: <?php echo $data1er['morfologia_uterina_eshre']; ?></small><?php endif; ?></label><select class="form-select" name="morfologia_uterina_eshre"><option value="">No evaluado</option><?php foreach(['U0','U1','U2','U3','U4','U5','U6'] as $o): ?><option><?php echo $o; ?></option><?php endforeach; ?></select></div>
-            <div class="col-md-4 mb-3"><label class="form-label">Miomas <?php if(!empty($data1er['miomas_visibles'])): ?><small class="text-muted">| 1T: FIGO <?php echo $data1er['miomas_figo_tipo']??'—'; ?></small><?php endif; ?></label><div class="form-check"><input class="form-check-input" type="checkbox" name="miomas_visibles"><label class="form-check-label">Miomas Visibles</label></div></div>
-            <div class="col-md-4 mb-3"><label for="miomas_figo_tipo" class="form-label">FIGO Tipo</label><select class="form-select" name="miomas_figo_tipo"><option value="">No aplica</option><?php for($i=0;$i<=8;$i++): ?><option value="<?php echo $i; ?>">Tipo <?php echo $i; ?></option><?php endfor; ?></select></div>
-            <div class="col-md-4 mb-3"><label for="miomas_dimensiones_mm" class="form-label">Dimensiones (mm)</label><input type="text" class="form-control" name="miomas_dimensiones_mm" placeholder="Ej: 30x25"></div>
-            <div class="col-md-4 mb-3"><label class="form-label">&nbsp;</label><div class="form-check mt-2"><input class="form-check-input" type="checkbox" name="miomas_obstruyen_canal"><label class="form-check-label">Obstruyen Canal de Parto</label></div></div>
-        </div>
+<!-- Fila 3: Lagunas + Interfase + Zona retroplacentaria -->
+<div class="row">
+<div class="col-md-4 mb-3"><label for="lagunas_vasculares" class="form-label">Lagunas Vasculares</label><select class="form-select" name="lagunas_vasculares"><option value="Ausentes/minimas">Ausentes / mínimas (Grado 0-1 FIGO)</option><option value="Si">Sí</option><option value="Extensas">Extensas</option></select></div>
+<div class="col-md-4 mb-3"><label for="interfase_miometrial" class="form-label">Interfase Miometrio-Placentaria</label><select class="form-select" name="interfase_miometrial"><option value="Intacta">Intacta</option><option value="Adelgazada">Adelgazada</option><option value="Discontinua">Discontinua</option></select></div>
+<div class="col-md-4 mb-3"><label for="zona_retroplacentaria" class="form-label">Zona Retroplacentaria</label><select class="form-select" name="zona_retroplacentaria"><option value="">No evaluada</option><option value="Presente">Presente (hipoecoica)</option><option value="Ausente">Ausente</option></select></div>
+</div>
+<!-- Fila 4: Checkboxes -->
+<div class="row">
+<div class="col-md-3 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="vasos_puente"><label class="form-check-label">Vasos Puente Miometriales</label></div></div>
+<div class="col-md-3 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="protrusion_placentaria"><label class="form-check-label">Protrusión Placentaria</label></div></div>
+<div class="col-md-6 mb-3"><label for="vascularizacion_anomala_doppler" class="form-label">Vascularización Anómala (Color Doppler)</label><select class="form-select" name="vascularizacion_anomala_doppler"><option value="">No evaluada</option><option value="Normal">Normal — flujo periférico fino</option><option value="Turbulento">Turbulento</option><option value="Extendido a vejiga">Extendido a vejiga</option></select></div>
+</div>
+<!-- Fila 5: Calcificaciones + Acretismo -->
+<div class="row">
+<div class="col-md-4 mb-3"><label for="calcificaciones" class="form-label">Calcificaciones</label><select class="form-select" name="calcificaciones"><option value="">No evaluadas</option><option value="Ausentes">Ausentes</option><option value="Moderadas">Moderadas (leves 3er trim)</option><option value="Extensas">Extensas</option></select></div>
+<div class="col-md-4 mb-3"><label for="acretismo_figo_pas" class="form-label">Acretismo FIGO (PAS)<i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="PAS = Placenta Acreta Spectrum · FIGO = clasificación internacional de invasividad placentaria"></i></label><select class="form-select" name="acretismo_figo_pas"><option value="Grado 0">Grado 0 — Normal</option><option value="Grado 1">Grado 1 — Parcial</option><option value="Grado 2">Grado 2 — Invasión</option><option value="Grado 3">Grado 3 — Percretismo</option></select></div>
+</div>
+<!-- Doppler Placentario 3D -->
+<hr><h6 class="text-muted">Índice de Perfusión Placentaria (Doppler 3D)</h6>
+<div class="row">
+<div class="col-md-4 mb-3"><label for="perfusion_vi" class="form-label">VI (Vascularization Index) %<i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="VI = proporción de píxeles vasculares en la placenta (Doppler 3D)"></i></label><input type="number" step="0.01" class="form-control" name="perfusion_vi" placeholder="20-40%"></div>
+<div class="col-md-4 mb-3"><label for="perfusion_fi" class="form-label">FI (Flow Index) %<i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="FI = intensidad media del flujo en los vasos placentarios (Doppler 3D)"></i></label><input type="number" step="0.01" class="form-control" name="perfusion_fi" placeholder="30-50%"></div>
+<div class="col-md-4 mb-3"><label for="perfusion_vfi" class="form-label">VFI (Vascularization-Flow Index) %<i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="VFI = combinación de VI y FI; refleja la perfusión global placentaria en 3D"></i></label><input type="number" step="0.01" class="form-control" name="perfusion_vfi" placeholder="5-15%"></div>
+</div>
+<!-- Miomas Uterinos -->
+<hr><h6 class="text-muted">Miomas Uterinos y Morfología</h6>
+<div class="row">
+<div class="col-md-4 mb-3"><label for="morfologia_uterina_eshre" class="form-label">Morfología Uterina <?php if(!empty($data1er['morfologia_uterina_eshre'])): ?><small class="text-muted">| 1T: <?php echo $data1er['morfologia_uterina_eshre']; ?></small><?php endif; ?></label><select class="form-select" name="morfologia_uterina_eshre"><option value="">No evaluado</option><?php foreach(['U0','U1','U2','U3','U4','U5','U6'] as $o): ?><option><?php echo $o; ?></option><?php endforeach; ?></select></div>
+<div class="col-md-4 mb-3"><label class="form-label">Miomas <?php if(!empty($data1er['miomas_visibles'])): ?><small class="text-muted">| 1T: FIGO <?php echo $data1er['miomas_figo_tipo']??'—'; ?></small><?php endif; ?></label><div class="form-check"><input class="form-check-input" type="checkbox" name="miomas_visibles"><label class="form-check-label">Miomas Visibles</label></div></div>
+<div class="col-md-4 mb-3"><label for="miomas_figo_tipo" class="form-label">FIGO Tipo</label><select class="form-select" name="miomas_figo_tipo"><option value="">No aplica</option><?php for($i=0;$i<=8;$i++): ?><option value="<?php echo $i; ?>">Tipo <?php echo $i; ?></option><?php endfor; ?></select></div>
+<div class="col-md-4 mb-3"><label for="miomas_dimensiones_mm" class="form-label">Dimensiones (mm)</label><input type="text" class="form-control" name="miomas_dimensiones_mm" placeholder="Ej: 30x25"></div>
+<div class="col-md-4 mb-3"><label class="form-label">&nbsp;</label><div class="form-check mt-2"><input class="form-check-input" type="checkbox" name="miomas_obstruyen_canal"><label class="form-check-label">Obstruyen Canal de Parto</label></div></div>
+</div>
+<!-- Observaciones -->
+<div class="row"><div class="col-12 mb-3"><label for="observaciones" class="form-label">Observaciones</label><textarea class="form-control" name="observaciones" rows="3" placeholder="Hallazgos adicionales, notas médicas..."></textarea></div></div>
 </div></div>
 
 <!-- Historial Clínico -->
 <div class="card mb-4"><div class="card-header"><i class="fa-solid fa-notes-medical me-2"></i> Historial Clínico</div><div class="card-body"><div class="row">
 <div class="col-md-4 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="hipertension_cronica" <?php echo (!empty($historial)&&$historial['hipertension_cronica'])?'checked':'';?>><label class="form-check-label">Hipertensión Crónica</label></div></div>
 <div class="col-md-4 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="diabetes" <?php echo (!empty($historial)&&$historial['diabetes'])?'checked':'';?>><label class="form-check-label">Diabetes</label></div></div>
-<div class="col-md-4 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="lupus_les" <?php echo (!empty($historial)&&$historial['lupus_les'])?'checked':'';?>><label class="form-check-label">Lupus / LES</label></div></div>
-<div class="col-md-4 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="sindrome_antifosfolipido_saf" <?php echo (!empty($historial)&&$historial['sindrome_antifosfolipido_saf'])?'checked':'';?>><label class="form-check-label">Síndrome Antifosfolípido</label></div></div>
-<div class="col-md-4 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="antecedente_preeclampsia_rciu" <?php echo (!empty($historial)&&$historial['antecedente_preeclampsia_rciu'])?'checked':'';?>><label class="form-check-label">Ant. Preeclampsia/RCIU</label></div></div>
+<div class="col-md-4 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="lupus_les" <?php echo (!empty($historial)&&$historial['lupus_les'])?'checked':'';?>><label class="form-check-label">Lupus / LES <i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="LES = Lupus Eritematoso Sistémico, enfermedad autoinmune"></i></label></div></div>
+<div class="col-md-4 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="sindrome_antifosfolipido_saf" <?php echo (!empty($historial)&&$historial['sindrome_antifosfolipido_saf'])?'checked':'';?>><label class="form-check-label">Síndrome Antifosfolípido <i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="SAF = trastorno autoinmune que favorece trombosis en el embarazo"></i></label></div></div>
+<div class="col-md-4 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="antecedente_preeclampsia_rciu" <?php echo (!empty($historial)&&$historial['antecedente_preeclampsia_rciu'])?'checked':'';?>><label class="form-check-label">Ant. Preeclampsia/RCIU <i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="RCIU = Restricción del Crecimiento Intrauterino"></i></label></div></div>
 <div class="col-md-4 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="fertilizacion_in_vitro" <?php echo (!empty($historial)&&$historial['fertilizacion_in_vitro'])?'checked':'';?>><label class="form-check-label">Fertilización In Vitro</label></div></div>
 <div class="col-md-4 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="antecedente_parto_pretermino" <?php echo (!empty($historial)&&$historial['antecedente_parto_pretermino'])?'checked':'';?>><label class="form-check-label">Ant. Parto Pretérmino</label></div></div>
 </div></div></div>
@@ -194,4 +232,22 @@ require_once __DIR__.'/../layouts/sidebar.php';
 <a href="<?php echo Url::to('/evaluaciones_3er_trimestre');?>" class="btn btn-apple btn-apple-secondary">Cancelar</a>
 <button type="submit" class="btn btn-apple btn-apple-primary btn-lg"><i class="fa-solid fa-save"></i> Guardar Evaluación</button></div>
 </form>
+<script>
+(function(){
+    var sel = document.querySelector('[name="feto_unico_vivo"]');
+    var cardCrec = document.getElementById('card-crecimiento');
+    var cardDop = document.getElementById('card-doppler');
+    var fcf = document.querySelector('[name="fcf_lpm"]');
+    var movFet = document.querySelector('[name="movimientos_fetales"]');
+    function toggle() {
+        var muerto = sel.value === 'Muerto';
+        cardCrec.style.display = muerto ? 'none' : '';
+        cardDop.style.display = muerto ? 'none' : '';
+        fcf.disabled = muerto;
+        if (muerto) { fcf.value = ''; if (movFet) movFet.value = 'Disminuidos'; }
+    }
+    sel.addEventListener('change', toggle);
+    toggle();
+})();
+</script>
 <?php require_once __DIR__.'/../layouts/footer.php';?>

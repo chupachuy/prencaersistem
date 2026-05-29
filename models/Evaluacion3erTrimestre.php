@@ -56,18 +56,25 @@ class Evaluacion3erTrimestre
         $stmt = $this->db->prepare("
             INSERT INTO evaluaciones_3er_trimestre (
                 paciente_id, medico_id, codigo_reporte, fecha_evaluacion, fecha_estudio,
-                edad_gestacional_semanas, peso_kg, ta_sistolica, ta_diastolica,
-                situacion_fetal, presentacion_fetal, posicion_fetal, fcf_lpm,
+                estudio_solicitado, edad_gestacional_semanas, fpp_fum, fpp_usg,
+                peso_kg, talla_cm, ta_sistolica, ta_diastolica,
+                situacion_fetal, presentacion_fetal, posicion_fetal, feto_unico_vivo,
+                fcf_lpm, equipo_ultrasonido, observaciones,
                 estado, created_by, updated_by
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ");
         $stmt->execute([
             $data['paciente_id'], $data['medico_id'], $data['codigo_reporte'],
             $data['fecha_evaluacion'], $data['fecha_estudio'] ?? null,
-            $data['edad_gestacional_semanas'] ?? null, $data['peso_kg'] ?? null,
+            $data['estudio_solicitado'] ?? null,
+            $data['edad_gestacional_semanas'] ?? null,
+            $data['fpp_fum'] ?? null, $data['fpp_usg'] ?? null,
+            $data['peso_kg'] ?? null, $data['talla_cm'] ?? null,
             $data['ta_sistolica'] ?? null, $data['ta_diastolica'] ?? null,
             $data['situacion_fetal'] ?? null, $data['presentacion_fetal'] ?? null,
-            $data['posicion_fetal'] ?? null, $data['fcf_lpm'] ?? null,
+            $data['posicion_fetal'] ?? null, $data['feto_unico_vivo'] ?? null,
+            $data['fcf_lpm'] ?? null,
+            $data['equipo_ultrasonido'] ?? null, $data['observaciones'] ?? null,
             $data['estado'] ?? 'Pendiente', $data['created_by'], $data['updated_by']
         ]);
         return $this->db->lastInsertId();
@@ -77,18 +84,28 @@ class Evaluacion3erTrimestre
     {
         $stmt = $this->db->prepare("
             UPDATE evaluaciones_3er_trimestre SET
-                paciente_id = ?, medico_id = ?, fecha_estudio = ?,
-                edad_gestacional_semanas = ?, peso_kg = ?, ta_sistolica = ?, ta_diastolica = ?,
-                situacion_fetal = ?, presentacion_fetal = ?, posicion_fetal = ?, fcf_lpm = ?,
+                paciente_id = ?, medico_id = ?,
+                fecha_estudio = ?, estudio_solicitado = ?,
+                edad_gestacional_semanas = ?, fpp_fum = ?, fpp_usg = ?,
+                peso_kg = ?, talla_cm = ?,
+                ta_sistolica = ?, ta_diastolica = ?,
+                situacion_fetal = ?, presentacion_fetal = ?, posicion_fetal = ?,
+                feto_unico_vivo = ?, fcf_lpm = ?,
+                equipo_ultrasonido = ?, observaciones = ?,
                 estado = ?, updated_by = ?
             WHERE id = ?
         ");
         return $stmt->execute([
-            $data['paciente_id'], $data['medico_id'], $data['fecha_estudio'] ?? null,
-            $data['edad_gestacional_semanas'] ?? null, $data['peso_kg'] ?? null,
+            $data['paciente_id'], $data['medico_id'],
+            $data['fecha_estudio'] ?? null, $data['estudio_solicitado'] ?? null,
+            $data['edad_gestacional_semanas'] ?? null,
+            $data['fpp_fum'] ?? null, $data['fpp_usg'] ?? null,
+            $data['peso_kg'] ?? null, $data['talla_cm'] ?? null,
             $data['ta_sistolica'] ?? null, $data['ta_diastolica'] ?? null,
             $data['situacion_fetal'] ?? null, $data['presentacion_fetal'] ?? null,
-            $data['posicion_fetal'] ?? null, $data['fcf_lpm'] ?? null,
+            $data['posicion_fetal'] ?? null, $data['feto_unico_vivo'] ?? null,
+            $data['fcf_lpm'] ?? null,
+            $data['equipo_ultrasonido'] ?? null, $data['observaciones'] ?? null,
             $data['estado'] ?? 'Pendiente', $data['updated_by'], $data['id']
         ]);
     }
