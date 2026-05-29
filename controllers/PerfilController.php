@@ -22,6 +22,10 @@ class PerfilController extends Controller
     {
         if (!Auth::check()) { $this->redirect('/login'); }
 
+        header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+        header('Cache-Control: post-check=0, pre-check=0', false);
+        header('Pragma: no-cache');
+
         $userModel = new User();
         $user = $userModel->findById(Auth::id());
 
@@ -65,9 +69,27 @@ class PerfilController extends Controller
         }
 
         $data['id'] = $uid;
-        $userModel->update($data);
 
-        Session::set('success', 'Perfil actualizado correctamente.');
+        try {
+            $result = $userModel->update($data);
+
+            if ($result === false) {
+                Session::set('error', 'No se pudo actualizar el perfil. Verifica los datos e intenta de nuevo.');
+                $this->redirect('/perfil/edit');
+                return;
+            }
+
+            Session::set('success', 'Perfil actualizado correctamente.');
+        } catch (\PDOException $e) {
+            error_log('Error al actualizar perfil: ' . $e->getMessage());
+            if (str_contains($e->getMessage(), 'Duplicate entry') || str_contains($e->getMessage(), 'email')) {
+                Session::set('error', 'El correo electrónico ya está registrado por otro usuario.');
+            } else {
+                Session::set('error', 'Error al actualizar el perfil: ' . $e->getMessage());
+            }
+        }
+
+        session_write_close();
         $this->redirect('/perfil/edit');
     }
 }

@@ -157,10 +157,8 @@ require_once __DIR__ . '/../layouts/sidebar.php';
     });
 
     document.getElementById('formPerfil').addEventListener('submit', function() {
-        if (!hasDrawn && !accionInput.value) {
-            <?php if (!empty($user['ruta_firma'])): ?>
+        if (hasDrawn) {
             dataInput.value = canvas.toDataURL('image/png');
-            <?php endif; ?>
         }
     });
 })();

@@ -52,6 +52,19 @@ require_once __DIR__ . '/../layouts/sidebar.php';
                             <label for="password" class="form-label">Nueva Contraseña</label>
                             <input type="password" class="form-control" id="password" name="password" placeholder="Dejar en blanco para no cambiar">
                         </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="reset_password" class="form-label">Resetear Contraseña</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="reset_password" readonly placeholder="Contraseña generada">
+                                <button type="button" class="btn btn-apple btn-apple-secondary" onclick="generarPassword()" title="Generar contraseña aleatoria">
+                                    <i class="fa-solid fa-dice"></i>
+                                </button>
+                                <button type="button" class="btn btn-apple btn-apple-primary" onclick="copiarPassword()" title="Copiar y usar esta contraseña">
+                                    <i class="fa-solid fa-copy"></i> Usar
+                                </button>
+                            </div>
+                            <small style="color: var(--apple-gray); font-size: 12px;">Genera una contraseña aleatoria y cópiala al campo de contraseña.</small>
+                        </div>
                     </div>
 
                     <div class="card-header" style="margin: 20px -20px 20px -20px; background: transparent; border-top: 1px solid rgba(0,0,0,0.04);">
@@ -128,5 +141,29 @@ require_once __DIR__ . '/../layouts/sidebar.php';
         </div>
     </div>
 </div>
+
+<script>
+function generarPassword() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%&';
+    let pass = '';
+    for (let i = 0; i < 12; i++) {
+        pass += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    document.getElementById('reset_password').value = pass;
+}
+
+function copiarPassword() {
+    const pass = document.getElementById('reset_password').value;
+    if (!pass) {
+        alert('Primero genera una contraseña.');
+        return;
+    }
+    document.getElementById('password').value = pass;
+    document.getElementById('password').type = 'text';
+    setTimeout(function() {
+        document.getElementById('password').type = 'password';
+    }, 3000);
+}
+</script>
 
 <?php require_once __DIR__ . '/../layouts/footer.php'; ?>

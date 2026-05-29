@@ -195,7 +195,7 @@ require_once __DIR__ . '/../layouts/sidebar.php';
     </div>
 
     <!-- 5. Anatomía Fetal -->
-    <div class="card mb-4">
+    <div class="card mb-4" id="card-anatomia">
         <div class="card-header">
             <i class="fa-solid fa-baby me-2"></i> Anatomía Fetal
         </div>
@@ -254,7 +254,7 @@ require_once __DIR__ . '/../layouts/sidebar.php';
     </div>
 
     <!-- 6. Marcadores FMF -->
-    <div class="card mb-4">
+    <div class="card mb-4" id="card-marcadores">
         <div class="card-header">
             <i class="fa-solid fa-ruler me-2"></i> Marcadores FMF (Fetal Medicine Foundation)
         </div>
@@ -406,7 +406,7 @@ require_once __DIR__ . '/../layouts/sidebar.php';
     </div>
 
     <!-- 8. Impresión Diagnóstica -->
-    <div class="card mb-4">
+    <div class="card mb-4" id="card-riesgos">
         <div class="card-header">
             <i class="fa-solid fa-clipboard-check me-2"></i> Impresión Diagnóstica (Semáforos de Riesgo)
         </div>
@@ -489,6 +489,59 @@ document.addEventListener("DOMContentLoaded", function () {
     const fechaEvalInput = document.getElementById("fecha_evaluacion");
     const egInput = document.getElementById("edad_gestacional_semanas");
 
+    const estadoFetoSelect = document.getElementById("estado_feto");
+    const fcfInput = document.getElementById("fcf_lpm");
+    const cardAnatomia = document.getElementById("card-anatomia");
+    const cardMarcadores = document.getElementById("card-marcadores");
+    const cardRiesgos = document.getElementById("card-riesgos");
+
+    // Crear banner de alerta dinámico
+    const alertDiv = document.createElement("div");
+    alertDiv.className = "alert alert-warning d-none mt-3 border-start border-warning border-4 shadow-sm";
+    alertDiv.innerHTML = `
+        <div class="d-flex align-items-center gap-3">
+            <i class="fa-solid fa-circle-exclamation fs-3 text-warning"></i>
+            <div>
+                <h5 class="alert-heading mb-1 fw-bold">Óbito Fetal Detectado</h5>
+                <p class="mb-0 text-secondary">El estado del feto ha sido configurado como <strong>Muerto</strong>. Las secciones de anatomía fetal avanzada, marcadores genéticos FMF y semáforos de riesgo han sido omitidos para este reporte. La FCF ha sido fijada en 0.</p>
+            </div>
+        </div>
+    `;
+
+    if (estadoFetoSelect) {
+        const obsCardBody = estadoFetoSelect.closest(".card-body");
+        if (obsCardBody) {
+            obsCardBody.appendChild(alertDiv);
+        }
+    }
+
+    function evaluarEstadoFeto() {
+        if (!estadoFetoSelect) return;
+        
+        const estado = estadoFetoSelect.value;
+        if (estado === "Muerto") {
+            if (fcfInput) {
+                fcfInput.value = "0";
+                fcfInput.setAttribute("readonly", true);
+            }
+            if (cardAnatomia) cardAnatomia.classList.add("d-none");
+            if (cardMarcadores) cardMarcadores.classList.add("d-none");
+            if (cardRiesgos) cardRiesgos.classList.add("d-none");
+            alertDiv.classList.remove("d-none");
+        } else {
+            if (fcfInput) {
+                fcfInput.removeAttribute("readonly");
+                if (fcfInput.value === "0") {
+                    fcfInput.value = "";
+                }
+            }
+            if (cardAnatomia) cardAnatomia.classList.remove("d-none");
+            if (cardMarcadores) cardMarcadores.classList.remove("d-none");
+            if (cardRiesgos) cardRiesgos.classList.remove("d-none");
+            alertDiv.classList.add("d-none");
+        }
+    }
+
     function calcularEdadGestacional() {
         if (!fumInput || !fechaEvalInput || !egInput) return;
         
@@ -520,9 +573,13 @@ document.addEventListener("DOMContentLoaded", function () {
     if (fechaEvalInput) {
         fechaEvalInput.addEventListener("change", calcularEdadGestacional);
     }
+    if (estadoFetoSelect) {
+        estadoFetoSelect.addEventListener("change", evaluarEstadoFeto);
+    }
     
-    // Calcular inicialmente por si hay valores precargados
+    // Ejecutar cálculos e inspecciones iniciales
     calcularEdadGestacional();
+    evaluarEstadoFeto();
 });
 </script>
 
