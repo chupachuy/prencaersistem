@@ -10,14 +10,20 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        // Sidebar toggle
         const sidebarToggle = document.getElementById("sidebarToggle");
         const sidebar = document.getElementById("sidebar");
-        
         if(sidebarToggle) {
             sidebarToggle.addEventListener("click", function () {
                 sidebar.classList.toggle("show");
             });
         }
+
+        // Inicializar tooltips de Bootstrap (iconos de ayuda en formularios)
+        const tooltipEls = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+        tooltipEls.forEach(function(el) {
+            new bootstrap.Tooltip(el);
+        });
     });
 </script>
 

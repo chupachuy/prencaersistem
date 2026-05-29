@@ -20,6 +20,8 @@ function gn($v,$t='Normal'){return$v?'<span class="badge bg-success">'.$t.'</spa
 <?php $r=function($l,$v){echo'<div class="row mb-2"><div class="col-md-4 fw-bold">'.$l.':</div><div class="col-md-8">'.$v.'</div></div>';};
 $r('Código',htmlspecialchars($ev['codigo_reporte']));$r('Fecha Evaluación',date('d/m/Y',strtotime($ev['fecha_evaluacion'])));
 $r('Fecha Estudio',$ev['fecha_estudio']?date('d/m/Y',strtotime($ev['fecha_estudio'])):'<span class="text-muted">—</span>');
+$r('Estudio Solicitado',sv3($ev['estudio_solicitado']));
+$r('Equipo Ultrasonográfico',sv3($ev['equipo_ultrasonido']));
 $r('Paciente',htmlspecialchars($ev['paciente_nombre'].' '.$ev['paciente_apellido']));
 $r('Médico',htmlspecialchars($ev['medico_nombre'].' '.$ev['medico_apellido']));?>
 </div></div>
@@ -63,8 +65,12 @@ $r('Médico',htmlspecialchars($ev['medico_nombre'].' '.$ev['medico_apellido']));
 <?php endif; ?>
 
 <div class="card mb-4"><div class="card-header"><i class="fa-solid fa-heart-pulse me-2"></i> Signos Vitales y Estática Fetal</div><div class="card-body">
-<?php $r('Edad Gestacional',sv3($ev['edad_gestacional_semanas'],' sem'));$r('Peso Materno',sv3($ev['peso_kg'],' kg'));
-$r('TA Sistólica',sv3($ev['ta_sistolica'],' mmHg'));$r('TA Diastólica',sv3($ev['ta_diastolica'],' mmHg'));
+<?php $r('Condición Fetal',sv3($ev['feto_unico_vivo']));
+$r('Edad Gestacional',sv3($ev['edad_gestacional_semanas'],' sem'));
+$r('FPP por FUM',$ev['fpp_fum']?date('d/m/Y',strtotime($ev['fpp_fum'])):'<span class="text-muted">—</span>');
+$r('FPP por USG',$ev['fpp_usg']?date('d/m/Y',strtotime($ev['fpp_usg'])):'<span class="text-muted">—</span>');
+$r('Peso Materno',sv3($ev['peso_kg'],' kg'));$r('Talla Materna',sv3($ev['talla_cm'],' cm'));
+$r('TA',sv3($ev['ta_sistolica']).' / '.sv3($ev['ta_diastolica'],' mmHg'));
 $r('FCF',sv3($ev['fcf_lpm'],' lpm'));$r('Situación Fetal',sv3($ev['situacion_fetal']));
 $r('Presentación',sv3($ev['presentacion_fetal']));$r('Posición Fetal',sv3($ev['posicion_fetal']));?>
 </div></div>
@@ -79,6 +85,7 @@ $r('Plan Nacimiento',yb($a['plan_nacimiento_definido']));?>
 <?php $r('AU PI',sv3($d['au_pi']));$r('Flujo Diastólico AU',sv3($d['au_flujo_diastolico']));
 $r('ACM PI',sv3($d['acm_pi']));$r('DV Onda A',sv3($d['dv_onda_a']));
 $r('UTA PI Promedio',sv3($d['uta_pi_promedio']));$r('Ratio CU/ICP',sv3($d['ratio_cu_icp']));
+$r('Vena Umbilical',sv3($d['vena_umbilical']));
 $r('Alteración Doppler',yb($d['alteracion_doppler_detectada']));?>
 </div></div></div>
 
@@ -97,11 +104,29 @@ $r('Estructuras Normales',gn($an['estructuras_normales']??true));?>
 </div></div>
 
 <div class="card mb-4"><div class="card-header"><i class="fa-solid fa-uterus me-2"></i> Evaluación Placentaria</div><div class="card-body">
-<?php $r('Distancia OCI',sv3($pl['distancia_oci_mm'],' mm'));$r('Grosor Placentario',sv3($pl['grosor_placentario_mm'],' mm'));
-$r('Grado Madurez',sv3($pl['grado_madurez']));$r('Lagunas Vasculares',sv3($pl['lagunas_vasculares']));
-$r('Interfase Miometrial',sv3($pl['interfase_miometrial']));$r('Vasos Puente',yb($pl['vasos_puente']??false));
-$r('Acretismo FIGO PAS',sv3($pl['acretismo_figo_pas']));?>
-</div></div>
+<?php $r('Localización',sv3($pl['localizacion_placentaria']));
+$r('Distancia OCI',sv3($pl['distancia_oci_mm'],' mm'));$r('Grosor Placentario',sv3($pl['grosor_placentario_mm'],' mm'));
+$r('Grado Madurez',sv3($pl['grado_madurez']));$r('Ecogenicidad',sv3($pl['ecogenicidad']));
+$r('Lagunas Vasculares',sv3($pl['lagunas_vasculares']));
+$r('Interfase Miometrial',sv3($pl['interfase_miometrial']));
+$r('Vasos Puente',yb($pl['vasos_puente']??false));
+$r('Zona Retroplacentaria',sv3($pl['zona_retroplacentaria']));
+$r('Protrusión Placentaria',yb($pl['protrusion_placentaria']??false));
+$r('Vascularización Doppler',sv3($pl['vascularizacion_anomala_doppler']));
+$r('Inserción del Cordón',sv3($pl['insercion_cordon']));
+$r('N° Vasos Umbilicales',sv3($pl['numero_vasos_umbilicales']));
+$r('Calcificaciones',sv3($pl['calcificaciones']));
+$r('Acretismo FIGO PAS',sv3($pl['acretismo_figo_pas']));
+$r('Perfusión VI/FI/VFI',sv3($pl['perfusion_vi'],'%').' / '.sv3($pl['perfusion_fi'],'%').' / '.sv3($pl['perfusion_vfi'],'%'));
+$r('Morfología Uterina',sv3($pl['morfologia_uterina_eshre']));
+$r('Miomas Visibles',yb($pl['miomas_visibles']??false));
+$r('FIGO Tipo',sv3($pl['miomas_figo_tipo']));
+$r('Dimensiones Miomas',sv3($pl['miomas_dimensiones_mm'],' mm'));
+$r('Obstruyen Canal',yb($pl['miomas_obstruyen_canal']??false));
+?></div></div>
+<?php if(!empty($ev['observaciones'])): ?>
+<div class="card mb-4"><div class="card-header"><i class="fa-solid fa-note-sticky me-2"></i> Observaciones</div><div class="card-body"><?php echo nl2br(htmlspecialchars($ev['observaciones']));?></div></div>
+<?php endif; ?>
 
 <div class="card mb-4"><div class="card-header"><i class="fa-solid fa-notes-medical me-2"></i> Historial Clínico</div><div class="card-body">
 <?php $r('Hipertensión',yb($h['hipertension_cronica']??false));$r('Diabetes',yb($h['diabetes']??false));

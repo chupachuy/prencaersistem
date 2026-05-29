@@ -80,11 +80,11 @@ $sel = function($val, $target) { return ($val == $target) ? 'selected' : ''; };
                     <input type="number" step="0.01" class="form-control" id="talla_cm" name="talla_cm" value="<?php echo htmlspecialchars($evaluacion['talla_cm'] ?? ''); ?>">
                 </div>
                 <div class="col-md-3 mb-3">
-                    <label for="ta_sistolica" class="form-label">TA Sistólica (mmHg)</label>
+                    <label for="ta_sistolica" class="form-label">TA Sistólica (mmHg)<i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="TA = Tensión Arterial (presión sistólica)"></i></label>
                     <input type="number" class="form-control" id="ta_sistolica" name="ta_sistolica" value="<?php echo htmlspecialchars($evaluacion['ta_sistolica'] ?? ''); ?>">
                 </div>
                 <div class="col-md-3 mb-3">
-                    <label for="ta_diastolica" class="form-label">TA Diastólica (mmHg)</label>
+                    <label for="ta_diastolica" class="form-label">TA Diastólica (mmHg)<i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="TA = Tensión Arterial (presión diastólica)"></i></label>
                     <input type="number" class="form-control" id="ta_diastolica" name="ta_diastolica" value="<?php echo htmlspecialchars($evaluacion['ta_diastolica'] ?? ''); ?>">
                 </div>
             </div>
@@ -97,11 +97,11 @@ $sel = function($val, $target) { return ($val == $target) ? 'selected' : ''; };
         <div class="card-body">
             <div class="row">
                 <div class="col-md-4 mb-3">
-                    <label for="fum" class="form-label">FUM</label>
+                    <label for="fum" class="form-label">FUM<i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="FUM = Fecha de Última Menstruación, usada para calcular la edad gestacional"></i></label>
                     <input type="date" class="form-control" id="fum" name="fum" value="<?php echo htmlspecialchars($evaluacion['fum'] ?? ''); ?>">
                 </div>
                 <div class="col-md-4 mb-3">
-                    <label for="fpp_usg" class="form-label">FPP por USG</label>
+                    <label for="fpp_usg" class="form-label">FPP por USG<i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="FPP = Fecha Probable de Parto · USG = Ultrasonografía (ecografía)"></i></label>
                     <input type="date" class="form-control" id="fpp_usg" name="fpp_usg" value="<?php echo htmlspecialchars($evaluacion['fpp_usg'] ?? ''); ?>">
                 </div>
                 <div class="col-md-4 mb-3">
@@ -111,11 +111,11 @@ $sel = function($val, $target) { return ($val == $target) ? 'selected' : ''; };
             </div>
             <div class="row">
                 <div class="col-md-3 mb-3">
-                    <label for="lcc_mm" class="form-label">LCC (mm)</label>
+                    <label for="lcc_mm" class="form-label">LCC (mm)<i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="LCC = Longitud Cráneo-Caudal (medida del embrión de cabeza a cola)"></i></label>
                     <input type="number" step="0.01" class="form-control" id="lcc_mm" name="lcc_mm" value="<?php echo htmlspecialchars($evaluacion['lcc_mm'] ?? ''); ?>">
                 </div>
                 <div class="col-md-3 mb-3">
-                    <label for="fcf_lpm" class="form-label">FCF (lpm)</label>
+                    <label for="fcf_lpm" class="form-label">FCF (lpm)<i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="FCF = Frecuencia Cardíaca Fetal en latidos por minuto"></i></label>
                     <input type="number" class="form-control" id="fcf_lpm" name="fcf_lpm" value="<?php echo htmlspecialchars($evaluacion['fcf_lpm'] ?? ''); ?>">
                 </div>
                 <div class="col-md-3 mb-3">
@@ -144,8 +144,8 @@ $sel = function($val, $target) { return ($val == $target) ? 'selected' : ''; };
                 <div class="col-md-4 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="hipertension_cronica" <?php echo $chk($historial['hipertension_cronica'] ?? false); ?>><label class="form-check-label">Hipertensión Crónica</label></div></div>
                 <div class="col-md-4 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="diabetes" <?php echo $chk($historial['diabetes'] ?? false); ?>><label class="form-check-label">Diabetes</label></div></div>
                 <div class="col-md-4 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="lupus_les" <?php echo $chk($historial['lupus_les'] ?? false); ?>><label class="form-check-label">Lupus / LES</label></div></div>
-                <div class="col-md-4 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="sindrome_antifosfolipido_saf" <?php echo $chk($historial['sindrome_antifosfolipido_saf'] ?? false); ?>><label class="form-check-label">Síndrome Antifosfolípido (SAF)</label></div></div>
-                <div class="col-md-4 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="antecedente_preeclampsia_rciu" <?php echo $chk($historial['antecedente_preeclampsia_rciu'] ?? false); ?>><label class="form-check-label">Antecedente Preeclampsia / RCIU</label></div></div>
+                <div class="col-md-4 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="sindrome_antifosfolipido_saf" <?php echo $chk($historial['sindrome_antifosfolipido_saf'] ?? false); ?>><label class="form-check-label">Síndrome Antifosfolípido (SAF) <i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="SAF = Síndrome Antifosfolípido, trastorno autoinmune que favorece trombosis en el embarazo"></i></label></div></div>
+                <div class="col-md-4 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="antecedente_preeclampsia_rciu" <?php echo $chk($historial['antecedente_preeclampsia_rciu'] ?? false); ?>><label class="form-check-label">Antecedente Preeclampsia / RCIU <i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="RCIU = Restricción del Crecimiento Intrauterino"></i></label></div></div>
                 <div class="col-md-4 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="fertilizacion_in_vitro" <?php echo $chk($historial['fertilizacion_in_vitro'] ?? false); ?>><label class="form-check-label">Fertilización In Vitro</label></div></div>
                 <div class="col-md-4 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="antecedente_parto_pretermino" <?php echo $chk($historial['antecedente_parto_pretermino'] ?? false); ?>><label class="form-check-label">Antecedente Parto Pretérmino</label></div></div>
             </div>
@@ -177,7 +177,7 @@ $sel = function($val, $target) { return ($val == $target) ? 'selected' : ''; };
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-3 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="snc_simetria_plexos" <?php echo $chk($anatomia['snc_simetria_plexos'] ?? true); ?>><label class="form-check-label">SNC: Simetría de Plexos</label></div></div>
+                <div class="col-md-3 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="snc_simetria_plexos" <?php echo $chk($anatomia['snc_simetria_plexos'] ?? true); ?>><label class="form-check-label">SNC: Simetría de Plexos <i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="SNC = Sistema Nervioso Central"></i></label></div></div>
                 <div class="col-md-3 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="macizo_facial_integro" <?php echo $chk($anatomia['macizo_facial_integro'] ?? true); ?>><label class="form-check-label">Macizo Facial Íntegro</label></div></div>
                 <div class="col-md-3 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="abdomen_camara_gastrica" <?php echo $chk($anatomia['abdomen_camara_gastrica'] ?? true); ?>><label class="form-check-label">Abdomen: Cámara Gástrica</label></div></div>
                 <div class="col-md-3 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="extremidades_completas" <?php echo $chk($anatomia['extremidades_completas'] ?? true); ?>><label class="form-check-label">Extremidades Completas</label></div></div>
@@ -195,7 +195,7 @@ $sel = function($val, $target) { return ($val == $target) ? 'selected' : ''; };
         <div class="card-body">
             <div class="row">
                 <div class="col-md-3 mb-3">
-                    <label for="translucencia_nucal_mm" class="form-label">Translucencia Nucal (mm)</label>
+                    <label for="translucencia_nucal_mm" class="form-label">Translucencia Nucal (mm)<i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="TN = Acumulación de líquido en la nuca fetal; valor normal &lt;3mm entre 11-14 sem"></i></label>
                     <input type="number" step="0.01" class="form-control" id="translucencia_nucal_mm" name="translucencia_nucal_mm" value="<?php echo htmlspecialchars($marcadores['translucencia_nucal_mm'] ?? ''); ?>">
                 </div>
                 <div class="col-md-3 mb-3">
@@ -203,11 +203,11 @@ $sel = function($val, $target) { return ($val == $target) ? 'selected' : ''; };
                     <input type="number" step="0.01" class="form-control" id="vejiga_fetal_mm" name="vejiga_fetal_mm" value="<?php echo htmlspecialchars($marcadores['vejiga_fetal_mm'] ?? ''); ?>">
                 </div>
                 <div class="col-md-3 mb-3">
-                    <label for="uta_pi_promedio" class="form-label">UTA PI Promedio</label>
+                    <label for="uta_pi_promedio" class="form-label">UTA PI Promedio<i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="UTA = Arterias Uterinas · PI = Índice de Pulsatilidad (resistencia vascular)"></i></label>
                     <input type="number" step="0.01" class="form-control" id="uta_pi_promedio" name="uta_pi_promedio" value="<?php echo htmlspecialchars($marcadores['uta_pi_promedio'] ?? ''); ?>">
                 </div>
                 <div class="col-md-3 mb-3">
-                    <label for="ductus_venoso_onda_a" class="form-label">Ductus Venoso (Onda A)</label>
+                    <label for="ductus_venoso_onda_a" class="form-label">Ductus Venoso (Onda A)<i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="Ductus Venoso = vaso fetal que conecta la vena umbilical con la cava inferior; Onda A refleja función cardíaca"></i></label>
                     <select class="form-select" id="ductus_venoso_onda_a" name="ductus_venoso_onda_a">
                         <option value="" <?php echo $sel($marcadores['ductus_venoso_onda_a'] ?? '', ''); ?>>No evaluado</option>
                         <option value="Positiva" <?php echo $sel($marcadores['ductus_venoso_onda_a'] ?? '', 'Positiva'); ?>>Positiva</option>
@@ -225,11 +225,11 @@ $sel = function($val, $target) { return ($val == $target) ? 'selected' : ''; };
             <h6 class="text-muted">Marcadores Bioquímicos y Tamizaje Genético</h6>
             <div class="row">
                 <div class="col-md-3 mb-3">
-                    <label for="papp_a_mom" class="form-label">PAPP-A (MoM)</label>
+                    <label for="papp_a_mom" class="form-label">PAPP-A (MoM)<i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="PAPP-A = Proteína Plasmática A asociada al embarazo · MoM = Múltiplo de la Mediana"></i></label>
                     <input type="number" step="0.01" class="form-control" id="papp_a_mom" name="papp_a_mom" value="<?php echo htmlspecialchars($marcadores['papp_a_mom'] ?? ''); ?>">
                 </div>
                 <div class="col-md-3 mb-3">
-                    <label for="plgf_mom" class="form-label">PLGF (MoM)</label>
+                    <label for="plgf_mom" class="form-label">PLGF (MoM)<i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="PLGF = Factor de Crecimiento Placentario · MoM = Múltiplo de la Mediana"></i></label>
                     <input type="number" step="0.01" class="form-control" id="plgf_mom" name="plgf_mom" value="<?php echo htmlspecialchars($marcadores['plgf_mom'] ?? ''); ?>">
                 </div>
                 <div class="col-md-3 mb-3">
@@ -284,17 +284,17 @@ $sel = function($val, $target) { return ($val == $target) ? 'selected' : ''; };
                     </select>
                 </div>
                 <div class="col-md-3 mb-3">
-                    <label for="longitud_cervical_mm" class="form-label">Longitud Cervical (mm)</label>
+                    <label for="longitud_cervical_mm" class="form-label">Longitud Cervical (mm)<i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="Medida del cuello uterino por ecografía transvaginal; valor normal &gt;25mm"></i></label>
                     <input type="number" step="0.01" class="form-control" name="longitud_cervical_mm" value="<?php echo htmlspecialchars($entorno['longitud_cervical_mm'] ?? ''); ?>">
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-3 mb-3">
-                    <label for="indice_consistencia_cervical_pct" class="form-label">Índice Consistencia Cervical (%)</label>
+                    <label for="indice_consistencia_cervical_pct" class="form-label">Índice Consistencia Cervical (%)<i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="ICC = Ratio entre diámetro anteroposterior y longitudinal del cérvix"></i></label>
                     <input type="number" class="form-control" name="indice_consistencia_cervical_pct" value="<?php echo htmlspecialchars($entorno['indice_consistencia_cervical_pct'] ?? ''); ?>">
                 </div>
                 <div class="col-md-3 mb-3">
-                    <label for="morfologia_uterina_eshre" class="form-label">Morfología Uterina (ESHRE)</label>
+                    <label for="morfologia_uterina_eshre" class="form-label">Morfología Uterina (ESHRE)<i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="ESHRE-ESGE = Clasificación europea de anomalías uterinas (U0=Normal, U1-U6=anomalías)"></i></label>
                     <select class="form-select" name="morfologia_uterina_eshre">
                         <option value="">No evaluado</option>
                         <?php foreach (['U0','U1','U2','U3','U4','U5','U6'] as $opt): ?>
@@ -309,7 +309,7 @@ $sel = function($val, $target) { return ($val == $target) ? 'selected' : ''; };
                     </div>
                 </div>
                 <div class="col-md-3 mb-3">
-                    <label for="miomas_figo_tipo" class="form-label">Miomas (Tipo FIGO)</label>
+                    <label for="miomas_figo_tipo" class="form-label">Miomas (Tipo FIGO)<i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="FIGO = Clasificación internacional de miomas (0=submucoso, 8=subseroso pediculado)"></i></label>
                     <input type="text" class="form-control" name="miomas_figo_tipo" value="<?php echo htmlspecialchars($entorno['miomas_figo_tipo'] ?? ''); ?>">
                 </div>
             </div>
@@ -395,5 +395,48 @@ $sel = function($val, $target) { return ($val == $target) ? 'selected' : ''; };
         </div>
     </div>
 </form>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const fumInput = document.getElementById("fum");
+    const fechaEvalInput = document.getElementById("fecha_evaluacion");
+    const egInput = document.getElementById("edad_gestacional_semanas");
+
+    function calcularEdadGestacional() {
+        if (!fumInput || !fechaEvalInput || !egInput) return;
+        
+        const fumValue = fumInput.value;
+        const fechaEvalValue = fechaEvalInput.value;
+
+        if (fumValue && fechaEvalValue) {
+            const fumDate = new Date(fumValue + 'T00:00:00');
+            const evalDate = new Date(fechaEvalValue + 'T00:00:00');
+            
+            const diffTime = evalDate - fumDate;
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+            if (diffDays >= 0) {
+                const weeks = Math.floor(diffDays / 7);
+                const days = diffDays % 7;
+                // Formato médico estandar: Semanas.Días (Ej: 12 semanas y 3 días => 12.3)
+                const edadGestacional = (weeks + days / 10).toFixed(1);
+                egInput.value = edadGestacional;
+            } else {
+                egInput.value = "";
+            }
+        }
+    }
+
+    if (fumInput) {
+        fumInput.addEventListener("change", calcularEdadGestacional);
+    }
+    if (fechaEvalInput) {
+        fechaEvalInput.addEventListener("change", calcularEdadGestacional);
+    }
+    
+    // Calcular inicialmente por si hay valores precargados
+    calcularEdadGestacional();
+});
+</script>
 
 <?php require_once __DIR__ . '/../layouts/footer.php'; ?>

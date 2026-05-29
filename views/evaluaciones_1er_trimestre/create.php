@@ -37,7 +37,7 @@ require_once __DIR__ . '/../layouts/sidebar.php';
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="fecha_estudio" class="form-label">Fecha de Estudio</label>
-                    <input type="date" class="form-control" id="fecha_estudio" name="fecha_estudio">
+                    <input type="date" class="form-control" id="fecha_estudio" name="fecha_estudio" value="<?php echo date('Y-m-d');?>">
                 </div>
             </div>
             <div class="row">
@@ -83,11 +83,11 @@ require_once __DIR__ . '/../layouts/sidebar.php';
                     <input type="number" step="0.01" class="form-control" id="talla_cm" name="talla_cm" placeholder="Ej: 160">
                 </div>
                 <div class="col-md-3 mb-3">
-                    <label for="ta_sistolica" class="form-label">TA Sistólica (mmHg)</label>
+                    <label for="ta_sistolica" class="form-label">TA Sistólica (mmHg)<i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="TA = Tensión Arterial (presión sistólica)"></i></label>
                     <input type="number" class="form-control" id="ta_sistolica" name="ta_sistolica" placeholder="Ej: 120">
                 </div>
                 <div class="col-md-3 mb-3">
-                    <label for="ta_diastolica" class="form-label">TA Diastólica (mmHg)</label>
+                    <label for="ta_diastolica" class="form-label">TA Diastólica (mmHg)<i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="TA = Tensión Arterial (presión diastólica)"></i></label>
                     <input type="number" class="form-control" id="ta_diastolica" name="ta_diastolica" placeholder="Ej: 80">
                 </div>
             </div>
@@ -102,11 +102,11 @@ require_once __DIR__ . '/../layouts/sidebar.php';
         <div class="card-body">
             <div class="row">
                 <div class="col-md-4 mb-3">
-                    <label for="fum" class="form-label">FUM (Fecha Última Regla)</label>
+                    <label for="fum" class="form-label">FUM (Fecha Última Regla)<i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="FUM = Fecha de Última Menstruación, usada para calcular la edad gestacional"></i></label>
                     <input type="date" class="form-control" id="fum" name="fum">
                 </div>
                 <div class="col-md-4 mb-3">
-                    <label for="fpp_usg" class="form-label">FPP por USG</label>
+                    <label for="fpp_usg" class="form-label">FPP por USG<i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="FPP = Fecha Probable de Parto · USG = Ultrasonografía (ecografía)"></i></label>
                     <input type="date" class="form-control" id="fpp_usg" name="fpp_usg">
                 </div>
                 <div class="col-md-4 mb-3">
@@ -116,11 +116,11 @@ require_once __DIR__ . '/../layouts/sidebar.php';
             </div>
             <div class="row">
                 <div class="col-md-3 mb-3">
-                    <label for="lcc_mm" class="form-label">LCC (mm)</label>
-                    <input type="number" step="0.01" class="form-control" id="lcc_mm" name="lcc_mm" placeholder="Longitud Cráneo Cauda">
+                    <label for="lcc_mm" class="form-label">LCC (mm)<i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="LCC = Longitud Cráneo-Caudal (medida del embrión de cabeza a cola)"></i></label>
+                    <input type="number" step="0.01" class="form-control" id="lcc_mm" name="lcc_mm" placeholder="Longitud Cráneo Caudal">
                 </div>
                 <div class="col-md-3 mb-3">
-                    <label for="fcf_lpm" class="form-label">FCF (lpm)</label>
+                    <label for="fcf_lpm" class="form-label">FCF (lpm)<i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="FCF = Frecuencia Cardíaca Fetal en latidos por minuto"></i></label>
                     <input type="number" class="form-control" id="fcf_lpm" name="fcf_lpm" placeholder="Frecuencia Cardiaca Fetal">
                 </div>
                 <div class="col-md-3 mb-3">
@@ -169,13 +169,13 @@ require_once __DIR__ . '/../layouts/sidebar.php';
                 <div class="col-md-4 mb-2">
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="sindrome_antifosfolipido_saf" name="sindrome_antifosfolipido_saf" <?php echo (!empty($historial) && $historial['sindrome_antifosfolipido_saf']) ? 'checked' : ''; ?>>
-                        <label class="form-check-label" for="sindrome_antifosfolipido_saf">Síndrome Antifosfolípido (SAF)</label>
+                        <label class="form-check-label" for="sindrome_antifosfolipido_saf">Síndrome Antifosfolípido (SAF) <i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="SAF = Síndrome Antifosfolípido, trastorno autoinmune que favorece trombosis y complicaciones en el embarazo"></i></label>
                     </div>
                 </div>
                 <div class="col-md-4 mb-2">
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="antecedente_preeclampsia_rciu" name="antecedente_preeclampsia_rciu" <?php echo (!empty($historial) && $historial['antecedente_preeclampsia_rciu']) ? 'checked' : ''; ?>>
-                        <label class="form-check-label" for="antecedente_preeclampsia_rciu">Antecedente Preeclampsia / RCIU</label>
+                        <label class="form-check-label" for="antecedente_preeclampsia_rciu">Antecedente Preeclampsia / RCIU <i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="RCIU = Restricción del Crecimiento Intrauterino"></i></label>
                     </div>
                 </div>
                 <div class="col-md-4 mb-2">
@@ -224,7 +224,7 @@ require_once __DIR__ . '/../layouts/sidebar.php';
                 <div class="col-md-3 mb-2">
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="snc_simetria_plexos" name="snc_simetria_plexos" checked>
-                        <label class="form-check-label" for="snc_simetria_plexos">SNC: Simetría de Plexos (Signo de Mariposa)</label>
+                        <label class="form-check-label" for="snc_simetria_plexos">SNC: Simetría de Plexos (Signo de Mariposa) <i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="SNC = Sistema Nervioso Central"></i></label>
                     </div>
                 </div>
                 <div class="col-md-3 mb-2">
@@ -261,7 +261,7 @@ require_once __DIR__ . '/../layouts/sidebar.php';
         <div class="card-body">
             <div class="row">
                 <div class="col-md-3 mb-3">
-                    <label for="translucencia_nucal_mm" class="form-label">Translucencia Nucal (mm)</label>
+                    <label for="translucencia_nucal_mm" class="form-label">Translucencia Nucal (mm)<i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="TN = Acumulación de líquido en la nuca fetal; valor normal &lt;3mm entre 11-14 sem"></i></label>
                     <input type="number" step="0.01" class="form-control" id="translucencia_nucal_mm" name="translucencia_nucal_mm" placeholder="Ej: 1.5">
                 </div>
                 <div class="col-md-3 mb-3">
@@ -269,11 +269,11 @@ require_once __DIR__ . '/../layouts/sidebar.php';
                     <input type="number" step="0.01" class="form-control" id="vejiga_fetal_mm" name="vejiga_fetal_mm" placeholder="Ej: 5.0">
                 </div>
                 <div class="col-md-3 mb-3">
-                    <label for="uta_pi_promedio" class="form-label">UTA PI Promedio</label>
+                    <label for="uta_pi_promedio" class="form-label">UTA PI Promedio<i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="UTA = Arterias Uterinas · PI = Índice de Pulsatilidad (resistencia vascular)"></i></label>
                     <input type="number" step="0.01" class="form-control" id="uta_pi_promedio" name="uta_pi_promedio" placeholder="Índice Pulsatilidad A. Uterinas">
                 </div>
                 <div class="col-md-3 mb-3">
-                    <label for="ductus_venoso_onda_a" class="form-label">Ductus Venoso (Onda A)</label>
+                    <label for="ductus_venoso_onda_a" class="form-label">Ductus Venoso (Onda A)<i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="Ductus Venoso = vaso que conecta la vena umbilical con la cava inferior; Onda A refleja función cardíaca fetal"></i></label>
                     <select class="form-select" id="ductus_venoso_onda_a" name="ductus_venoso_onda_a">
                         <option value="">No evaluado</option>
                         <option value="Positiva">Positiva</option>
@@ -306,11 +306,11 @@ require_once __DIR__ . '/../layouts/sidebar.php';
             <h6 class="text-muted">Marcadores Bioquímicos y Tamizaje Genético</h6>
             <div class="row">
                 <div class="col-md-3 mb-3">
-                    <label for="papp_a_mom" class="form-label">PAPP-A (MoM)</label>
+                    <label for="papp_a_mom" class="form-label">PAPP-A (MoM)<i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="PAPP-A = Proteína Plasmática A asociada al embarazo · MoM = Múltiplo de la Mediana"></i></label>
                     <input type="number" step="0.01" class="form-control" id="papp_a_mom" name="papp_a_mom" placeholder="Ej: 1.05">
                 </div>
                 <div class="col-md-3 mb-3">
-                    <label for="plgf_mom" class="form-label">PLGF (MoM)</label>
+                    <label for="plgf_mom" class="form-label">PLGF (MoM)<i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="PLGF = Factor de Crecimiento Placentario · MoM = Múltiplo de la Mediana"></i></label>
                     <input type="number" step="0.01" class="form-control" id="plgf_mom" name="plgf_mom" placeholder="Ej: 0.95">
                 </div>
                 <div class="col-md-3 mb-3">
@@ -368,17 +368,17 @@ require_once __DIR__ . '/../layouts/sidebar.php';
                     </select>
                 </div>
                 <div class="col-md-3 mb-3">
-                    <label for="longitud_cervical_mm" class="form-label">Longitud Cervical (mm)</label>
+                    <label for="longitud_cervical_mm" class="form-label">Longitud Cervical (mm)<i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="Medida del cuello uterino por ecografía transvaginal; valor normal &gt;25mm"></i></label>
                     <input type="number" step="0.01" class="form-control" id="longitud_cervical_mm" name="longitud_cervical_mm" placeholder="Ej: 35.0">
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-3 mb-3">
-                    <label for="indice_consistencia_cervical_pct" class="form-label">Índice Consistencia Cervical (%)</label>
+                    <label for="indice_consistencia_cervical_pct" class="form-label">Índice Consistencia Cervical (%)<i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="ICC = Ratio entre diámetro anteroposterior y longitudinal del cérvix; indica riesgo de parto pretérmino"></i></label>
                     <input type="number" class="form-control" id="indice_consistencia_cervical_pct" name="indice_consistencia_cervical_pct" placeholder="Ej: 85">
                 </div>
                 <div class="col-md-3 mb-3">
-                    <label for="morfologia_uterina_eshre" class="form-label">Morfología Uterina (ESHRE-ESGE)</label>
+                    <label for="morfologia_uterina_eshre" class="form-label">Morfología Uterina (ESHRE-ESGE)<i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="ESHRE-ESGE = Clasificación europea de anomalías uterinas (U0=Normal, U1-U6=anomalías)"></i></label>
                     <select class="form-select" id="morfologia_uterina_eshre" name="morfologia_uterina_eshre">
                         <option value="">No evaluado</option>
                         <option value="U0">U0 - Normal</option>
@@ -398,7 +398,7 @@ require_once __DIR__ . '/../layouts/sidebar.php';
                     </div>
                 </div>
                 <div class="col-md-3 mb-3">
-                    <label for="miomas_figo_tipo" class="form-label">Miomas (Tipo FIGO)</label>
+                    <label for="miomas_figo_tipo" class="form-label">Miomas (Tipo FIGO)<i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="FIGO = Clasificación internacional de miomas (0=submucoso, 8=subseroso pediculado)"></i></label>
                     <input type="text" class="form-control" id="miomas_figo_tipo" name="miomas_figo_tipo" placeholder="Ej: Tipo 3, Tipo 5">
                 </div>
             </div>
@@ -482,5 +482,48 @@ require_once __DIR__ . '/../layouts/sidebar.php';
         </div>
     </div>
 </form>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const fumInput = document.getElementById("fum");
+    const fechaEvalInput = document.getElementById("fecha_evaluacion");
+    const egInput = document.getElementById("edad_gestacional_semanas");
+
+    function calcularEdadGestacional() {
+        if (!fumInput || !fechaEvalInput || !egInput) return;
+        
+        const fumValue = fumInput.value;
+        const fechaEvalValue = fechaEvalInput.value;
+
+        if (fumValue && fechaEvalValue) {
+            const fumDate = new Date(fumValue + 'T00:00:00');
+            const evalDate = new Date(fechaEvalValue + 'T00:00:00');
+            
+            const diffTime = evalDate - fumDate;
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+            if (diffDays >= 0) {
+                const weeks = Math.floor(diffDays / 7);
+                const days = diffDays % 7;
+                // Formato médico estandar: Semanas.Días (Ej: 12 semanas y 3 días => 12.3)
+                const edadGestacional = (weeks + days / 10).toFixed(1);
+                egInput.value = edadGestacional;
+            } else {
+                egInput.value = "";
+            }
+        }
+    }
+
+    if (fumInput) {
+        fumInput.addEventListener("change", calcularEdadGestacional);
+    }
+    if (fechaEvalInput) {
+        fechaEvalInput.addEventListener("change", calcularEdadGestacional);
+    }
+    
+    // Calcular inicialmente por si hay valores precargados
+    calcularEdadGestacional();
+});
+</script>
 
 <?php require_once __DIR__ . '/../layouts/footer.php'; ?>
