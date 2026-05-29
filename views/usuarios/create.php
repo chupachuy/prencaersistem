@@ -23,7 +23,7 @@ require_once __DIR__ . '/../layouts/sidebar.php';
                 <i class="fa-solid fa-user me-2"></i> Información Personal
             </div>
             <div class="card-body">
-                <form action="<?php echo Url::to('/usuarios/store'); ?>" method="POST">
+                <form action="<?php echo Url::to('/usuarios/store'); ?>" method="POST" enctype="multipart/form-data">
                     
                     <div class="row">
                         <div class="col-md-6 mb-3">
@@ -86,6 +86,17 @@ require_once __DIR__ . '/../layouts/sidebar.php';
                         </div>
                     </div>
 
+                    <div id="firmaSection" style="display: none;">
+                        <div class="card-header" style="margin: 20px -20px 20px -20px; background: transparent; border-top: 1px solid rgba(0,0,0,0.04);">
+                            <i class="fa-solid fa-signature me-2"></i> Firma Digital
+                        </div>
+                        <div class="mb-3">
+                            <label for="firma" class="form-label">Firma del Médico</label>
+                            <input type="file" class="form-control" id="firma" name="firma" accept="image/png,image/jpeg,image/jpg">
+                            <small style="color: var(--apple-gray); font-size: 12px;">Formatos aceptados: JPG, PNG. Tamaño máximo: 2 MB.</small>
+                        </div>
+                    </div>
+
                     <div class="d-flex justify-content-end gap-2">
                         <a href="<?php echo Url::to('/usuarios'); ?>" class="btn btn-apple btn-apple-secondary">Cancelar</a>
                         <button type="submit" class="btn btn-apple btn-apple-primary"><i class="fa-solid fa-save"></i> Guardar</button>
@@ -95,5 +106,27 @@ require_once __DIR__ . '/../layouts/sidebar.php';
         </div>
     </div>
 </div>
+
+<script>
+(function() {
+    var rolSelect = document.getElementById('rol_id');
+    var firmaSection = document.getElementById('firmaSection');
+
+    function toggleFirma() {
+        var rolId = parseInt(rolSelect.value);
+        if (rolId === 3 || rolId === 4) {
+            firmaSection.style.display = 'block';
+        } else {
+            firmaSection.style.display = 'none';
+            document.getElementById('firma').value = '';
+        }
+    }
+
+    if (rolSelect) {
+        rolSelect.addEventListener('change', toggleFirma);
+        toggleFirma();
+    }
+})();
+</script>
 
 <?php require_once __DIR__ . '/../layouts/footer.php'; ?>

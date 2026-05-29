@@ -17,10 +17,10 @@ class RegistroFirma
         return $stmt->fetchAll();
     }
 
-    public function create($asignacionId, $rolFirmante, $nombreFirmante, $rutaImagenFirma, $ipOrigen, $tipoAccion = 'Aceptacion')
+    public function create($asignacionId, $rolFirmante, $nombreFirmante, $rutaImagenFirma, $ipOrigen, $tipoAccion = 'Aceptacion', $geoPais = null, $geoRegion = null, $geoCiudad = null, $geoLat = null, $geoLng = null, $geoProv = null)
     {
-        $stmt = $this->db->prepare("INSERT INTO registro_firmas (asignacion_id, rol_firmante, nombre_firmante, ruta_imagen_firma, ip_origen, tipo_accion) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$asignacionId, $rolFirmante, $nombreFirmante, $rutaImagenFirma, $ipOrigen, $tipoAccion]);
+        $stmt = $this->db->prepare("INSERT INTO registro_firmas (asignacion_id, rol_firmante, nombre_firmante, ruta_imagen_firma, ip_origen, tipo_accion, geo_pais, geo_region, geo_ciudad, geo_latitud, geo_longitud, geo_proveedor) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$asignacionId, $rolFirmante, $nombreFirmante, $rutaImagenFirma, $ipOrigen, $tipoAccion, $geoPais, $geoRegion, $geoCiudad, $geoLat, $geoLng, $geoProv]);
         return $this->db->lastInsertId();
     }
 

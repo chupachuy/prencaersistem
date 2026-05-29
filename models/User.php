@@ -26,7 +26,7 @@ class User
 
     public function create($data)
     {
-        $stmt = $this->db->prepare("INSERT INTO usuarios (nombre, apellido, email, telefono, password, rol_id, especialidad, activo, email_verified) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt = $this->db->prepare("INSERT INTO usuarios (nombre, apellido, email, telefono, password, rol_id, especialidad, activo, email_verified, ruta_firma) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         return $stmt->execute([
             $data['nombre'],
             $data['apellido'],
@@ -36,7 +36,8 @@ class User
             $data['rol_id'],
             $data['especialidad'] ?? null,
             $data['activo'] ?? 1,
-            $data['email_verified'] ?? 0
+            $data['email_verified'] ?? 0,
+            $data['ruta_firma'] ?? null
         ]);
     }
 

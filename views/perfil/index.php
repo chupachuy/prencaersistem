@@ -5,7 +5,12 @@ require_once __DIR__ . '/../layouts/sidebar.php';
 ?>
 
 <div class="page-header">
-    <h1 class="page-title">Mi Perfil</h1>
+    <div class="d-flex align-items-center gap-3">
+        <h1 class="page-title mb-0">Mi Perfil</h1>
+        <a href="<?php echo Url::to('/perfil/edit'); ?>" class="btn btn-apple btn-apple-primary">
+            <i class="fa-solid fa-pen-to-square"></i> Editar Perfil
+        </a>
+    </div>
 </div>
 
 <div class="row">
@@ -33,6 +38,15 @@ require_once __DIR__ . '/../layouts/sidebar.php';
                     <p style="font-weight: 600; margin: 0;"><?php echo htmlspecialchars($user['especialidad']); ?></p>
                 </div>
                 <?php endif; ?>
+                <div class="mb-3">
+                    <label class="form-label">Firma Digital</label>
+                    <?php if (!empty($user['ruta_firma'])): ?>
+                        <p><span class="badge bg-success"><i class="fa-solid fa-circle-check"></i> Registrada</span></p>
+                        <img src="<?php echo Url::base() . $user['ruta_firma']; ?>" alt="Firma" style="max-width:300px; border:1px solid #dee2e6; border-radius:0.25rem; padding:8px;">
+                    <?php else: ?>
+                        <p><span class="badge bg-secondary">No registrada</span></p>
+                    <?php endif; ?>
+                </div>
             </div>
         </div>
     </div>

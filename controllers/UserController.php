@@ -83,8 +83,35 @@ class UserController extends Controller
             'rol_id' => $_POST['rol_id'] ?? '',
             'especialidad' => trim($_POST['especialidad'] ?? ''),
             'activo' => isset($_POST['activo']) ? 1 : 0,
-            'email_verified' => 1
+            'email_verified' => 1,
+            'ruta_firma' => null
         ];
+
+        if (!empty($_FILES['firma']['tmp_name']) && $_FILES['firma']['error'] === UPLOAD_ERR_OK) {
+            $rolId = (int) $data['rol_id'];
+            if (in_array($rolId, [3, 4]) && $_FILES['firma']['size'] <= 2 * 1024 * 1024) {
+                $tmpPath = $_FILES['firma']['tmp_name'];
+                $mime = mime_content_type($tmpPath);
+                $allowed = ['image/jpeg', 'image/png'];
+
+                if (in_array($mime, $allowed)) {
+                    $img = null;
+                    switch ($mime) {
+                        case 'image/jpeg': $img = imagecreatefromjpeg($tmpPath); break;
+                        case 'image/png':  $img = imagecreatefrompng($tmpPath); break;
+                    }
+
+                    if ($img) {
+                        $dir = __DIR__ . '/../storage/firmas/medicos/';
+                        if (!is_dir($dir)) mkdir($dir, 0775, true);
+                        $nombre = 'firma_medico_' . time() . '_' . bin2hex(random_bytes(4)) . '.png';
+                        imagepng($img, $dir . $nombre);
+                        imagedestroy($img);
+                        $data['ruta_firma'] = '/storage/firmas/medicos/' . $nombre;
+                    }
+                }
+            }
+        }
 
         // Validations skipped for brevity, but could use Validator class
 
@@ -168,6 +195,43 @@ class UserController extends Controller
         // Si se proporciona una nueva contraseña, actualizarla
         if (!empty($_POST['password'] ?? '')) {
             $data['password'] = password_hash($_POST['password'], PASSWORD_DEFAULT);
+        }
+
+        $firmaDir = __DIR__ . '/../storage/firmas/medicos/';
+
+        if (!empty($_POST['eliminar_firma'])) {
+            if (!empty($usuario['ruta_firma'])) {
+                $rutaAbsoluta = __DIR__ . '/..' . $usuario['ruta_firma'];
+                if (file_exists($rutaAbsoluta)) unlink($rutaAbsoluta);
+            }
+            $data['ruta_firma'] = null;
+        } elseif (!empty($_FILES['firma']['tmp_name']) && $_FILES['firma']['error'] === UPLOAD_ERR_OK) {
+            $rolId = $usuario['rol_id'];
+            if (in_array($rolId, [3, 4]) && $_FILES['firma']['size'] <= 2 * 1024 * 1024) {
+                $tmpPath = $_FILES['firma']['tmp_name'];
+                $mime = mime_content_type($tmpPath);
+                $allowed = ['image/jpeg', 'image/png'];
+
+                if (in_array($mime, $allowed)) {
+                    $img = null;
+                    switch ($mime) {
+                        case 'image/jpeg': $img = imagecreatefromjpeg($tmpPath); break;
+                        case 'image/png':  $img = imagecreatefrompng($tmpPath); break;
+                    }
+
+                    if ($img) {
+                        if (!is_dir($firmaDir)) mkdir($firmaDir, 0775, true);
+                        if (!empty($usuario['ruta_firma'])) {
+                            $rutaAbsoluta = __DIR__ . '/..' . $usuario['ruta_firma'];
+                            if (file_exists($rutaAbsoluta)) unlink($rutaAbsoluta);
+                        }
+                        $nombre = 'firma_medico_' . time() . '_' . bin2hex(random_bytes(4)) . '.png';
+                        imagepng($img, $firmaDir . $nombre);
+                        imagedestroy($img);
+                        $data['ruta_firma'] = '/storage/firmas/medicos/' . $nombre;
+                    }
+                }
+            }
         }
 
         try {

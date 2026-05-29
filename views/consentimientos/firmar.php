@@ -249,11 +249,25 @@ require_once __DIR__ . '/../layouts/sidebar.php';
 <script>
 (function() {
     var canvases = document.querySelectorAll('.signature-canvas');
+    var firmaMedicoUrl = '<?php echo $firmaMedico ?? ""; ?>';
+    var canvasFirmado = {};
 
     canvases.forEach(function(canvas) {
         var ctx = canvas.getContext('2d');
         var drawing = false;
         var dataInput = document.querySelector('.signature-data[data-index="' + canvas.dataset.index + '"]');
+
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 2;
+        ctx.lineCap = 'round';
+
+        if (canvas.dataset.index === '99' && firmaMedicoUrl) {
+            var img = new Image();
+            img.onload = function() {
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            };
+            img.src = firmaMedicoUrl;
+        }
 
         function getPos(e) {
             var rect = canvas.getBoundingClientRect();
@@ -318,12 +332,26 @@ require_once __DIR__ . '/../layouts/sidebar.php';
             if (canvas) {
                 var ctx = canvas.getContext('2d');
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
+                canvasFirmado[idx] = false;
             }
             if (dataInput) {
                 dataInput.value = '';
             }
         });
     });
+
+    var form = document.querySelector('form');
+    if (form) {
+        form.addEventListener('submit', function() {
+            canvases.forEach(function(canvas) {
+                var idx = canvas.dataset.index;
+                var dataInput = document.querySelector('.signature-data[data-index="' + idx + '"]');
+                if (dataInput && !dataInput.value && !canvasFirmado[idx]) {
+                    dataInput.value = canvas.toDataURL('image/png');
+                }
+            });
+        });
+    }
 })();
 </script>
 

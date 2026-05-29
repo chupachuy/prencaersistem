@@ -1,6 +1,8 @@
 <?php
 require_once __DIR__ . '/../core/Controller.php';
 require_once __DIR__ . '/../models/Evaluacion3erTrimestre.php';
+require_once __DIR__ . '/../models/Evaluacion1erTrimestre.php';
+require_once __DIR__ . '/../models/Evaluacion2doTrimestre.php';
 require_once __DIR__ . '/../models/Antecedentes3erTrimestre.php';
 require_once __DIR__ . '/../models/Crecimiento3erTrimestre.php';
 require_once __DIR__ . '/../models/Doppler3erTrimestre.php';
@@ -14,12 +16,14 @@ require_once __DIR__ . '/../helpers/Session.php';
 
 class Evaluaciones3erTrimestreController extends Controller
 {
-    private $ev, $ant, $crec, $dop, $anat, $plac, $hist, $pac, $usr;
+    private $ev, $ev1er, $ev2do, $ant, $crec, $dop, $anat, $plac, $hist, $pac, $usr;
     private $bk, $nv;
 
     public function __construct()
     {
         $this->ev = new Evaluacion3erTrimestre();
+        $this->ev1er = new Evaluacion1erTrimestre();
+        $this->ev2do = new Evaluacion2doTrimestre();
         $this->ant = new Antecedentes3erTrimestre();
         $this->crec = new Crecimiento3erTrimestre();
         $this->dop = new Doppler3erTrimestre();
@@ -40,10 +44,13 @@ class Evaluaciones3erTrimestreController extends Controller
     public function create() {
         if (!Auth::check()) { $this->redirect('/login'); }
         $pid = $_GET['paciente_id'] ?? null;
+        $data1er = $pid ? $this->ev1er->getLatestFullData($pid) : null;
+        $data2do = $pid ? $this->ev2do->getLatestFullData($pid) : null;
         $this->render('evaluaciones_3er_trimestre/create', [
             'pacientes' => $this->pac->getAll(), 'medicos' => $this->usr->getMedicos(),
             'paciente_id' => $pid, 'codigo_reporte' => $this->ev->generateCodigoReporte(),
-            'historial' => $pid ? $this->hist->getByPaciente($pid) : null
+            'historial' => $pid ? $this->hist->getByPaciente($pid) : null,
+            'data1er' => $data1er, 'data2do' => $data2do
         ]);
     }
 
@@ -64,9 +71,29 @@ class Evaluaciones3erTrimestreController extends Controller
             ]);
             if(!$eid) throw new Exception('Error al crear evaluación');
 
+            $d1 = $this->ev1er->getLatestFullData($p);
+            $d2 = $this->ev2do->getLatestFullData($p);
+
             $this->ant->create(['evaluacion_id'=>$eid,'curva_tolerancia_glucosa'=>$this->nv('curva_tolerancia_glucosa'),
                 'diabetes_gestacional_actual'=>($this->bk)('diabetes_gestacional_actual'),'movimientos_fetales'=>$this->nv('movimientos_fetales'),
-                'signos_amenaza_parto_pretermino'=>($this->bk)('signos_amenaza_parto_pretermino'),'plan_nacimiento_definido'=>($this->bk)('plan_nacimiento_definido')]);
+                'signos_amenaza_parto_pretermino'=>($this->bk)('signos_amenaza_parto_pretermino'),'plan_nacimiento_definido'=>($this->bk)('plan_nacimiento_definido'),
+                'checklist_riesgo_preeclampsia_1t'=>$d1['riesgo_preeclampsia_temprana']??null,
+                'checklist_doppler_uterino_1t_pi'=>$d1['uta_pi_promedio']??null,
+                'checklist_doppler_uterino_1t_muesca'=>$d1['muesca_bilateral']??null,
+                'checklist_papp_a_mom'=>$d1['papp_a_mom']??null,
+                'checklist_plgf_mom'=>$d1['plgf_mom']??null,
+                'checklist_tamizaje_genetico_resultado'=>$d1['tamizaje_genetico_resultado']??null,
+                'checklist_longitud_cervical_1t_mm'=>$d1['longitud_cervical_mm']??null,
+                'checklist_morfologia_fetal_2t_normal'=>$this->evaluarMorfologiaNormal($d2),
+                'checklist_doppler_uterino_2t_pi'=>$d2['uta_pi_promedio']??null,
+                'checklist_placenta_2t_posicion'=>$d2['placenta_posicion']??null,
+                'checklist_placenta_2t_acretismo'=>$d2['acretismo_figo_grado']??null,
+                'checklist_longitud_cervical_2t_mm'=>$d2['longitud_cervical_mm']??null,
+                'checklist_funneling_2t_presente'=>$d2['funneling_presente']??null,
+                'checklist_sludge_2t'=>$d2['sludge_intraamniotico']??null,
+                'checklist_icc_2t_pct'=>$d2['indice_consistencia_cervical']??null,
+                'checklist_rciu_2t_signos'=>$this->evaluarSignosRCIU($d2)
+            ]);
 
             $this->crec->create(['evaluacion_id'=>$eid,'peso_fetal_estimado_gr'=>$this->nv('peso_fetal_estimado_gr'),
                 'percentil_ajustado'=>$this->nv('percentil_ajustado'),'clasificacion_crecimiento'=>$this->nv('clasificacion_crecimiento'),
@@ -83,7 +110,10 @@ class Evaluaciones3erTrimestreController extends Controller
             $this->plac->create(['evaluacion_id'=>$eid,'distancia_oci_mm'=>$this->nv('distancia_oci_mm'),
                 'grosor_placentario_mm'=>$this->nv('grosor_placentario_mm'),'grado_madurez'=>$this->nv('grado_madurez'),
                 'lagunas_vasculares'=>$this->nv('lagunas_vasculares'),'interfase_miometrial'=>$this->nv('interfase_miometrial'),
-                'vasos_puente'=>($this->bk)('vasos_puente'),'acretismo_figo_pas'=>$this->nv('acretismo_figo_pas')]);
+                'vasos_puente'=>($this->bk)('vasos_puente'),'acretismo_figo_pas'=>$this->nv('acretismo_figo_pas'),
+                'morfologia_uterina_eshre'=>$this->nv('morfologia_uterina_eshre'),'miomas_visibles'=>($this->bk)('miomas_visibles'),
+                'miomas_figo_tipo'=>$this->nv('miomas_figo_tipo'),'miomas_dimensiones_mm'=>$this->nv('miomas_dimensiones_mm'),
+                'miomas_obstruyen_canal'=>($this->bk)('miomas_obstruyen_canal')]);
 
             $he = $this->hist->getByPaciente($p);
             $hd = ['paciente_id'=>$p,'hipertension_cronica'=>($this->bk)('hipertension_cronica'),'diabetes'=>($this->bk)('diabetes'),
@@ -104,7 +134,9 @@ class Evaluaciones3erTrimestreController extends Controller
         $this->render('evaluaciones_3er_trimestre/show',['evaluacion'=>$ev,'antecedentes'=>$this->ant->getByEvaluacion($id),
             'crecimiento'=>$this->crec->getByEvaluacion($id),'doppler'=>$this->dop->getByEvaluacion($id),
             'anatomia'=>$this->anat->getByEvaluacion($id),'placentaria'=>$this->plac->getByEvaluacion($id),
-            'historial'=>$this->hist->getByPaciente($ev['paciente_id'])]);
+            'historial'=>$this->hist->getByPaciente($ev['paciente_id']),
+            'data1er'=>$this->ev1er->getLatestFullData($ev['paciente_id']),
+            'data2do'=>$this->ev2do->getLatestFullData($ev['paciente_id'])]);
     }
 
     public function edit() {
@@ -115,7 +147,9 @@ class Evaluaciones3erTrimestreController extends Controller
             'medicos'=>$this->usr->getMedicos(),'antecedentes'=>$this->ant->getByEvaluacion($id),
             'crecimiento'=>$this->crec->getByEvaluacion($id),'doppler'=>$this->dop->getByEvaluacion($id),
             'anatomia'=>$this->anat->getByEvaluacion($id),'placentaria'=>$this->plac->getByEvaluacion($id),
-            'historial'=>$this->hist->getByPaciente($ev['paciente_id'])]);
+            'historial'=>$this->hist->getByPaciente($ev['paciente_id']),
+            'data1er'=>$this->ev1er->getLatestFullData($ev['paciente_id']),
+            'data2do'=>$this->ev2do->getLatestFullData($ev['paciente_id'])]);
     }
 
     public function update() {
@@ -130,9 +164,28 @@ class Evaluaciones3erTrimestreController extends Controller
                 'situacion_fetal'=>$this->nv('situacion_fetal'),'presentacion_fetal'=>$this->nv('presentacion_fetal'),
                 'posicion_fetal'=>$this->nv('posicion_fetal'),'fcf_lpm'=>$this->nv('fcf_lpm'),
                 'estado'=>$_POST['estado']??'Pendiente','updated_by'=>$uid]);
+            $d1 = $this->ev1er->getLatestFullData($p);
+            $d2 = $this->ev2do->getLatestFullData($p);
             $this->ant->update(['evaluacion_id'=>$id,'curva_tolerancia_glucosa'=>$this->nv('curva_tolerancia_glucosa'),
                 'diabetes_gestacional_actual'=>($this->bk)('diabetes_gestacional_actual'),'movimientos_fetales'=>$this->nv('movimientos_fetales'),
-                'signos_amenaza_parto_pretermino'=>($this->bk)('signos_amenaza_parto_pretermino'),'plan_nacimiento_definido'=>($this->bk)('plan_nacimiento_definido')]);
+                'signos_amenaza_parto_pretermino'=>($this->bk)('signos_amenaza_parto_pretermino'),'plan_nacimiento_definido'=>($this->bk)('plan_nacimiento_definido'),
+                'checklist_riesgo_preeclampsia_1t'=>$d1['riesgo_preeclampsia_temprana']??null,
+                'checklist_doppler_uterino_1t_pi'=>$d1['uta_pi_promedio']??null,
+                'checklist_doppler_uterino_1t_muesca'=>$d1['muesca_bilateral']??null,
+                'checklist_papp_a_mom'=>$d1['papp_a_mom']??null,
+                'checklist_plgf_mom'=>$d1['plgf_mom']??null,
+                'checklist_tamizaje_genetico_resultado'=>$d1['tamizaje_genetico_resultado']??null,
+                'checklist_longitud_cervical_1t_mm'=>$d1['longitud_cervical_mm']??null,
+                'checklist_morfologia_fetal_2t_normal'=>$this->evaluarMorfologiaNormal($d2),
+                'checklist_doppler_uterino_2t_pi'=>$d2['uta_pi_promedio']??null,
+                'checklist_placenta_2t_posicion'=>$d2['placenta_posicion']??null,
+                'checklist_placenta_2t_acretismo'=>$d2['acretismo_figo_grado']??null,
+                'checklist_longitud_cervical_2t_mm'=>$d2['longitud_cervical_mm']??null,
+                'checklist_funneling_2t_presente'=>$d2['funneling_presente']??null,
+                'checklist_sludge_2t'=>$d2['sludge_intraamniotico']??null,
+                'checklist_icc_2t_pct'=>$d2['indice_consistencia_cervical']??null,
+                'checklist_rciu_2t_signos'=>$this->evaluarSignosRCIU($d2)
+            ]);
             $this->crec->update(['evaluacion_id'=>$id,'peso_fetal_estimado_gr'=>$this->nv('peso_fetal_estimado_gr'),
                 'percentil_ajustado'=>$this->nv('percentil_ajustado'),'clasificacion_crecimiento'=>$this->nv('clasificacion_crecimiento'),
                 'estadio_rciu_barcelona'=>$this->nv('estadio_rciu_barcelona')]);
@@ -145,7 +198,10 @@ class Evaluaciones3erTrimestreController extends Controller
             $this->plac->update(['evaluacion_id'=>$id,'distancia_oci_mm'=>$this->nv('distancia_oci_mm'),
                 'grosor_placentario_mm'=>$this->nv('grosor_placentario_mm'),'grado_madurez'=>$this->nv('grado_madurez'),
                 'lagunas_vasculares'=>$this->nv('lagunas_vasculares'),'interfase_miometrial'=>$this->nv('interfase_miometrial'),
-                'vasos_puente'=>($this->bk)('vasos_puente'),'acretismo_figo_pas'=>$this->nv('acretismo_figo_pas')]);
+                'vasos_puente'=>($this->bk)('vasos_puente'),'acretismo_figo_pas'=>$this->nv('acretismo_figo_pas'),
+                'morfologia_uterina_eshre'=>$this->nv('morfologia_uterina_eshre'),'miomas_visibles'=>($this->bk)('miomas_visibles'),
+                'miomas_figo_tipo'=>$this->nv('miomas_figo_tipo'),'miomas_dimensiones_mm'=>$this->nv('miomas_dimensiones_mm'),
+                'miomas_obstruyen_canal'=>($this->bk)('miomas_obstruyen_canal')]);
             $he = $this->hist->getByPaciente($p);
             $hd = ['paciente_id'=>$p,'hipertension_cronica'=>($this->bk)('hipertension_cronica'),'diabetes'=>($this->bk)('diabetes'),
                 'lupus_les'=>($this->bk)('lupus_les'),'sindrome_antifosfolipido_saf'=>($this->bk)('sindrome_antifosfolipido_saf'),
@@ -171,6 +227,29 @@ class Evaluaciones3erTrimestreController extends Controller
         $this->render('evaluaciones_3er_trimestre/print',['evaluacion'=>$ev,'antecedentes'=>$this->ant->getByEvaluacion($id),
             'crecimiento'=>$this->crec->getByEvaluacion($id),'doppler'=>$this->dop->getByEvaluacion($id),
             'anatomia'=>$this->anat->getByEvaluacion($id),'placentaria'=>$this->plac->getByEvaluacion($id),
-            'historial'=>$this->hist->getByPaciente($ev['paciente_id'])]);
+            'historial'=>$this->hist->getByPaciente($ev['paciente_id']),
+            'data1er'=>$this->ev1er->getLatestFullData($ev['paciente_id']),
+            'data2do'=>$this->ev2do->getLatestFullData($ev['paciente_id'])]);
+    }
+
+    private function evaluarMorfologiaNormal($d2)
+    {
+        if (!$d2) return null;
+        $campos = ['craneo_snc_normal','cara_cuello_normal','corazon_normal','torax_diafragma_normal',
+                   'abdomen_normal','genitourinario_normal','columna_normal','extremidades_normal'];
+        foreach ($campos as $c) {
+            if (isset($d2[$c]) && $d2[$c] == 0) return 0;
+        }
+        return 1;
+    }
+
+    private function evaluarSignosRCIU($d2)
+    {
+        if (!$d2) return null;
+        $percentil = $d2['percentil_hadlock'] ?? null;
+        $armonico = $d2['crecimiento_armonico'] ?? null;
+        if ($percentil !== null && $percentil < 10) return 1;
+        if ($armonico !== null && $armonico == 0) return 1;
+        return 0;
     }
 }

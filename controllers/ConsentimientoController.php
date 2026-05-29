@@ -7,6 +7,7 @@ require_once __DIR__ . '/../models/Paciente.php';
 require_once __DIR__ . '/../models/User.php';
 require_once __DIR__ . '/../helpers/Auth.php';
 require_once __DIR__ . '/../helpers/Session.php';
+require_once __DIR__ . '/../helpers/GeoLocator.php';
 
 use Dompdf\Dompdf;
 
@@ -144,9 +145,18 @@ class ConsentimientoController extends Controller
 
         $firmas = $this->firmaModel->getByAsignacion($id);
 
+        $firmaMedico = null;
+        if (!empty($consentimiento['medico_id'])) {
+            $ruta = $this->userModel->getFirma($consentimiento['medico_id']);
+            if ($ruta && file_exists(__DIR__ . '/..' . $ruta)) {
+                $firmaMedico = Url::base() . $ruta;
+            }
+        }
+
         $this->render('consentimientos/firmar', [
             'consentimiento' => $consentimiento,
-            'firmas' => $firmas
+            'firmas' => $firmas,
+            'firmaMedico' => $firmaMedico
         ]);
     }
 
@@ -173,6 +183,8 @@ class ConsentimientoController extends Controller
         }
 
         $ipOrigen = $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
+        $geo = GeoLocator::locate($ipOrigen);
+
         $storageDir = __DIR__ . '/../storage/firmas/';
 
         if (!is_dir($storageDir)) {
@@ -215,7 +227,13 @@ class ConsentimientoController extends Controller
                     $nombreFirmante,
                     '/storage/firmas/' . $nombreArchivo,
                     $ipOrigen,
-                    $tipoAccion
+                    $tipoAccion,
+                    $geo['pais'] ?? null,
+                    $geo['region'] ?? null,
+                    $geo['ciudad'] ?? null,
+                    $geo['latitud'] ?? null,
+                    $geo['longitud'] ?? null,
+                    $geo['proveedor'] ?? null
                 );
                 $firmasGuardadas++;
             }

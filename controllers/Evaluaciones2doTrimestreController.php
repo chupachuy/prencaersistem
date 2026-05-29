@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../core/Controller.php';
 require_once __DIR__ . '/../models/Evaluacion2doTrimestre.php';
+require_once __DIR__ . '/../models/Evaluacion1erTrimestre.php';
 require_once __DIR__ . '/../models/Biometria2doTrimestre.php';
 require_once __DIR__ . '/../models/AnatomiaFetal2doTrimestre.php';
 require_once __DIR__ . '/../models/MarcadoresEcograficos2doTrimestre.php';
@@ -15,6 +16,7 @@ require_once __DIR__ . '/../helpers/Session.php';
 class Evaluaciones2doTrimestreController extends Controller
 {
     private $evaluacionModel;
+    private $evaluacion1erModel;
     private $biometriaModel;
     private $anatomiaModel;
     private $marcadoresModel;
@@ -27,6 +29,7 @@ class Evaluaciones2doTrimestreController extends Controller
     public function __construct()
     {
         $this->evaluacionModel = new Evaluacion2doTrimestre();
+        $this->evaluacion1erModel = new Evaluacion1erTrimestre();
         $this->biometriaModel = new Biometria2doTrimestre();
         $this->anatomiaModel = new AnatomiaFetal2doTrimestre();
         $this->marcadoresModel = new MarcadoresEcograficos2doTrimestre();
@@ -53,11 +56,12 @@ class Evaluaciones2doTrimestreController extends Controller
         $medicos = $this->userModel->getMedicos();
         $codigoReporte = $this->evaluacionModel->generateCodigoReporte();
         $historial = $pacienteId ? $this->historialModel->getByPaciente($pacienteId) : null;
+        $data1er = $pacienteId ? $this->evaluacion1erModel->getLatestFullData($pacienteId) : null;
 
         $this->render('evaluaciones_2do_trimestre/create', [
             'pacientes' => $pacientes, 'medicos' => $medicos,
             'paciente_id' => $pacienteId, 'codigo_reporte' => $codigoReporte,
-            'historial' => $historial
+            'historial' => $historial, 'data1er' => $data1er
         ]);
     }
 
@@ -76,6 +80,12 @@ class Evaluaciones2doTrimestreController extends Controller
         }
 
         try {
+            $data1er = $this->evaluacion1erModel->getLatestFullData($pacienteId);
+            $peso1erTrim = $data1er['peso_kg'] ?? null;
+            $pesoActual = $_POST['peso_kg'] ?? null;
+            $gananciaPeso = ($peso1erTrim !== null && $pesoActual !== null && $peso1erTrim > 0)
+                ? round($pesoActual - $peso1erTrim, 2) : null;
+
             $evaluacionId = $this->evaluacionModel->create([
                 'paciente_id' => $pacienteId, 'medico_id' => $medicoId,
                 'codigo_reporte' => $_POST['codigo_reporte'],
@@ -83,11 +93,13 @@ class Evaluaciones2doTrimestreController extends Controller
                 'fecha_estudio' => $_POST['fecha_estudio'] ?? null,
                 'edad_gestacional_semanas' => $_POST['edad_gestacional_semanas'] ?? null,
                 'fpp_actual' => $_POST['fpp_actual'] ?? null,
-                'peso_kg' => $_POST['peso_kg'] ?? null,
+                'peso_kg' => $pesoActual,
                 'talla_cm' => $_POST['talla_cm'] ?? null,
                 'pam_mmhg' => $_POST['pam_mmhg'] ?? null,
                 'uta_pi_promedio' => $_POST['uta_pi_promedio'] ?? null,
                 'estado' => $_POST['estado'] ?? 'Pendiente',
+                'peso_1er_trimestre_kg' => $peso1erTrim,
+                'ganancia_peso_kg' => $gananciaPeso,
                 'created_by' => $userId, 'updated_by' => $userId
             ]);
 
@@ -140,7 +152,12 @@ class Evaluaciones2doTrimestreController extends Controller
                 'indice_consistencia_cervical' => $_POST['indice_consistencia_cervical'] ?? null,
                 'funneling_presente' => isset($_POST['funneling_presente']) ? 1 : 0,
                 'funneling_mm' => $_POST['funneling_mm'] ?? null,
-                'sludge_intraamniotico' => $_POST['sludge_intraamniotico'] ?? null
+                'sludge_intraamniotico' => $_POST['sludge_intraamniotico'] ?? null,
+                'morfologia_uterina_eshre' => $_POST['morfologia_uterina_eshre'] ?? null,
+                'miomas_visibles' => isset($_POST['miomas_visibles']) ? 1 : 0,
+                'miomas_figo_tipo' => $_POST['miomas_figo_tipo'] ?? null,
+                'miomas_dimensiones_mm' => $_POST['miomas_dimensiones_mm'] ?? null,
+                'miomas_vascularizacion' => $_POST['miomas_vascularizacion'] ?? null
             ]);
 
             $this->diagnosticaModel->create([
@@ -184,6 +201,8 @@ class Evaluaciones2doTrimestreController extends Controller
             $this->redirect('/evaluaciones_2do_trimestre');
         }
 
+        $data1er = $this->evaluacion1erModel->getLatestFullData($evaluacion['paciente_id']);
+
         $this->render('evaluaciones_2do_trimestre/show', [
             'evaluacion' => $evaluacion,
             'biometria' => $this->biometriaModel->getByEvaluacion($id),
@@ -191,7 +210,8 @@ class Evaluaciones2doTrimestreController extends Controller
             'marcadores' => $this->marcadoresModel->getByEvaluacion($id),
             'entorno' => $this->entornoModel->getByEvaluacion($id),
             'diagnostica' => $this->diagnosticaModel->getByEvaluacion($id),
-            'historial' => $this->historialModel->getByPaciente($evaluacion['paciente_id'])
+            'historial' => $this->historialModel->getByPaciente($evaluacion['paciente_id']),
+            'data1er' => $data1er
         ]);
     }
 
@@ -207,6 +227,8 @@ class Evaluaciones2doTrimestreController extends Controller
             $this->redirect('/evaluaciones_2do_trimestre');
         }
 
+        $data1er = $this->evaluacion1erModel->getLatestFullData($evaluacion['paciente_id']);
+
         $this->render('evaluaciones_2do_trimestre/edit', [
             'evaluacion' => $evaluacion,
             'pacientes' => $this->pacienteModel->getAll(),
@@ -216,7 +238,8 @@ class Evaluaciones2doTrimestreController extends Controller
             'marcadores' => $this->marcadoresModel->getByEvaluacion($id),
             'entorno' => $this->entornoModel->getByEvaluacion($id),
             'diagnostica' => $this->diagnosticaModel->getByEvaluacion($id),
-            'historial' => $this->historialModel->getByPaciente($evaluacion['paciente_id'])
+            'historial' => $this->historialModel->getByPaciente($evaluacion['paciente_id']),
+            'data1er' => $data1er
         ]);
     }
 
@@ -233,17 +256,26 @@ class Evaluaciones2doTrimestreController extends Controller
         $medicoId = (int) ($_POST['medico_id'] ?? 0);
 
         try {
+            $data1er = $this->evaluacion1erModel->getLatestFullData($pacienteId);
+            $peso1erTrim = $data1er['peso_kg'] ?? null;
+            $pesoActual = $_POST['peso_kg'] ?? null;
+            $gananciaPeso = ($peso1erTrim !== null && $pesoActual !== null && $peso1erTrim > 0)
+                ? round($pesoActual - $peso1erTrim, 2) : null;
+
             $this->evaluacionModel->update([
                 'id' => $id,
                 'paciente_id' => $pacienteId, 'medico_id' => $medicoId,
                 'fecha_estudio' => $_POST['fecha_estudio'] ?? null,
                 'edad_gestacional_semanas' => $_POST['edad_gestacional_semanas'] ?? null,
                 'fpp_actual' => $_POST['fpp_actual'] ?? null,
-                'peso_kg' => $_POST['peso_kg'] ?? null,
+                'peso_kg' => $pesoActual,
                 'talla_cm' => $_POST['talla_cm'] ?? null,
                 'pam_mmhg' => $_POST['pam_mmhg'] ?? null,
                 'uta_pi_promedio' => $_POST['uta_pi_promedio'] ?? null,
-                'estado' => $_POST['estado'] ?? 'Pendiente', 'updated_by' => $userId
+                'estado' => $_POST['estado'] ?? 'Pendiente',
+                'peso_1er_trimestre_kg' => $peso1erTrim,
+                'ganancia_peso_kg' => $gananciaPeso,
+                'updated_by' => $userId
             ]);
 
             $bk = function($k) { return isset($_POST[$k]) ? 1 : 0; };
@@ -279,7 +311,10 @@ class Evaluaciones2doTrimestreController extends Controller
                 'distancia_borde_oci_mm' => $nv('distancia_borde_oci_mm'), 'acretismo_figo_grado' => $nv('acretismo_figo_grado'),
                 'bolsillo_max_liquido_mm' => $nv('bolsillo_max_liquido_mm'), 'longitud_cervical_mm' => $nv('longitud_cervical_mm'),
                 'indice_consistencia_cervical' => $nv('indice_consistencia_cervical'), 'funneling_presente' => $bk('funneling_presente'),
-                'funneling_mm' => $nv('funneling_mm'), 'sludge_intraamniotico' => $nv('sludge_intraamniotico')
+                'funneling_mm' => $nv('funneling_mm'), 'sludge_intraamniotico' => $nv('sludge_intraamniotico'),
+                'morfologia_uterina_eshre' => $nv('morfologia_uterina_eshre'), 'miomas_visibles' => $bk('miomas_visibles'),
+                'miomas_figo_tipo' => $nv('miomas_figo_tipo'), 'miomas_dimensiones_mm' => $nv('miomas_dimensiones_mm'),
+                'miomas_vascularizacion' => $nv('miomas_vascularizacion')
             ]);
 
             $this->diagnosticaModel->update([
@@ -326,7 +361,8 @@ class Evaluaciones2doTrimestreController extends Controller
             'marcadores' => $this->marcadoresModel->getByEvaluacion($id),
             'entorno' => $this->entornoModel->getByEvaluacion($id),
             'diagnostica' => $this->diagnosticaModel->getByEvaluacion($id),
-            'historial' => $this->historialModel->getByPaciente($evaluacion['paciente_id'])
+            'historial' => $this->historialModel->getByPaciente($evaluacion['paciente_id']),
+            'data1er' => $this->evaluacion1erModel->getLatestFullData($evaluacion['paciente_id'])
         ]);
     }
 }

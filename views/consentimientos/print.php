@@ -129,6 +129,9 @@ $fechaHoy = date('d/m/Y H:i');
                         <?php endif; ?>
                     </div>
                     <div class="signature-date"><?php echo date('d/m/Y H:i', strtotime($firma['fecha_firma'])); ?></div>
+                    <?php if (!empty($firma['geo_pais'])): ?>
+                    <div class="signature-location">📍 <?php echo htmlspecialchars(trim($firma['geo_ciudad'] . ', ' . $firma['geo_region'] . ', ' . $firma['geo_pais'], ', ')); ?> — <?php echo htmlspecialchars($firma['geo_proveedor'] ?? $firma['ip_origen']); ?></div>
+                    <?php endif; ?>
                 </div>
             <?php endforeach; ?>
         <?php endif; ?>

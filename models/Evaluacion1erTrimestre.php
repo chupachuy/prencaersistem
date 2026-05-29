@@ -124,6 +124,36 @@ class Evaluacion1erTrimestre
         return $stmt->execute([$id]);
     }
 
+    public function getLatestFullData($pacienteId)
+    {
+        $stmt = $this->db->prepare("
+            SELECT e.*,
+                   af.estado_exploracion, af.snc_simetria_plexos, af.macizo_facial_integro,
+                   af.torax_situs, af.torax_eje_cardiaco_grados, af.abdomen_camara_gastrica,
+                   af.extremidades_completas, af.observaciones_anomalias,
+                   mf.translucencia_nucal_mm, mf.hueso_nasal_presente, mf.ductus_venoso_onda_a,
+                   mf.regurgitacion_tricuspidea_ausente, mf.vejiga_fetal_mm, mf.uta_pi_promedio,
+                   mf.muesca_bilateral, mf.papp_a_mom, mf.plgf_mom,
+                   mf.tamizaje_genetico_tipo, mf.tamizaje_genetico_resultado,
+                   em.liquido_amniotico, em.placenta_posicion, em.placenta_insercion,
+                   em.longitud_cervical_mm, em.indice_consistencia_cervical_pct,
+                   em.morfologia_uterina_eshre, em.miomas_visibles, em.miomas_figo_tipo,
+                   id.riesgo_basal_cromosomopatias, id.riesgo_ajustado_cromosomopatias,
+                   id.probabilidad_cromosomopatias, id.riesgo_preeclampsia_temprana,
+                   id.riesgo_enfermedad_placentaria_tardia, id.riesgo_parto_pretermino
+            FROM evaluaciones_1er_trimestre e
+            LEFT JOIN anatomia_fetal af ON e.id = af.evaluacion_id
+            LEFT JOIN marcadores_fmf mf ON e.id = mf.evaluacion_id
+            LEFT JOIN entorno_materno em ON e.id = em.evaluacion_id
+            LEFT JOIN impresion_diagnostica id ON e.id = id.evaluacion_id
+            WHERE e.paciente_id = ? AND e.activo = 1
+            ORDER BY e.fecha_evaluacion DESC
+            LIMIT 1
+        ");
+        $stmt->execute([$pacienteId]);
+        return $stmt->fetch();
+    }
+
     public function generateCodigoReporte()
     {
         $year = date('Y');

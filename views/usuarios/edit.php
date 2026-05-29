@@ -23,7 +23,7 @@ require_once __DIR__ . '/../layouts/sidebar.php';
                 <i class="fa-solid fa-user me-2"></i> Información Personal
             </div>
             <div class="card-body">
-                <form action="<?php echo Url::to('/usuarios/update?id=' . $usuario['id']); ?>" method="POST">
+                <form action="<?php echo Url::to('/usuarios/update?id=' . $usuario['id']); ?>" method="POST" enctype="multipart/form-data">
                     
                     <div class="row">
                         <div class="col-md-6 mb-3">
@@ -87,6 +87,37 @@ require_once __DIR__ . '/../layouts/sidebar.php';
                             <div style="font-size: 12px; color: var(--apple-gray); margin-top: 4px;">Si está desmarcado, el usuario no podrá iniciar sesión.</div>
                         </div>
                     </div>
+
+                    <?php if (in_array($usuario['rol_id'], [3, 4])): ?>
+                    <div class="card-header" style="margin: 20px -20px 20px -20px; background: transparent; border-top: 1px solid rgba(0,0,0,0.04);">
+                        <i class="fa-solid fa-signature me-2"></i> Firma Digital
+                    </div>
+                    <div class="mb-3">
+                        <?php if (!empty($usuario['ruta_firma'])): ?>
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <div style="border: 1px solid var(--apple-border); border-radius: 8px; padding: 8px; background: #fff;">
+                                <img src="<?php echo Url::base() . $usuario['ruta_firma']; ?>" alt="Firma actual" style="max-height: 80px; max-width: 300px;">
+                            </div>
+                            <div>
+                                <small class="text-success d-block"><i class="fa-solid fa-circle-check"></i> Firma registrada</small>
+                                <label class="d-block mt-1" style="cursor: pointer; color: var(--apple-blue); font-size: 13px;">
+                                    <i class="fa-solid fa-arrow-up-from-bracket me-1"></i> Reemplazar
+                                    <input type="file" class="d-none" name="firma" accept="image/png,image/jpeg,image/jpg" onchange="this.form.querySelector('[name=accion_firma]').value='reemplazar';">
+                                </label>
+                                <label class="d-block mt-1" style="cursor: pointer; color: #bf2b2b; font-size: 13px;">
+                                    <i class="fa-solid fa-trash-can me-1"></i> Eliminar firma
+                                    <input type="checkbox" class="d-none" name="eliminar_firma" value="1">
+                                </label>
+                            </div>
+                        </div>
+                        <?php else: ?>
+                        <label for="firma" class="form-label">Firma del Médico</label>
+                        <input type="file" class="form-control" id="firma" name="firma" accept="image/png,image/jpeg,image/jpg">
+                        <small style="color: var(--apple-gray); font-size: 12px;">Formatos aceptados: JPG, PNG. Tamaño máximo: 2 MB.</small>
+                        <?php endif; ?>
+                        <input type="hidden" name="accion_firma" value="">
+                    </div>
+                    <?php endif; ?>
 
                     <div class="d-flex justify-content-end gap-2">
                         <a href="<?php echo Url::to('/usuarios'); ?>" class="btn btn-apple btn-apple-secondary">Cancelar</a>

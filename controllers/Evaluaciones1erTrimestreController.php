@@ -138,7 +138,11 @@ class Evaluaciones1erTrimestreController extends Controller
                 'regurgitacion_tricuspidea_ausente' => isset($_POST['regurgitacion_tricuspidea_ausente']) ? 1 : 0,
                 'vejiga_fetal_mm' => $_POST['vejiga_fetal_mm'] ?? null,
                 'uta_pi_promedio' => $_POST['uta_pi_promedio'] ?? null,
-                'muesca_bilateral' => isset($_POST['muesca_bilateral']) ? 1 : 0
+                'muesca_bilateral' => isset($_POST['muesca_bilateral']) ? 1 : 0,
+                'papp_a_mom' => $_POST['papp_a_mom'] ?? null,
+                'plgf_mom' => $_POST['plgf_mom'] ?? null,
+                'tamizaje_genetico_tipo' => $_POST['tamizaje_genetico_tipo'] ?? 'No realizado',
+                'tamizaje_genetico_resultado' => $_POST['tamizaje_genetico_resultado'] ?? null
             ]);
 
             $this->entornoModel->create([
@@ -327,7 +331,11 @@ class Evaluaciones1erTrimestreController extends Controller
                 'regurgitacion_tricuspidea_ausente' => isset($_POST['regurgitacion_tricuspidea_ausente']) ? 1 : 0,
                 'vejiga_fetal_mm' => $_POST['vejiga_fetal_mm'] ?? null,
                 'uta_pi_promedio' => $_POST['uta_pi_promedio'] ?? null,
-                'muesca_bilateral' => isset($_POST['muesca_bilateral']) ? 1 : 0
+                'muesca_bilateral' => isset($_POST['muesca_bilateral']) ? 1 : 0,
+                'papp_a_mom' => $_POST['papp_a_mom'] ?? null,
+                'plgf_mom' => $_POST['plgf_mom'] ?? null,
+                'tamizaje_genetico_tipo' => $_POST['tamizaje_genetico_tipo'] ?? 'No realizado',
+                'tamizaje_genetico_resultado' => $_POST['tamizaje_genetico_resultado'] ?? null
             ]);
 
             $this->entornoModel->update([

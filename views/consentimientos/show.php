@@ -139,6 +139,13 @@ require_once __DIR__ . '/../layouts/sidebar.php';
                                         <small class="text-muted"><?php echo date('d/m/Y H:i', strtotime($firma['fecha_firma'])); ?></small>
                                         <br>
                                         <small class="text-muted">IP: <?php echo htmlspecialchars($firma['ip_origen']); ?></small>
+                                        <?php if (!empty($firma['geo_pais'])): ?>
+                                        <br>
+                                        <small class="text-muted"><i class="fa-solid fa-location-dot"></i> 
+                                            <?php echo htmlspecialchars($firma['geo_ciudad'] . ', ' . $firma['geo_region'] . ', ' . $firma['geo_pais']); ?>
+                                            <?php if (!empty($firma['geo_proveedor'])): ?> — <?php echo htmlspecialchars($firma['geo_proveedor']); ?><?php endif; ?>
+                                        </small>
+                                        <?php endif; ?>
                                     </div>
                                     <div>
                                         <img src="<?php echo Url::to($firma['ruta_imagen_firma']); ?>" 
