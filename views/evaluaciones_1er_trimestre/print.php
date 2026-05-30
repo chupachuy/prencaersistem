@@ -145,6 +145,22 @@ function pBadge($val) {
         <div class="row-item"><div class="label">Parto Pretérmino:</div><div class="value"><?php echo pBadge($diagnostica['riesgo_parto_pretermino']); ?></div></div>
     </div>
 
+    <?php if (!empty($imagenes)): ?>
+    <div class="section">
+        <h2>IMÁGENES DEL ESTUDIO</h2>
+        <table style="width:100%;border-collapse:collapse;">
+        <?php $c = 0; foreach ($imagenes as $img): ?>
+            <?php if ($c % 3 == 0): ?><tr><?php endif; ?>
+            <td style="text-align:center;padding:8px;vertical-align:top;">
+                <img src="<?php echo Url::to($img['ruta_imagen']); ?>" style="max-width:180px;max-height:180px;border:1px solid #ddd;padding:2px;">
+            </td>
+            <?php if ($c % 3 == 2): ?></tr><?php endif; ?>
+        <?php $c++; endforeach; ?>
+        <?php if ($c % 3 != 0): ?></tr><?php endif; ?>
+        </table>
+    </div>
+    <?php endif; ?>
+
     <div class="footer">
         Documento generado el <?php echo $fechaImpresion; ?> — PreNacer Sistema de Gestión Médico
     </div>

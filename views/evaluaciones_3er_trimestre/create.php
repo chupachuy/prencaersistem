@@ -9,7 +9,7 @@ require_once __DIR__.'/../layouts/sidebar.php';
 <a href="<?php echo Url::to('/evaluaciones_3er_trimestre');?>" class="btn btn-apple btn-apple-secondary"><i class="fa-solid fa-arrow-left"></i> Volver</a>
 <h1 class="page-title mb-0">Nueva Evaluación 3er Trimestre</h1></div>
 <div class="page-header-actions"><span class="text-muted"><i class="fa-regular fa-calendar me-1"></i><?php echo $fh;?></span></div></div>
-<form action="<?php echo Url::to('/evaluaciones_3er_trimestre/store');?>" method="POST">
+<form action="<?php echo Url::to('/evaluaciones_3er_trimestre/store');?>" method="POST" enctype="multipart/form-data">
 <input type="hidden" name="codigo_reporte" value="<?php echo htmlspecialchars($codigo_reporte);?>">
 
 <!-- Datos Generales -->
@@ -228,6 +228,22 @@ require_once __DIR__.'/../layouts/sidebar.php';
 <div class="col-md-4 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="antecedente_parto_pretermino" <?php echo (!empty($historial)&&$historial['antecedente_parto_pretermino'])?'checked':'';?>><label class="form-check-label">Ant. Parto Pretérmino</label></div></div>
 </div></div></div>
 
+<!-- Imágenes del Estudio -->
+<div class="card mb-4">
+    <div class="card-header"><i class="fa-solid fa-images me-2"></i> Imágenes del Estudio</div>
+    <div class="card-body">
+        <div class="upload-zone border border-2 border-dashed rounded-3 p-4 text-center" id="uploadZone" style="border-color:#ccc!important;cursor:pointer;">
+            <i class="fa-solid fa-cloud-arrow-up fa-2x text-muted mb-3 d-block"></i>
+            <p class="text-muted mb-1">Arrastra imágenes o haz clic para seleccionar</p>
+            <small class="text-muted">Máximo 10 imágenes · 5 MB por imagen · JPG, PNG</small>
+        </div>
+        <input type="file" id="imagenesInput" name="imagenes[]" multiple accept="image/jpeg,image/png" style="display:none;">
+        <input type="hidden" id="imagenesEliminar" name="imagenes_eliminar" value="">
+        <div class="row mt-3 g-2" id="previewGrid"></div>
+        <div id="uploadCount" class="text-muted mt-2 small" style="display:none;"></div>
+    </div>
+</div>
+
 <div class="d-flex justify-content-end gap-2 mb-4">
 <a href="<?php echo Url::to('/evaluaciones_3er_trimestre');?>" class="btn btn-apple btn-apple-secondary">Cancelar</a>
 <button type="submit" class="btn btn-apple btn-apple-primary btn-lg"><i class="fa-solid fa-save"></i> Guardar Evaluación</button></div>
@@ -248,6 +264,60 @@ require_once __DIR__.'/../layouts/sidebar.php';
     }
     sel.addEventListener('change', toggle);
     toggle();
+
+    // Uploader de imágenes
+    var uploadZone = document.getElementById('uploadZone');
+    var imgInput = document.getElementById('imagenesInput');
+    var previewGrid = document.getElementById('previewGrid');
+    var uploadCount = document.getElementById('uploadCount');
+    var selectedFiles = [];
+
+    if (uploadZone && imgInput) {
+        uploadZone.addEventListener('click', function() { imgInput.click(); });
+        uploadZone.addEventListener('dragover', function(e) { e.preventDefault(); uploadZone.style.borderColor = '#999'; });
+        uploadZone.addEventListener('dragleave', function() { uploadZone.style.borderColor = '#ccc'; });
+        uploadZone.addEventListener('drop', function(e) { e.preventDefault(); uploadZone.style.borderColor = '#ccc'; handleFiles(e.dataTransfer.files); });
+        imgInput.addEventListener('change', function() { handleFiles(imgInput.files); });
+    }
+
+    function handleFiles(files) {
+        if (selectedFiles.length >= 10) { alert('Máximo 10 imágenes.'); return; }
+        for (var i = 0; i < files.length; i++) {
+            if (selectedFiles.length >= 10) break;
+            var f = files[i];
+            if (f.size > 5*1024*1024) { alert('La imagen '+f.name+' excede 5 MB.'); continue; }
+            if (['image/jpeg','image/png'].indexOf(f.type) === -1) { alert(f.name+' no es JPG/PNG.'); continue; }
+            selectedFiles.push(f);
+            var reader = new FileReader();
+            reader.onload = (function(file) { return function(e) {
+                var col = document.createElement('div');
+                col.className = 'col-auto position-relative';
+                col.innerHTML = '<img src="'+e.target.result+'" class="rounded" style="width:120px;height:120px;object-fit:cover;"><button type="button" class="btn-close position-absolute top-0 end-0 m-1 bg-white rounded-circle p-1 shadow-sm" style="font-size:10px;width:20px;height:20px;"></button>';
+                previewGrid.appendChild(col);
+                col.querySelector('.btn-close').addEventListener('click', function() {
+                    var idx = selectedFiles.indexOf(file);
+                    if (idx > -1) { selectedFiles.splice(idx, 1); }
+                    col.remove(); updateCount(); syncFileInput();
+                });
+                updateCount();
+            }; })(f);
+            reader.readAsDataURL(f);
+        }
+        syncFileInput();
+    }
+
+    function syncFileInput() {
+        var dt = new DataTransfer();
+        for (var i = 0; i < selectedFiles.length; i++) dt.items.add(selectedFiles[i]);
+        imgInput.files = dt.files;
+    }
+
+    function updateCount() {
+        if (selectedFiles.length > 0) {
+            uploadCount.style.display = 'block';
+            uploadCount.textContent = selectedFiles.length + ' imagen(es) seleccionada(s)';
+        } else uploadCount.style.display = 'none';
+    }
 })();
 </script>
 <?php require_once __DIR__.'/../layouts/footer.php';?>

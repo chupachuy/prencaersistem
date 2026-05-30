@@ -42,10 +42,10 @@ function si($x){return $x?'Sí':'No';}
 
 <div class="two-col"><div class="col">
 <div class="section"><h2>Datos Clínicos</h2>
-<div class="row-item"><div class="label">Peso:</div><div class="value"><?php echo v($ev['peso_kg'],' kg'); ?></div></div>
-<div class="row-item"><div class="label">Talla:</div><div class="value"><?php echo v($ev['talla_cm'],' cm'); ?></div></div>
-<div class="row-item"><div class="label">PAM:</div><div class="value"><?php echo v($ev['pam_mmhg'],' mmHg'); ?></div></div>
-<div class="row-item"><div class="label">UTA PI:</div><div class="value"><?php echo v($ev['uta_pi_promedio']); ?></div></div>
+<div class="row-item"><div class="label">Peso:</div><div class="value"><?php echo v($ev['peso_kg'],' kg'); ?> <?php if(!empty($ev['peso_kg']) && !empty($data1er['peso_kg'])): $dp = round($ev['peso_kg'] - $data1er['peso_kg'], 2); ?><small class="text-muted">(<?php echo $dp >= 0 ? '+' : ''; ?><?php echo $dp; ?> kg vs 1T: <?php echo $data1er['peso_kg']; ?> kg)</small><?php endif; ?></div></div>
+<div class="row-item"><div class="label">Talla:</div><div class="value"><?php echo v($ev['talla_cm'],' cm'); ?> <?php if(!empty($ev['talla_cm']) && !empty($data1er['talla_cm'])): ?><small class="text-muted">(1T: <?php echo $data1er['talla_cm']; ?> cm)</small><?php endif; ?></div></div>
+<div class="row-item"><div class="label">PAM:</div><div class="value"><?php echo v($ev['pam_mmhg'],' mmHg'); ?> <?php if(!empty($ev['pam_mmhg']) && !empty($data1er['ta_sistolica']) && !empty($data1er['ta_diastolica'])): $p1 = round(($data1er['ta_sistolica'] + 2 * $data1er['ta_diastolica']) / 3, 2); $dpam = round($ev['pam_mmhg'] - $p1, 2); ?><small class="text-muted">(<?php echo $dpam >= 0 ? '+' : ''; ?><?php echo $dpam; ?> mmHg vs 1T: <?php echo $p1; ?> mmHg)</small><?php endif; ?></div></div>
+<div class="row-item"><div class="label">UTA PI:</div><div class="value"><?php echo v($ev['uta_pi_promedio']); ?> <?php if(!empty($ev['uta_pi_promedio']) && !empty($data1er['uta_pi_promedio'])): $du = round($ev['uta_pi_promedio'] - $data1er['uta_pi_promedio'], 2); ?><small class="text-muted">(<?php echo $du >= 0 ? '+' : ''; ?><?php echo $du; ?> vs 1T: <?php echo $data1er['uta_pi_promedio']; ?>)</small><?php endif; ?></div></div>
 <div class="row-item"><div class="label">Edad Gestacional:</div><div class="value"><?php echo v($ev['edad_gestacional_semanas'],' sem'); ?></div></div>
 <div class="row-item"><div class="label">FPP Actual:</div><div class="value"><?php echo fd($ev['fpp_actual']); ?></div></div>
 </div>
@@ -111,6 +111,21 @@ function si($x){return $x?'Sí':'No';}
 <div class="row-item"><div class="label">Parto Pretérmino:</div><div class="value"><?php echo si($h['antecedente_parto_pretermino']??false); ?></div></div>
 </div>
 </div></div>
+
+<?php if (!empty($imagenes)): ?>
+<div class="section"><h2>IMÁGENES DEL ESTUDIO</h2>
+<table style="width:100%;border-collapse:collapse;">
+<?php $c = 0; foreach ($imagenes as $img): ?>
+    <?php if ($c % 3 == 0): ?><tr><?php endif; ?>
+    <td style="text-align:center;padding:8px;vertical-align:top;">
+        <img src="<?php echo Url::to($img['ruta_imagen']); ?>" style="max-width:180px;max-height:180px;border:1px solid #ddd;padding:2px;">
+    </td>
+    <?php if ($c % 3 == 2): ?></tr><?php endif; ?>
+<?php $c++; endforeach; ?>
+<?php if ($c % 3 != 0): ?></tr><?php endif; ?>
+</table>
+</div>
+<?php endif; ?>
 
 <div class="footer">Documento generado el <?php echo date('d/m/Y H:i'); ?> — PreNacer Sistema de Gestión Médico</div>
 </div></body></html>

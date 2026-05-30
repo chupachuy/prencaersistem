@@ -10,6 +10,7 @@ require_once __DIR__ . '/../models/ImpresionDiagnostica2doTrimestre.php';
 require_once __DIR__ . '/../models/HistorialClinico.php';
 require_once __DIR__ . '/../models/Paciente.php';
 require_once __DIR__ . '/../models/User.php';
+require_once __DIR__ . '/../models/ImagenEvaluacion.php';
 require_once __DIR__ . '/../helpers/Auth.php';
 require_once __DIR__ . '/../helpers/Session.php';
 
@@ -25,6 +26,7 @@ class Evaluaciones2doTrimestreController extends Controller
     private $historialModel;
     private $pacienteModel;
     private $userModel;
+    private $imagenModel;
 
     public function __construct()
     {
@@ -38,6 +40,7 @@ class Evaluaciones2doTrimestreController extends Controller
         $this->historialModel = new HistorialClinico();
         $this->pacienteModel = new Paciente();
         $this->userModel = new User();
+        $this->imagenModel = new ImagenEvaluacion();
     }
 
     public function index()
@@ -181,6 +184,8 @@ class Evaluaciones2doTrimestreController extends Controller
             ];
             $historialExistente ? $this->historialModel->update($historialData) : $this->historialModel->create($historialData);
 
+            ImagenEvaluacion::procesarUpload('2', $evaluacionId);
+
             Session::set('success', 'Evaluación 2do Trimestre guardada correctamente.');
             $this->redirect('/evaluaciones_2do_trimestre');
         } catch (Exception $e) {
@@ -211,7 +216,8 @@ class Evaluaciones2doTrimestreController extends Controller
             'entorno' => $this->entornoModel->getByEvaluacion($id),
             'diagnostica' => $this->diagnosticaModel->getByEvaluacion($id),
             'historial' => $this->historialModel->getByPaciente($evaluacion['paciente_id']),
-            'data1er' => $data1er
+            'data1er' => $data1er,
+            'imagenes' => $this->imagenModel->getByEvaluacion('2', $id)
         ]);
     }
 
@@ -239,7 +245,8 @@ class Evaluaciones2doTrimestreController extends Controller
             'entorno' => $this->entornoModel->getByEvaluacion($id),
             'diagnostica' => $this->diagnosticaModel->getByEvaluacion($id),
             'historial' => $this->historialModel->getByPaciente($evaluacion['paciente_id']),
-            'data1er' => $data1er
+            'data1er' => $data1er,
+            'imagenes' => $this->imagenModel->getByEvaluacion('2', $id)
         ]);
     }
 
@@ -333,6 +340,9 @@ class Evaluaciones2doTrimestreController extends Controller
             ];
             $historialExistente ? $this->historialModel->update($hdata) : $this->historialModel->create($hdata);
 
+            ImagenEvaluacion::eliminarMarcadas($_POST['imagenes_eliminar'] ?? '');
+            ImagenEvaluacion::procesarUpload('2', $id);
+
             Session::set('success', 'Evaluación actualizada correctamente.');
         } catch (Exception $e) {
             Session::set('error', 'Error: ' . $e->getMessage());
@@ -362,7 +372,8 @@ class Evaluaciones2doTrimestreController extends Controller
             'entorno' => $this->entornoModel->getByEvaluacion($id),
             'diagnostica' => $this->diagnosticaModel->getByEvaluacion($id),
             'historial' => $this->historialModel->getByPaciente($evaluacion['paciente_id']),
-            'data1er' => $this->evaluacion1erModel->getLatestFullData($evaluacion['paciente_id'])
+            'data1er' => $this->evaluacion1erModel->getLatestFullData($evaluacion['paciente_id']),
+            'imagenes' => $this->imagenModel->getByEvaluacion('2', $id)
         ]);
     }
 }

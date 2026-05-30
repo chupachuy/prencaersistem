@@ -134,4 +134,20 @@ $r('Lupus/LES',yb($h['lupus_les']??false));$r('SAF',yb($h['sindrome_antifosfolip
 $r('Preeclampsia/RCIU',yb($h['antecedente_preeclampsia_rciu']??false));$r('FIV',yb($h['fertilizacion_in_vitro']??false));
 $r('Parto Pretérmino',yb($h['antecedente_parto_pretermino']??false));?>
 </div></div></div></div>
+<?php if (!empty($imagenes)): ?>
+<div class="card mb-4">
+    <div class="card-header"><i class="fa-solid fa-images me-2"></i> Imágenes del Estudio</div>
+    <div class="card-body">
+        <div class="row g-3">
+            <?php foreach ($imagenes as $img): ?>
+            <div class="col-auto">
+                <a href="<?php echo Url::to($img['ruta_imagen']); ?>" target="_blank">
+                    <img src="<?php echo Url::to($img['ruta_imagen']); ?>" class="rounded shadow-sm" style="width:150px;height:150px;object-fit:cover;">
+                </a>
+            </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
 <?php require_once __DIR__.'/../layouts/footer.php';?>

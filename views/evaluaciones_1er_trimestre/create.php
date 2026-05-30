@@ -17,7 +17,7 @@ require_once __DIR__ . '/../layouts/sidebar.php';
         <span class="text-muted"><i class="fa-regular fa-calendar me-1"></i><?php echo $fecha_hoy; ?></span>
 
 
-<form action="<?php echo Url::to('/evaluaciones_1er_trimestre/store'); ?>" method="POST" id="formEvaluacion">
+<form action="<?php echo Url::to('/evaluaciones_1er_trimestre/store'); ?>" method="POST" id="formEvaluacion" enctype="multipart/form-data">
     <input type="hidden" name="codigo_reporte" value="<?php echo htmlspecialchars($codigo_reporte); ?>">
 
     <!-- 1. Datos Generales -->
@@ -459,6 +459,22 @@ require_once __DIR__ . '/../layouts/sidebar.php';
         </div>
     </div>
 
+    <!-- Imágenes del Estudio -->
+    <div class="card mb-4">
+        <div class="card-header"><i class="fa-solid fa-images me-2"></i> Imágenes del Estudio</div>
+        <div class="card-body">
+            <div class="upload-zone border border-2 border-dashed rounded-3 p-4 text-center" id="uploadZone" style="border-color:#ccc!important;cursor:pointer;">
+                <i class="fa-solid fa-cloud-arrow-up fa-2x text-muted mb-3 d-block"></i>
+                <p class="text-muted mb-1">Arrastra imágenes o haz clic para seleccionar</p>
+                <small class="text-muted">Máximo 10 imágenes · 5 MB por imagen · JPG, PNG</small>
+            </div>
+            <input type="file" id="imagenesInput" name="imagenes[]" multiple accept="image/jpeg,image/png" style="display:none;">
+            <input type="hidden" id="imagenesEliminar" name="imagenes_eliminar" value="">
+            <div class="row mt-3 g-2" id="previewGrid"></div>
+            <div id="uploadCount" class="text-muted mt-2 small" style="display:none;"></div>
+        </div>
+    </div>
+
     <!-- Estado y Submit -->
     <div class="card mb-4">
         <div class="card-body">
@@ -488,6 +504,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const fumInput = document.getElementById("fum");
     const fechaEvalInput = document.getElementById("fecha_evaluacion");
     const egInput = document.getElementById("edad_gestacional_semanas");
+    const fppUsgInput = document.getElementById("fpp_usg");
 
     const estadoFetoSelect = document.getElementById("estado_feto");
     const fcfInput = document.getElementById("fcf_lpm");
@@ -543,9 +560,21 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function calcularEdadGestacional() {
-        if (!fumInput || !fechaEvalInput || !egInput) return;
-        
+        if (!fumInput) return;
+
         const fumValue = fumInput.value;
+
+        if (fumValue && fppUsgInput) {
+            const fumDate = new Date(fumValue + 'T00:00:00');
+            const fppDate = new Date(fumDate);
+            fppDate.setDate(fppDate.getDate() + 280);
+            const yyyy = fppDate.getFullYear();
+            const mm = String(fppDate.getMonth() + 1).padStart(2, '0');
+            const dd = String(fppDate.getDate()).padStart(2, '0');
+            fppUsgInput.value = yyyy + '-' + mm + '-' + dd;
+        }
+
+        if (!fechaEvalInput || !egInput) return;
         const fechaEvalValue = fechaEvalInput.value;
 
         if (fumValue && fechaEvalValue) {
@@ -558,7 +587,6 @@ document.addEventListener("DOMContentLoaded", function () {
             if (diffDays >= 0) {
                 const weeks = Math.floor(diffDays / 7);
                 const days = diffDays % 7;
-                // Formato médico estandar: Semanas.Días (Ej: 12 semanas y 3 días => 12.3)
                 const edadGestacional = (weeks + days / 10).toFixed(1);
                 egInput.value = edadGestacional;
             } else {
@@ -580,6 +608,64 @@ document.addEventListener("DOMContentLoaded", function () {
     // Ejecutar cálculos e inspecciones iniciales
     calcularEdadGestacional();
     evaluarEstadoFeto();
+
+    // Uploader de imágenes
+    const uploadZone = document.getElementById('uploadZone');
+    const imgInput = document.getElementById('imagenesInput');
+    const previewGrid = document.getElementById('previewGrid');
+    const uploadCount = document.getElementById('uploadCount');
+    let selectedFiles = [];
+
+    if (uploadZone && imgInput) {
+        uploadZone.addEventListener('click', () => imgInput.click());
+        uploadZone.addEventListener('dragover', (e) => { e.preventDefault(); uploadZone.style.borderColor = '#999'; });
+        uploadZone.addEventListener('dragleave', () => { uploadZone.style.borderColor = '#ccc'; });
+        uploadZone.addEventListener('drop', (e) => { e.preventDefault(); uploadZone.style.borderColor = '#ccc'; handleFiles(e.dataTransfer.files); });
+        imgInput.addEventListener('change', () => handleFiles(imgInput.files));
+    }
+
+    function handleFiles(files) {
+        if (selectedFiles.length >= 10) { alert('Máximo 10 imágenes.'); return; }
+        for (let f of files) {
+            if (selectedFiles.length >= 10) break;
+            if (f.size > 5 * 1024 * 1024) { alert('La imagen ' + f.name + ' excede 5 MB.'); continue; }
+            if (!['image/jpeg','image/png'].includes(f.type)) { alert(f.name + ' no es JPG/PNG.'); continue; }
+            selectedFiles.push(f);
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const idx = selectedFiles.indexOf(f);
+                const col = document.createElement('div');
+                col.className = 'col-auto position-relative';
+                col.innerHTML = '<img src="' + e.target.result + '" class="rounded" style="width:120px;height:120px;object-fit:cover;"><button type="button" class="btn-close position-absolute top-0 end-0 m-1 bg-white rounded-circle p-1 shadow-sm" style="font-size:10px;width:20px;height:20px;" data-idx="' + idx + '"></button>';
+                previewGrid.appendChild(col);
+                col.querySelector('.btn-close').addEventListener('click', function() {
+                    const i = parseInt(this.dataset.idx);
+                    selectedFiles.splice(i, 1);
+                    col.remove();
+                    updateCount();
+                    syncFileInput();
+                });
+                updateCount();
+            };
+            reader.readAsDataURL(f);
+        }
+        syncFileInput();
+    }
+
+    function syncFileInput() {
+        const dt = new DataTransfer();
+        selectedFiles.forEach(f => dt.items.add(f));
+        imgInput.files = dt.files;
+    }
+
+    function updateCount() {
+        if (selectedFiles.length > 0) {
+            uploadCount.style.display = 'block';
+            uploadCount.textContent = selectedFiles.length + ' imagen(es) seleccionada(s)';
+        } else {
+            uploadCount.style.display = 'none';
+        }
+    }
 });
 </script>
 

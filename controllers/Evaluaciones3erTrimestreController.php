@@ -13,12 +13,13 @@ require_once __DIR__ . '/../models/Paciente.php';
 require_once __DIR__ . '/../models/User.php';
 require_once __DIR__ . '/../models/Evaluacion1erTrimestre.php';
 require_once __DIR__ . '/../models/Evaluacion2doTrimestre.php';
+require_once __DIR__ . '/../models/ImagenEvaluacion.php';
 require_once __DIR__ . '/../helpers/Auth.php';
 require_once __DIR__ . '/../helpers/Session.php';
 
 class Evaluaciones3erTrimestreController extends Controller
 {
-    private $ev, $ev1er, $ev2do, $ant, $crec, $dop, $anat, $plac, $hist, $pac, $usr, $ev1t, $ev2t;
+    private $ev, $ev1er, $ev2do, $ant, $crec, $dop, $anat, $plac, $hist, $pac, $usr, $ev1t, $ev2t, $img;
     private $bk, $nv;
 
     public function __construct()
@@ -36,6 +37,7 @@ class Evaluaciones3erTrimestreController extends Controller
         $this->usr = new User();
         $this->ev1t = new Evaluacion1erTrimestre();
         $this->ev2t = new Evaluacion2doTrimestre();
+        $this->img = new ImagenEvaluacion();
         $this->bk = function($k) { return isset($_POST[$k]) ? 1 : 0; };
         $this->nv = function($k) { return $_POST[$k] ?? null; };
     }
@@ -142,6 +144,8 @@ class Evaluaciones3erTrimestreController extends Controller
                 'antecedente_parto_pretermino'=>($this->bk)('antecedente_parto_pretermino')];
             $he ? $this->hist->update($hd) : $this->hist->create($hd);
 
+            ImagenEvaluacion::procesarUpload('3', $eid);
+
             Session::set('success','Evaluación 3er Trimestre guardada correctamente.');
             $this->redirect('/evaluaciones_3er_trimestre');
         } catch (Exception $e) { Session::set('error','Error: '.$e->getMessage()); $this->redirect('/evaluaciones_3er_trimestre/create'); }
@@ -156,7 +160,8 @@ class Evaluaciones3erTrimestreController extends Controller
             'anatomia'=>$this->anat->getByEvaluacion($id),'placentaria'=>$this->plac->getByEvaluacion($id),
             'historial'=>$this->hist->getByPaciente($ev['paciente_id']),
             'data1er'=>$this->ev1t->getLatestFullData($ev['paciente_id']),
-            'data2do'=>$this->ev2t->getLatestFullData($ev['paciente_id'])]);
+            'data2do'=>$this->ev2t->getLatestFullData($ev['paciente_id']),
+            'imagenes'=>$this->img->getByEvaluacion('3',$id)]);
     }
 
     public function edit() {
@@ -169,7 +174,8 @@ class Evaluaciones3erTrimestreController extends Controller
             'anatomia'=>$this->anat->getByEvaluacion($id),'placentaria'=>$this->plac->getByEvaluacion($id),
             'historial'=>$this->hist->getByPaciente($ev['paciente_id']),
             'data1er'=>$this->ev1t->getLatestFullData($ev['paciente_id']),
-            'data2do'=>$this->ev2t->getLatestFullData($ev['paciente_id'])]);
+            'data2do'=>$this->ev2t->getLatestFullData($ev['paciente_id']),
+            'imagenes'=>$this->img->getByEvaluacion('3',$id)]);
     }
 
     public function update() {
@@ -245,6 +251,8 @@ class Evaluaciones3erTrimestreController extends Controller
                 'antecedente_preeclampsia_rciu'=>($this->bk)('antecedente_preeclampsia_rciu'),'fertilizacion_in_vitro'=>($this->bk)('fertilizacion_in_vitro'),
                 'antecedente_parto_pretermino'=>($this->bk)('antecedente_parto_pretermino')];
             $he ? $this->hist->update($hd) : $this->hist->create($hd);
+            ImagenEvaluacion::eliminarMarcadas($_POST['imagenes_eliminar'] ?? '');
+            ImagenEvaluacion::procesarUpload('3', $id);
             Session::set('success','Evaluación actualizada correctamente.');
         } catch (Exception $e) { Session::set('error','Error: '.$e->getMessage()); }
         $this->redirect('/evaluaciones_3er_trimestre');
@@ -266,7 +274,8 @@ class Evaluaciones3erTrimestreController extends Controller
             'anatomia'=>$this->anat->getByEvaluacion($id),'placentaria'=>$this->plac->getByEvaluacion($id),
             'historial'=>$this->hist->getByPaciente($ev['paciente_id']),
             'data1er'=>$this->ev1t->getLatestFullData($ev['paciente_id']),
-            'data2do'=>$this->ev2t->getLatestFullData($ev['paciente_id'])]);
+            'data2do'=>$this->ev2t->getLatestFullData($ev['paciente_id']),
+            'imagenes'=>$this->img->getByEvaluacion('3',$id)]);
     }
 
     private function evaluarMorfologiaNormal($d2)

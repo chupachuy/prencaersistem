@@ -631,6 +631,20 @@ CREATE TABLE IF NOT EXISTS evaluacion_placentaria_3er_trimestre (
     UNIQUE KEY unique_evaluacion_placentaria3 (evaluacion_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Tabla para imagenes de evaluaciones trimestrales
+CREATE TABLE IF NOT EXISTS imagenes_evaluacion (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    trimestre ENUM('1','2','3') NOT NULL,
+    evaluacion_id INT NOT NULL,
+    ruta_imagen VARCHAR(255) NOT NULL,
+    nombre_original VARCHAR(255) NULL,
+    mime_type VARCHAR(50) NULL,
+    tamanio_bytes INT NULL,
+    orden INT DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_trim_eval (trimestre, evaluacion_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- Insertar Superadministrador por defecto (password: Admin123!)
 INSERT IGNORE INTO usuarios (id, nombre, apellido, email, password, rol_id, email_verified) VALUES
 (1, 'Super', 'Admin', 'superadmin@medical.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 1, TRUE);

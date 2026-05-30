@@ -167,6 +167,20 @@ Se realizó estudio ultrasonográfico de alta definición<?php echo !empty($ev['
 <div class="obs-box"><?php echo nb($ev['observaciones']);?></div>
 <?php endif; ?>
 
+<?php if (!empty($imagenes)): ?>
+<h2>IMÁGENES DEL ESTUDIO</h2>
+<table style="width:100%;border-collapse:collapse;">
+<?php $c = 0; foreach ($imagenes as $img): ?>
+    <?php if ($c % 3 == 0): ?><tr><?php endif; ?>
+    <td style="text-align:center;padding:8px;vertical-align:top;">
+        <img src="<?php echo Url::to($img['ruta_imagen']); ?>" style="max-width:180px;max-height:180px;border:1px solid #ddd;padding:2px;">
+    </td>
+    <?php if ($c % 3 == 2): ?></tr><?php endif; ?>
+<?php $c++; endforeach; ?>
+<?php if ($c % 3 != 0): ?></tr><?php endif; ?>
+</table>
+<?php endif; ?>
+
 <div class="footer">
     Documento generado el <?php echo date('d/m/Y H:i');?> — PreNacer Sistema de Gestión Médico<br>
     <?php echo htmlspecialchars($ev['codigo_reporte']);?> | Estado: <?php echo htmlspecialchars($ev['estado']);?>

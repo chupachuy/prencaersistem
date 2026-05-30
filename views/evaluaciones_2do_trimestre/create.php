@@ -14,7 +14,7 @@ require_once __DIR__ . '/../layouts/sidebar.php';
     <div class="page-header-actions"><span class="text-muted"><i class="fa-regular fa-calendar me-1"></i><?php echo $fecha_hoy; ?></span></div>
 </div>
 
-<form action="<?php echo Url::to('/evaluaciones_2do_trimestre/store'); ?>" method="POST">
+<form action="<?php echo Url::to('/evaluaciones_2do_trimestre/store'); ?>" method="POST" enctype="multipart/form-data">
     <input type="hidden" name="codigo_reporte" value="<?php echo htmlspecialchars($codigo_reporte); ?>">
 
     <!-- Datos Generales -->
@@ -66,11 +66,17 @@ require_once __DIR__ . '/../layouts/sidebar.php';
 
     <!-- Datos Clínicos -->
     <div class="card mb-4"><div class="card-header"><i class="fa-solid fa-heart-pulse me-2"></i> Datos Clínicos y Obstétricos</div><div class="card-body">
+        <?php
+        $pam1T = null;
+        if (!empty($data1er['ta_sistolica']) && !empty($data1er['ta_diastolica'])) {
+            $pam1T = round(($data1er['ta_sistolica'] + 2 * $data1er['ta_diastolica']) / 3, 2);
+        }
+        ?>
         <div class="row">
             <div class="col-md-3 mb-3"><label for="peso_kg" class="form-label">Peso (kg) <?php if(!empty($data1er['peso_kg'])): ?><small class="text-muted">| 1T: <?php echo $data1er['peso_kg']; ?> kg</small><?php endif; ?></label><input type="number" step="0.01" class="form-control" name="peso_kg" placeholder="Ej: 72.0"></div>
-            <div class="col-md-3 mb-3"><label for="talla_cm" class="form-label">Talla (cm)</label><input type="number" step="0.01" class="form-control" name="talla_cm" placeholder="Ej: 165"></div>
-            <div class="col-md-3 mb-3"><label for="pam_mmhg" class="form-label">PAM (mmHg)<i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="PAM = Presión Arterial Media: (sistólica + 2×diastólica) ÷ 3"></i></label><input type="number" step="0.01" class="form-control" name="pam_mmhg" placeholder="Presión Arterial Media"></div>
-            <div class="col-md-3 mb-3"><label for="uta_pi_promedio" class="form-label">UTA PI Promedio<i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="UTA = Arterias Uterinas · PI = Índice de Pulsatilidad (resistencia vascular)"></i></label><input type="number" step="0.01" class="form-control" name="uta_pi_promedio" placeholder="Índice Pulsatilidad"></div>
+            <div class="col-md-3 mb-3"><label for="talla_cm" class="form-label">Talla (cm) <?php if(!empty($data1er['talla_cm'])): ?><small class="text-muted">| 1T: <?php echo $data1er['talla_cm']; ?> cm</small><?php endif; ?></label><input type="number" step="0.01" class="form-control" name="talla_cm" placeholder="Ej: 165"></div>
+            <div class="col-md-3 mb-3"><label for="pam_mmhg" class="form-label">PAM (mmHg) <?php if($pam1T !== null): ?><small class="text-muted">| 1T: <?php echo $pam1T; ?> mmHg</small><?php endif; ?><i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="PAM = Presión Arterial Media: (sistólica + 2×diastólica) ÷ 3"></i></label><input type="number" step="0.01" class="form-control" name="pam_mmhg" placeholder="Presión Arterial Media"></div>
+            <div class="col-md-3 mb-3"><label for="uta_pi_promedio" class="form-label">UTA PI Promedio <?php if(!empty($data1er['uta_pi_promedio'])): ?><small class="text-muted">| 1T: <?php echo $data1er['uta_pi_promedio']; ?></small><?php endif; ?><i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="UTA = Arterias Uterinas · PI = Índice de Pulsatilidad (resistencia vascular)"></i></label><input type="number" step="0.01" class="form-control" name="uta_pi_promedio" placeholder="Índice Pulsatilidad"></div>
         </div>
         <div class="row">
             <div class="col-md-4 mb-3"><label for="edad_gestacional_semanas" class="form-label">Edad Gestacional (semanas)</label><input type="number" step="0.1" class="form-control" name="edad_gestacional_semanas" placeholder="Ej: 20.0"></div>
@@ -173,10 +179,84 @@ require_once __DIR__ . '/../layouts/sidebar.php';
         <div class="mt-2"><label for="observaciones_medicas" class="form-label">Observaciones Médicas</label><textarea class="form-control" name="observaciones_medicas" rows="2" placeholder="Notas y recomendaciones..."></textarea></div>
     </div></div>
 
+    <!-- Imágenes del Estudio -->
+    <div class="card mb-4">
+        <div class="card-header"><i class="fa-solid fa-images me-2"></i> Imágenes del Estudio</div>
+        <div class="card-body">
+            <div class="upload-zone border border-2 border-dashed rounded-3 p-4 text-center" id="uploadZone" style="border-color:#ccc!important;cursor:pointer;">
+                <i class="fa-solid fa-cloud-arrow-up fa-2x text-muted mb-3 d-block"></i>
+                <p class="text-muted mb-1">Arrastra imágenes o haz clic para seleccionar</p>
+                <small class="text-muted">Máximo 10 imágenes · 5 MB por imagen · JPG, PNG</small>
+            </div>
+            <input type="file" id="imagenesInput" name="imagenes[]" multiple accept="image/jpeg,image/png" style="display:none;">
+            <input type="hidden" id="imagenesEliminar" name="imagenes_eliminar" value="">
+            <div class="row mt-3 g-2" id="previewGrid"></div>
+            <div id="uploadCount" class="text-muted mt-2 small" style="display:none;"></div>
+        </div>
+    </div>
+
     <div class="d-flex justify-content-end gap-2 mb-4">
         <a href="<?php echo Url::to('/evaluaciones_2do_trimestre'); ?>" class="btn btn-apple btn-apple-secondary">Cancelar</a>
         <button type="submit" class="btn btn-apple btn-apple-primary btn-lg"><i class="fa-solid fa-save"></i> Guardar Evaluación</button>
     </div>
 </form>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Uploader de imágenes
+    var uploadZone = document.getElementById('uploadZone');
+    var imgInput = document.getElementById('imagenesInput');
+    var previewGrid = document.getElementById('previewGrid');
+    var uploadCount = document.getElementById('uploadCount');
+    var selectedFiles = [];
+
+    if (uploadZone && imgInput) {
+        uploadZone.addEventListener('click', function() { imgInput.click(); });
+        uploadZone.addEventListener('dragover', function(e) { e.preventDefault(); uploadZone.style.borderColor = '#999'; });
+        uploadZone.addEventListener('dragleave', function() { uploadZone.style.borderColor = '#ccc'; });
+        uploadZone.addEventListener('drop', function(e) { e.preventDefault(); uploadZone.style.borderColor = '#ccc'; handleFiles(e.dataTransfer.files); });
+        imgInput.addEventListener('change', function() { handleFiles(imgInput.files); });
+    }
+
+    function handleFiles(files) {
+        if (selectedFiles.length >= 10) { alert('Máximo 10 imágenes.'); return; }
+        for (var i = 0; i < files.length; i++) {
+            if (selectedFiles.length >= 10) break;
+            var f = files[i];
+            if (f.size > 5*1024*1024) { alert('La imagen '+f.name+' excede 5 MB.'); continue; }
+            if (['image/jpeg','image/png'].indexOf(f.type) === -1) { alert(f.name+' no es JPG/PNG.'); continue; }
+            selectedFiles.push(f);
+            var reader = new FileReader();
+            reader.onload = (function(file) { return function(e) {
+                var col = document.createElement('div');
+                col.className = 'col-auto position-relative';
+                col.innerHTML = '<img src="'+e.target.result+'" class="rounded" style="width:120px;height:120px;object-fit:cover;"><button type="button" class="btn-close position-absolute top-0 end-0 m-1 bg-white rounded-circle p-1 shadow-sm" style="font-size:10px;width:20px;height:20px;"></button>';
+                previewGrid.appendChild(col);
+                col.querySelector('.btn-close').addEventListener('click', function() {
+                    var idx = selectedFiles.indexOf(file);
+                    if (idx > -1) { selectedFiles.splice(idx, 1); }
+                    col.remove(); updateCount(); syncFileInput();
+                });
+                updateCount();
+            }; })(f);
+            reader.readAsDataURL(f);
+        }
+        syncFileInput();
+    }
+
+    function syncFileInput() {
+        var dt = new DataTransfer();
+        for (var i = 0; i < selectedFiles.length; i++) dt.items.add(selectedFiles[i]);
+        imgInput.files = dt.files;
+    }
+
+    function updateCount() {
+        if (selectedFiles.length > 0) {
+            uploadCount.style.display = 'block';
+            uploadCount.textContent = selectedFiles.length + ' imagen(es) seleccionada(s)';
+        } else uploadCount.style.display = 'none';
+    }
+});
+</script>
 
 <?php require_once __DIR__ . '/../layouts/footer.php'; ?>

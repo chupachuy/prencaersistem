@@ -46,10 +46,10 @@ $ev=$evaluacion;
         </div></div>
         <?php endif; ?>
         <div class="card mb-4"><div class="card-header"><i class="fa-solid fa-heart-pulse me-2"></i> Datos Clínicos</div><div class="card-body">
-            <div class="row mb-2"><div class="col-md-4 fw-bold">Peso:</div><div class="col-md-8"><?php echo sv($ev['peso_kg'],' kg'); ?></div></div>
-            <div class="row mb-2"><div class="col-md-4 fw-bold">Talla:</div><div class="col-md-8"><?php echo sv($ev['talla_cm'],' cm'); ?></div></div>
-            <div class="row mb-2"><div class="col-md-4 fw-bold">PAM:</div><div class="col-md-8"><?php echo sv($ev['pam_mmhg'],' mmHg'); ?></div></div>
-            <div class="row mb-2"><div class="col-md-4 fw-bold">UTA PI:</div><div class="col-md-8"><?php echo sv($ev['uta_pi_promedio']); ?></div></div>
+            <div class="row mb-2"><div class="col-md-4 fw-bold">Peso:</div><div class="col-md-8"><?php echo sv($ev['peso_kg'],' kg'); ?> <?php if(!empty($ev['peso_kg']) && !empty($data1er['peso_kg'])): $dp = round($ev['peso_kg'] - $data1er['peso_kg'], 2); ?><small class="text-muted">(<span class="<?php echo $dp >= 0 ? 'text-success' : 'text-danger'; ?>"><?php echo $dp >= 0 ? '+' : ''; ?><?php echo $dp; ?> kg</span> vs 1T: <?php echo $data1er['peso_kg']; ?> kg)</small><?php endif; ?></div></div>
+            <div class="row mb-2"><div class="col-md-4 fw-bold">Talla:</div><div class="col-md-8"><?php echo sv($ev['talla_cm'],' cm'); ?> <?php if(!empty($ev['talla_cm']) && !empty($data1er['talla_cm'])): ?><small class="text-muted">(1T: <?php echo $data1er['talla_cm']; ?> cm)</small><?php endif; ?></div></div>
+            <div class="row mb-2"><div class="col-md-4 fw-bold">PAM:</div><div class="col-md-8"><?php echo sv($ev['pam_mmhg'],' mmHg'); ?> <?php if(!empty($ev['pam_mmhg']) && !empty($data1er['ta_sistolica']) && !empty($data1er['ta_diastolica'])): $p1 = round(($data1er['ta_sistolica'] + 2 * $data1er['ta_diastolica']) / 3, 2); $dpam = round($ev['pam_mmhg'] - $p1, 2); ?><small class="text-muted">(<span class="<?php echo $dpam >= 0 ? 'text-success' : 'text-danger'; ?>"><?php echo $dpam >= 0 ? '+' : ''; ?><?php echo $dpam; ?> mmHg</span> vs 1T: <?php echo $p1; ?> mmHg)</small><?php endif; ?></div></div>
+            <div class="row mb-2"><div class="col-md-4 fw-bold">UTA PI:</div><div class="col-md-8"><?php echo sv($ev['uta_pi_promedio']); ?> <?php if(!empty($ev['uta_pi_promedio']) && !empty($data1er['uta_pi_promedio'])): $du = round($ev['uta_pi_promedio'] - $data1er['uta_pi_promedio'], 2); ?><small class="text-muted">(<span class="<?php echo $du >= 0 ? 'text-success' : 'text-danger'; ?>"><?php echo $du >= 0 ? '+' : ''; ?><?php echo $du; ?></span> vs 1T: <?php echo $data1er['uta_pi_promedio']; ?>)</small><?php endif; ?></div></div>
             <div class="row mb-2"><div class="col-md-4 fw-bold">Edad Gest.:</div><div class="col-md-8"><?php echo sv($ev['edad_gestacional_semanas'],' sem'); ?></div></div>
             <div class="row mb-2"><div class="col-md-4 fw-bold">FPP Actual:</div><div class="col-md-8"><?php echo $ev['fpp_actual']?date('d/m/Y',strtotime($ev['fpp_actual'])):'<span class="text-muted">—</span>'; ?></div></div>
         </div></div>
@@ -119,4 +119,20 @@ $ev=$evaluacion;
         </div></div>
     </div>
 </div>
+<?php if (!empty($imagenes)): ?>
+<div class="card mb-4">
+    <div class="card-header"><i class="fa-solid fa-images me-2"></i> Imágenes del Estudio</div>
+    <div class="card-body">
+        <div class="row g-3">
+            <?php foreach ($imagenes as $img): ?>
+            <div class="col-auto">
+                <a href="<?php echo Url::to($img['ruta_imagen']); ?>" target="_blank">
+                    <img src="<?php echo Url::to($img['ruta_imagen']); ?>" class="rounded shadow-sm" style="width:150px;height:150px;object-fit:cover;">
+                </a>
+            </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
 <?php require_once __DIR__ . '/../layouts/footer.php'; ?>

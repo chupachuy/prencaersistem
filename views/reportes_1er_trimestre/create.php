@@ -275,4 +275,35 @@ require_once __DIR__ . '/../layouts/sidebar.php';
     </div>
 </form>
 
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const furInput = document.getElementById("fecha_ultima_regla");
+    const fppFumInput = document.getElementById("fecha_probable_parto_fum");
+    const fppUsgInput = document.getElementById("fecha_probable_parto_usg");
+
+    function calcularFPP() {
+        if (!furInput) return;
+        const furValue = furInput.value;
+        if (!furValue) return;
+
+        const furDate = new Date(furValue + 'T00:00:00');
+        const fppDate = new Date(furDate);
+        fppDate.setDate(fppDate.getDate() + 280);
+        const yyyy = fppDate.getFullYear();
+        const mm = String(fppDate.getMonth() + 1).padStart(2, '0');
+        const dd = String(fppDate.getDate()).padStart(2, '0');
+        const fppStr = yyyy + '-' + mm + '-' + dd;
+
+        if (fppFumInput) fppFumInput.value = fppStr;
+        if (fppUsgInput) fppUsgInput.value = fppStr;
+    }
+
+    if (furInput) {
+        furInput.addEventListener("change", calcularFPP);
+    }
+
+    calcularFPP();
+});
+</script>
+
 <?php require_once __DIR__ . '/../layouts/footer.php'; ?>

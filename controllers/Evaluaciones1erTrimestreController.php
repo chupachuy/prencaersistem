@@ -8,6 +8,7 @@ require_once __DIR__ . '/../models/ImpresionDiagnostica.php';
 require_once __DIR__ . '/../models/HistorialClinico.php';
 require_once __DIR__ . '/../models/Paciente.php';
 require_once __DIR__ . '/../models/User.php';
+require_once __DIR__ . '/../models/ImagenEvaluacion.php';
 require_once __DIR__ . '/../helpers/Auth.php';
 require_once __DIR__ . '/../helpers/Session.php';
 
@@ -21,6 +22,7 @@ class Evaluaciones1erTrimestreController extends Controller
     private $historialModel;
     private $pacienteModel;
     private $userModel;
+    private $imagenModel;
 
     public function __construct()
     {
@@ -32,6 +34,7 @@ class Evaluaciones1erTrimestreController extends Controller
         $this->historialModel = new HistorialClinico();
         $this->pacienteModel = new Paciente();
         $this->userModel = new User();
+        $this->imagenModel = new ImagenEvaluacion();
     }
 
     public function index()
@@ -185,6 +188,8 @@ class Evaluaciones1erTrimestreController extends Controller
                 $this->historialModel->create($historialData);
             }
 
+            ImagenEvaluacion::procesarUpload('1', $evaluacionId);
+
             Session::set('success', 'Evaluación 1er Trimestre guardada correctamente.');
             $this->redirect('/evaluaciones_1er_trimestre');
 
@@ -223,7 +228,8 @@ class Evaluaciones1erTrimestreController extends Controller
             'marcadores' => $marcadores,
             'entorno' => $entorno,
             'diagnostica' => $diagnostica,
-            'historial' => $historial
+            'historial' => $historial,
+            'imagenes' => $this->imagenModel->getByEvaluacion('1', $id)
         ]);
     }
 
@@ -260,7 +266,8 @@ class Evaluaciones1erTrimestreController extends Controller
             'marcadores' => $marcadores,
             'entorno' => $entorno,
             'diagnostica' => $diagnostica,
-            'historial' => $historial
+            'historial' => $historial,
+            'imagenes' => $this->imagenModel->getByEvaluacion('1', $id)
         ]);
     }
 
@@ -378,6 +385,9 @@ class Evaluaciones1erTrimestreController extends Controller
                 $this->historialModel->create($historialData);
             }
 
+            ImagenEvaluacion::eliminarMarcadas($_POST['imagenes_eliminar'] ?? '');
+            ImagenEvaluacion::procesarUpload('1', $id);
+
             Session::set('success', 'Evaluación actualizada correctamente.');
 
         } catch (Exception $e) {
@@ -436,7 +446,8 @@ class Evaluaciones1erTrimestreController extends Controller
             'marcadores' => $marcadores,
             'entorno' => $entorno,
             'diagnostica' => $diagnostica,
-            'historial' => $historial
+            'historial' => $historial,
+            'imagenes' => $this->imagenModel->getByEvaluacion('1', $id)
         ]);
     }
 }
