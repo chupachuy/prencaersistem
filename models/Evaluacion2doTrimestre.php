@@ -10,17 +10,23 @@ class Evaluacion2doTrimestre
         $this->db = Database::getInstance()->getConnection();
     }
 
-    public function getAll()
+    public function getAll($medicoId = null)
     {
-        $stmt = $this->db->query("
+        $sql = "
             SELECT e.*, p.nombre as paciente_nombre, p.apellido as paciente_apellido,
                    u.nombre as medico_nombre, u.apellido as medico_apellido
             FROM evaluaciones_2do_trimestre e
             JOIN pacientes p ON e.paciente_id = p.id
             JOIN usuarios u ON e.medico_id = u.id
             WHERE e.activo = 1
-            ORDER BY e.fecha_evaluacion DESC
-        ");
+        ";
+        if ($medicoId !== null) {
+            $sql .= " AND e.medico_id = ?";
+            $stmt = $this->db->prepare($sql . " ORDER BY e.fecha_evaluacion DESC");
+            $stmt->execute([$medicoId]);
+        } else {
+            $stmt = $this->db->query($sql . " ORDER BY e.fecha_evaluacion DESC");
+        }
         return $stmt->fetchAll();
     }
 

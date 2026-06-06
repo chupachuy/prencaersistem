@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../core/Controller.php';
 require_once __DIR__ . '/../models/Paciente.php';
 require_once __DIR__ . '/../models/Asignacion.php';
+require_once __DIR__ . '/../models/HistorialClinico.php';
 require_once __DIR__ . '/../helpers/Auth.php';
 require_once __DIR__ . '/../helpers/Session.php';
 
@@ -9,11 +10,13 @@ class PacienteController extends Controller
 {
     private $pacienteModel;
     private $asignacionModel;
+    private $historialModel;
 
     public function __construct()
     {
         $this->pacienteModel = new Paciente();
         $this->asignacionModel = new Asignacion();
+        $this->historialModel = new HistorialClinico();
     }
 
     public function index()
@@ -68,6 +71,14 @@ class PacienteController extends Controller
         $pacienteId = $this->pacienteModel->create($nombre, $apellido, Auth::id(), $fecha_nacimiento, $email, $telefono, $direccion);
 
         if ($pacienteId) {
+            // Guardar antecedentes obstétricos
+            $this->historialModel->create([
+                'paciente_id' => $pacienteId,
+                'num_embarazos' => $_POST['num_embarazos'] ?? null ? (int)$_POST['num_embarazos'] : null,
+                'num_cesareas' => $_POST['num_cesareas'] ?? null ? (int)$_POST['num_cesareas'] : null,
+                'num_abortos' => $_POST['num_abortos'] ?? null ? (int)$_POST['num_abortos'] : null,
+                'num_ectopicos' => $_POST['num_ectopicos'] ?? null ? (int)$_POST['num_ectopicos'] : null
+            ]);
             // If it's a doctor creating a patient, automatically assign the patient to them
             if (Auth::hasRole(Auth::ROLE_MEDICO)) {
                 $this->asignacionModel->create([

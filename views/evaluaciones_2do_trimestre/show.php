@@ -109,6 +109,13 @@ $ev=$evaluacion;
             <?php if(!empty($diagnostica['observaciones_medicas'])): ?><div class="mt-2 p-2 bg-light rounded"><small><?php echo nl2br(htmlspecialchars($diagnostica['observaciones_medicas'])); ?></small></div><?php endif; ?>
         </div></div>
         <div class="card mb-4"><div class="card-header"><i class="fa-solid fa-notes-medical me-2"></i> Historial Clínico</div><div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-3"><strong>G - Embarazos:</strong> <?php echo sv($historial['num_embarazos']??null); ?></div>
+                <div class="col-md-3"><strong>C - Cesáreas:</strong> <?php echo sv($historial['num_cesareas']??null); ?></div>
+                <div class="col-md-3"><strong>A - Abortos:</strong> <?php echo sv($historial['num_abortos']??null); ?></div>
+                <div class="col-md-3"><strong>E - Ectópicos:</strong> <?php echo sv($historial['num_ectopicos']??null); ?></div>
+            </div>
+            <hr>
             <div class="row mb-2"><div class="col-md-6">Hipertensión</div><div class="col-md-6"><?php echo sym($historial['hipertension_cronica']??false); ?></div></div>
             <div class="row mb-2"><div class="col-md-6">Diabetes</div><div class="col-md-6"><?php echo sym($historial['diabetes']??false); ?></div></div>
             <div class="row mb-2"><div class="col-md-6">Lupus/LES</div><div class="col-md-6"><?php echo sym($historial['lupus_les']??false); ?></div></div>

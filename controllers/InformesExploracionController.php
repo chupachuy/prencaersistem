@@ -229,6 +229,10 @@ class InformesExploracionController extends Controller
 
     public function delete()
     {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->redirect('/informes_exploracion');
+        }
+
         if (!Auth::check()) {
             $this->redirect('/login');
         }
@@ -238,7 +242,7 @@ class InformesExploracionController extends Controller
             $this->redirect('/informes_exploracion');
         }
 
-        $id = intval($_GET['id'] ?? 0);
+        $id = intval($_POST['id'] ?? 0);
         
         if ($this->informeModel->eliminar($id)) {
             $this->diagnosticoModel->eliminarPorInforme($id);

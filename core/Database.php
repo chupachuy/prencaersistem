@@ -19,7 +19,8 @@ class Database
             $this->pdo->exec("SET NAMES utf8mb4");
         }
         catch (PDOException $e) {
-            die("Database Connection Error: " . $e->getMessage());
+            error_log('Database Connection Error: ' . $e->getMessage());
+            die('Database Connection Error. Por favor contacte al administrador.');
         }
     }
 

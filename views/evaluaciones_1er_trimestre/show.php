@@ -53,10 +53,17 @@ function showVal($val, $suffix = '') {
             </div>
         </div>
 
-        <!-- Historial Clínico -->
+         <!-- Historial Clínico -->
         <div class="card mb-4">
             <div class="card-header"><i class="fa-solid fa-notes-medical me-2"></i> Historial Clínico</div>
             <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-3"><strong>G - Embarazos:</strong> <?php echo showVal($historial['num_embarazos'] ?? null); ?></div>
+                    <div class="col-md-3"><strong>C - Cesáreas:</strong> <?php echo showVal($historial['num_cesareas'] ?? null); ?></div>
+                    <div class="col-md-3"><strong>A - Abortos:</strong> <?php echo showVal($historial['num_abortos'] ?? null); ?></div>
+                    <div class="col-md-3"><strong>E - Ectópicos:</strong> <?php echo showVal($historial['num_ectopicos'] ?? null); ?></div>
+                </div>
+                <hr>
                 <div class="row mb-2"><div class="col-md-6">Hipertensión Crónica</div><div class="col-md-6"><?php echo ($historial['hipertension_cronica'] ?? false) ? '<span class="badge bg-danger">Sí</span>' : '<span class="badge bg-success">No</span>'; ?></div></div>
                 <div class="row mb-2"><div class="col-md-6">Diabetes</div><div class="col-md-6"><?php echo ($historial['diabetes'] ?? false) ? '<span class="badge bg-danger">Sí</span>' : '<span class="badge bg-success">No</span>'; ?></div></div>
                 <div class="row mb-2"><div class="col-md-6">Lupus / LES</div><div class="col-md-6"><?php echo ($historial['lupus_les'] ?? false) ? '<span class="badge bg-danger">Sí</span>' : '<span class="badge bg-success">No</span>'; ?></div></div>

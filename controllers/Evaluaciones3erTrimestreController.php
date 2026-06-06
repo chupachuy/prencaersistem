@@ -44,7 +44,8 @@ class Evaluaciones3erTrimestreController extends Controller
 
     public function index() {
         if (!Auth::check()) { $this->redirect('/login'); }
-        $this->render('evaluaciones_3er_trimestre/index', ['evaluaciones' => $this->ev->getAll()]);
+        $medicoId = Auth::hasRole(Auth::ROLE_MEDICO) ? Auth::id() : null;
+        $this->render('evaluaciones_3er_trimestre/index', ['evaluaciones' => $this->ev->getAll($medicoId)]);
     }
 
     public function create() {
@@ -141,7 +142,12 @@ class Evaluaciones3erTrimestreController extends Controller
             $hd = ['paciente_id'=>$p,'hipertension_cronica'=>($this->bk)('hipertension_cronica'),'diabetes'=>($this->bk)('diabetes'),
                 'lupus_les'=>($this->bk)('lupus_les'),'sindrome_antifosfolipido_saf'=>($this->bk)('sindrome_antifosfolipido_saf'),
                 'antecedente_preeclampsia_rciu'=>($this->bk)('antecedente_preeclampsia_rciu'),'fertilizacion_in_vitro'=>($this->bk)('fertilizacion_in_vitro'),
-                'antecedente_parto_pretermino'=>($this->bk)('antecedente_parto_pretermino')];
+                'antecedente_parto_pretermino'=>($this->bk)('antecedente_parto_pretermino'),
+                'num_embarazos'=>($this->nv)('num_embarazos')!==null?(int)($this->nv)('num_embarazos'):null,
+                'num_cesareas'=>($this->nv)('num_cesareas')!==null?(int)($this->nv)('num_cesareas'):null,
+                'num_abortos'=>($this->nv)('num_abortos')!==null?(int)($this->nv)('num_abortos'):null,
+                'num_ectopicos'=>($this->nv)('num_ectopicos')!==null?(int)($this->nv)('num_ectopicos'):null
+            ];
             $he ? $this->hist->update($hd) : $this->hist->create($hd);
 
             ImagenEvaluacion::procesarUpload('3', $eid);
@@ -155,6 +161,12 @@ class Evaluaciones3erTrimestreController extends Controller
         if (!Auth::check()) { $this->redirect('/login'); }
         $id = $_GET['id']??null; if(!$id){$this->redirect('/evaluaciones_3er_trimestre');}
         $ev = $this->ev->getById($id); if(!$ev){Session::set('error','No encontrada.');$this->redirect('/evaluaciones_3er_trimestre');}
+
+        if (Auth::hasRole(Auth::ROLE_MEDICO) && $ev['medico_id'] != Auth::id()) {
+            Session::set('error', 'No tienes permiso para ver esta evaluación.');
+            $this->redirect('/evaluaciones_3er_trimestre');
+        }
+
         $this->render('evaluaciones_3er_trimestre/show',['evaluacion'=>$ev,'antecedentes'=>$this->ant->getByEvaluacion($id),
             'crecimiento'=>$this->crec->getByEvaluacion($id),'doppler'=>$this->dop->getByEvaluacion($id),
             'anatomia'=>$this->anat->getByEvaluacion($id),'placentaria'=>$this->plac->getByEvaluacion($id),
@@ -168,6 +180,12 @@ class Evaluaciones3erTrimestreController extends Controller
         if (!Auth::check()) { $this->redirect('/login'); }
         $id = $_GET['id']??null; if(!$id){$this->redirect('/evaluaciones_3er_trimestre');}
         $ev = $this->ev->getById($id); if(!$ev){Session::set('error','No encontrada.');$this->redirect('/evaluaciones_3er_trimestre');}
+
+        if (Auth::hasRole(Auth::ROLE_MEDICO) && $ev['medico_id'] != Auth::id()) {
+            Session::set('error', 'No tienes permiso para editar esta evaluación.');
+            $this->redirect('/evaluaciones_3er_trimestre');
+        }
+
         $this->render('evaluaciones_3er_trimestre/edit',['evaluacion'=>$ev,'pacientes'=>$this->pac->getAll(),
             'medicos'=>$this->usr->getMedicos(),'antecedentes'=>$this->ant->getByEvaluacion($id),
             'crecimiento'=>$this->crec->getByEvaluacion($id),'doppler'=>$this->dop->getByEvaluacion($id),
@@ -182,6 +200,13 @@ class Evaluaciones3erTrimestreController extends Controller
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') { $this->redirect('/evaluaciones_3er_trimestre'); }
         if (!Auth::check()) { $this->redirect('/login'); }
         $id = (int)($_POST['id']??0); if(!$id){$this->redirect('/evaluaciones_3er_trimestre');}
+
+        $evaluacion = $this->ev->getById($id);
+        if (Auth::hasRole(Auth::ROLE_MEDICO) && (!$evaluacion || $evaluacion['medico_id'] != Auth::id())) {
+            Session::set('error', 'No tienes permiso para modificar esta evaluación.');
+            $this->redirect('/evaluaciones_3er_trimestre');
+        }
+
         $uid = Auth::id(); $p = (int)($_POST['paciente_id']??0); $m = (int)($_POST['medico_id']??0);
         try {
             $this->ev->update(['id'=>$id,'paciente_id'=>$p,'medico_id'=>$m,
@@ -249,7 +274,12 @@ class Evaluaciones3erTrimestreController extends Controller
             $hd = ['paciente_id'=>$p,'hipertension_cronica'=>($this->bk)('hipertension_cronica'),'diabetes'=>($this->bk)('diabetes'),
                 'lupus_les'=>($this->bk)('lupus_les'),'sindrome_antifosfolipido_saf'=>($this->bk)('sindrome_antifosfolipido_saf'),
                 'antecedente_preeclampsia_rciu'=>($this->bk)('antecedente_preeclampsia_rciu'),'fertilizacion_in_vitro'=>($this->bk)('fertilizacion_in_vitro'),
-                'antecedente_parto_pretermino'=>($this->bk)('antecedente_parto_pretermino')];
+                'antecedente_parto_pretermino'=>($this->bk)('antecedente_parto_pretermino'),
+                'num_embarazos'=>($this->nv)('num_embarazos')!==null?(int)($this->nv)('num_embarazos'):null,
+                'num_cesareas'=>($this->nv)('num_cesareas')!==null?(int)($this->nv)('num_cesareas'):null,
+                'num_abortos'=>($this->nv)('num_abortos')!==null?(int)($this->nv)('num_abortos'):null,
+                'num_ectopicos'=>($this->nv)('num_ectopicos')!==null?(int)($this->nv)('num_ectopicos'):null
+            ];
             $he ? $this->hist->update($hd) : $this->hist->create($hd);
             ImagenEvaluacion::eliminarMarcadas($_POST['imagenes_eliminar'] ?? '');
             ImagenEvaluacion::procesarUpload('3', $id);
@@ -261,7 +291,14 @@ class Evaluaciones3erTrimestreController extends Controller
     public function delete() {
         if (!Auth::check()) { $this->redirect('/login'); }
         $id = $_POST['id']??null;
-        if($id){$this->ev->delete($id);Session::set('success','Evaluación eliminada.');}
+        if($id){
+            $evaluacion = $this->ev->getById($id);
+            if (Auth::hasRole(Auth::ROLE_MEDICO) && (!$evaluacion || $evaluacion['medico_id'] != Auth::id())) {
+                Session::set('error', 'No tienes permiso para eliminar esta evaluación.');
+                $this->redirect('/evaluaciones_3er_trimestre');
+            }
+            $this->ev->delete($id);Session::set('success','Evaluación eliminada.');
+        }
         $this->redirect('/evaluaciones_3er_trimestre');
     }
 
@@ -269,6 +306,12 @@ class Evaluaciones3erTrimestreController extends Controller
         if (!Auth::check()) { $this->redirect('/login'); }
         $id = $_GET['id']??null; $ev = $this->ev->getById($id);
         if(!$ev){$this->redirect('/evaluaciones_3er_trimestre');}
+
+        if (Auth::hasRole(Auth::ROLE_MEDICO) && $ev['medico_id'] != Auth::id()) {
+            Session::set('error', 'No tienes permiso para imprimir esta evaluación.');
+            $this->redirect('/evaluaciones_3er_trimestre');
+        }
+
         $this->render('evaluaciones_3er_trimestre/print',['evaluacion'=>$ev,'antecedentes'=>$this->ant->getByEvaluacion($id),
             'crecimiento'=>$this->crec->getByEvaluacion($id),'doppler'=>$this->dop->getByEvaluacion($id),
             'anatomia'=>$this->anat->getByEvaluacion($id),'placentaria'=>$this->plac->getByEvaluacion($id),

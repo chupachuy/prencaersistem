@@ -25,6 +25,10 @@ require_once __DIR__ . '/controllers/Evaluaciones2doTrimestreController.php';
 require_once __DIR__ . '/controllers/Evaluaciones3erTrimestreController.php';
 require_once __DIR__ . '/controllers/ConsentimientoController.php';
 require_once __DIR__ . '/controllers/EvaluacionesController.php';
+require_once __DIR__ . '/controllers/UltrasonidoTempranoController.php';
+require_once __DIR__ . '/controllers/EvaluacionGinecologicaController.php';
+require_once __DIR__ . '/controllers/ReferenciaController.php';
+require_once __DIR__ . '/controllers/MedicoReferidoController.php';
 
 $router = new Router();
 
@@ -71,7 +75,7 @@ $router->post('/informes_exploracion/store', [InformesExploracionController::cla
 $router->get('/informes_exploracion/show', [InformesExploracionController::class, 'show']);
 $router->get('/informes_exploracion/edit', [InformesExploracionController::class, 'edit']);
 $router->post('/informes_exploracion/update', [InformesExploracionController::class, 'update']);
-$router->get('/informes_exploracion/delete', [InformesExploracionController::class, 'delete']);
+$router->post('/informes_exploracion/delete', [InformesExploracionController::class, 'delete']);
 $router->get('/informes_exploracion/por-paciente', [InformesExploracionController::class, 'porPaciente']);
 
 // Consultas
@@ -113,6 +117,46 @@ $router->post('/evaluaciones_3er_trimestre/update', [Evaluaciones3erTrimestreCon
 $router->get('/evaluaciones_3er_trimestre/print', [Evaluaciones3erTrimestreController::class, 'print']);
 $router->post('/evaluaciones_3er_trimestre/delete', [Evaluaciones3erTrimestreController::class, 'delete']);
 
+// Ultrasonido Temprano (<11 semanas)
+$router->get('/ultrasonido_temprano', [UltrasonidoTempranoController::class, 'index']);
+$router->get('/ultrasonido_temprano/create', [UltrasonidoTempranoController::class, 'create']);
+$router->post('/ultrasonido_temprano/store', [UltrasonidoTempranoController::class, 'store']);
+$router->get('/ultrasonido_temprano/show', [UltrasonidoTempranoController::class, 'show']);
+$router->get('/ultrasonido_temprano/edit', [UltrasonidoTempranoController::class, 'edit']);
+$router->post('/ultrasonido_temprano/update', [UltrasonidoTempranoController::class, 'update']);
+$router->post('/ultrasonido_temprano/delete', [UltrasonidoTempranoController::class, 'delete']);
+$router->get('/ultrasonido_temprano/print', [UltrasonidoTempranoController::class, 'print']);
+
+// Ultrasonido Ginecológico Endovaginal
+$router->get('/evaluaciones_ginecologicas', [EvaluacionGinecologicaController::class, 'index']);
+$router->get('/evaluaciones_ginecologicas/create', [EvaluacionGinecologicaController::class, 'create']);
+$router->post('/evaluaciones_ginecologicas/store', [EvaluacionGinecologicaController::class, 'store']);
+$router->get('/evaluaciones_ginecologicas/show', [EvaluacionGinecologicaController::class, 'show']);
+$router->get('/evaluaciones_ginecologicas/edit', [EvaluacionGinecologicaController::class, 'edit']);
+$router->post('/evaluaciones_ginecologicas/update', [EvaluacionGinecologicaController::class, 'update']);
+$router->post('/evaluaciones_ginecologicas/delete', [EvaluacionGinecologicaController::class, 'delete']);
+$router->get('/evaluaciones_ginecologicas/print', [EvaluacionGinecologicaController::class, 'print']);
+
+// Referencias
+$router->get('/referencias', [ReferenciaController::class, 'index']);
+$router->get('/referencias/create', [ReferenciaController::class, 'create']);
+$router->post('/referencias/store', [ReferenciaController::class, 'store']);
+$router->get('/referencias/show', [ReferenciaController::class, 'show']);
+$router->get('/referencias/responder', [ReferenciaController::class, 'responder']);
+$router->post('/referencias/update-respuesta', [ReferenciaController::class, 'updateRespuesta']);
+$router->get('/referencias/cambiar-estado', [ReferenciaController::class, 'cambiarEstado']);
+$router->post('/referencias/update-estado', [ReferenciaController::class, 'updateEstado']);
+
+// Medicos Referidos Externos
+$router->get('/medicos-referidos', [MedicoReferidoController::class, 'index']);
+$router->get('/medicos-referidos/create', [MedicoReferidoController::class, 'create']);
+$router->post('/medicos-referidos/store', [MedicoReferidoController::class, 'store']);
+$router->get('/medicos-referidos/edit', [MedicoReferidoController::class, 'edit']);
+$router->post('/medicos-referidos/update', [MedicoReferidoController::class, 'update']);
+$router->post('/medicos-referidos/delete', [MedicoReferidoController::class, 'delete']);
+$router->get('/medicos-referidos/importar', [MedicoReferidoController::class, 'importar']);
+$router->post('/medicos-referidos/procesar-importacion', [MedicoReferidoController::class, 'procesarImportacion']);
+
 // Consentimientos
 $router->get('/consentimientos', [ConsentimientoController::class, 'index']);
 $router->get('/consentimientos/search', [ConsentimientoController::class, 'search']);
@@ -132,7 +176,7 @@ $router->post('/consentimientos/catalogo/delete', [ConsentimientoController::cla
 // Auth Routes
 $router->get('/login', [AuthController::class, 'showLogin']);
 $router->post('/login', [AuthController::class, 'login']);
-$router->get('/logout', [AuthController::class, 'logout']);
+$router->post('/logout', [AuthController::class, 'logout']);
 
 // Password Reset Routes
 $router->get('/forgot-password', [PasswordResetController::class, 'showForgotForm']);

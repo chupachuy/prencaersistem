@@ -54,6 +54,26 @@ require_once __DIR__ . '/../layouts/sidebar.php';
                         <textarea class="form-control" id="direccion" name="direccion" rows="2" placeholder="Dirección del paciente"></textarea>
                     </div>
 
+                    <h5 class="border-bottom pb-2 mb-3 text-muted"><i class="fa-solid fa-baby me-2"></i> Antecedentes Obstétricos</h5>
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <label for="num_embarazos" class="form-label">G - Embarazos</label>
+                            <input type="number" class="form-control" id="num_embarazos" name="num_embarazos" min="0" placeholder="Ej: 2">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="num_cesareas" class="form-label">C - Cesáreas</label>
+                            <input type="number" class="form-control" id="num_cesareas" name="num_cesareas" min="0" placeholder="Ej: 1">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="num_abortos" class="form-label">A - Abortos</label>
+                            <input type="number" class="form-control" id="num_abortos" name="num_abortos" min="0" placeholder="Ej: 0">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="num_ectopicos" class="form-label">E - Ectópicos</label>
+                            <input type="number" class="form-control" id="num_ectopicos" name="num_ectopicos" min="0" placeholder="Ej: 0">
+                        </div>
+                    </div>
+
                     <div class="d-flex justify-content-end gap-2">
                         <a href="<?php echo Url::to('/pacientes'); ?>" class="btn btn-apple btn-apple-secondary">Cancelar</a>
                         <button type="submit" class="btn btn-apple btn-apple-primary"><i class="fa-solid fa-save"></i> Guardar</button>

@@ -67,7 +67,105 @@ require_once __DIR__ . '/../layouts/sidebar.php';
         </div>
     </div>
 
-    <!-- 2. Signos Vitales -->
+    <?php if (!empty($historial)): ?>
+    <div class="card mb-4">
+        <div class="card-header"><i class="fa-solid fa-clipboard-list me-2"></i> Antecedentes Clínicos (Referencia)</div>
+        <div class="card-body">
+            <div class="row mb-2">
+                <div class="col-md-3"><strong>G - Embarazos:</strong> <?php echo $historial['num_embarazos'] ?? '—'; ?></div>
+                <div class="col-md-3"><strong>C - Cesáreas:</strong> <?php echo $historial['num_cesareas'] ?? '—'; ?></div>
+                <div class="col-md-3"><strong>A - Abortos:</strong> <?php echo $historial['num_abortos'] ?? '—'; ?></div>
+                <div class="col-md-3"><strong>E - Ectópicos:</strong> <?php echo $historial['num_ectopicos'] ?? '—'; ?></div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-4 mb-2"><?php echo ($historial['hipertension_cronica'] ?? false) ? '<span class="text-danger">⚠</span>' : '<span class="text-success">✓</span>'; ?> Hipertensión Crónica</div>
+                <div class="col-md-4 mb-2"><?php echo ($historial['diabetes'] ?? false) ? '<span class="text-danger">⚠</span>' : '<span class="text-success">✓</span>'; ?> Diabetes</div>
+                <div class="col-md-4 mb-2"><?php echo ($historial['lupus_les'] ?? false) ? '<span class="text-danger">⚠</span>' : '<span class="text-success">✓</span>'; ?> Lupus / LES</div>
+                <div class="col-md-4 mb-2"><?php echo ($historial['sindrome_antifosfolipido_saf'] ?? false) ? '<span class="text-danger">⚠</span>' : '<span class="text-success">✓</span>'; ?> SAF</div>
+                <div class="col-md-4 mb-2"><?php echo ($historial['antecedente_preeclampsia_rciu'] ?? false) ? '<span class="text-danger">⚠</span>' : '<span class="text-success">✓</span>'; ?> Preeclampsia / RCIU</div>
+                <div class="col-md-4 mb-2"><?php echo ($historial['fertilizacion_in_vitro'] ?? false) ? '<span class="text-danger">⚠</span>' : '<span class="text-success">✓</span>'; ?> Fertilización In Vitro</div>
+                <div class="col-md-4 mb-2"><?php echo ($historial['antecedente_parto_pretermino'] ?? false) ? '<span class="text-danger">⚠</span>' : '<span class="text-success">✓</span>'; ?> Parto Pretérmino</div>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
+
+     <!-- 2. Historial Clínico (Antecedentes) -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fa-solid fa-notes-medical me-2"></i> Historial Clínico (Antecedentes)
+        </div>
+        <div class="card-body">
+            <h6 class="text-muted mb-3">Antecedentes Obstétricos (G/C/A/E)</h6>
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <label for="num_embarazos" class="form-label">G - Embarazos</label>
+                    <input type="number" class="form-control" id="num_embarazos" name="num_embarazos" min="0" value="<?php echo htmlspecialchars($historial['num_embarazos'] ?? ''); ?>">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="num_cesareas" class="form-label">C - Cesáreas</label>
+                    <input type="number" class="form-control" id="num_cesareas" name="num_cesareas" min="0" value="<?php echo htmlspecialchars($historial['num_cesareas'] ?? ''); ?>">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="num_abortos" class="form-label">A - Abortos</label>
+                    <input type="number" class="form-control" id="num_abortos" name="num_abortos" min="0" value="<?php echo htmlspecialchars($historial['num_abortos'] ?? ''); ?>">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="num_ectopicos" class="form-label">E - Ectópicos</label>
+                    <input type="number" class="form-control" id="num_ectopicos" name="num_ectopicos" min="0" value="<?php echo htmlspecialchars($historial['num_ectopicos'] ?? ''); ?>">
+                </div>
+            </div>
+            <hr class="mt-0 mb-3">
+            <h6 class="text-muted mb-3">Antecedentes Médicos</h6>
+            <div class="row">
+                <div class="col-md-4 mb-2">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="hipertension_cronica" name="hipertension_cronica" <?php echo (!empty($historial) && $historial['hipertension_cronica']) ? 'checked' : ''; ?>>
+                        <label class="form-check-label" for="hipertension_cronica">Hipertensión Crónica</label>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="diabetes" name="diabetes" <?php echo (!empty($historial) && $historial['diabetes']) ? 'checked' : ''; ?>>
+                        <label class="form-check-label" for="diabetes">Diabetes</label>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="lupus_les" name="lupus_les" <?php echo (!empty($historial) && $historial['lupus_les']) ? 'checked' : ''; ?>>
+                        <label class="form-check-label" for="lupus_les">Lupus / LES</label>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="sindrome_antifosfolipido_saf" name="sindrome_antifosfolipido_saf" <?php echo (!empty($historial) && $historial['sindrome_antifosfolipido_saf']) ? 'checked' : ''; ?>>
+                        <label class="form-check-label" for="sindrome_antifosfolipido_saf">Síndrome Antifosfolípido (SAF) <i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="SAF = Síndrome Antifosfolípido, trastorno autoinmune que favorece trombosis y complicaciones en el embarazo"></i></label>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="antecedente_preeclampsia_rciu" name="antecedente_preeclampsia_rciu" <?php echo (!empty($historial) && $historial['antecedente_preeclampsia_rciu']) ? 'checked' : ''; ?>>
+                        <label class="form-check-label" for="antecedente_preeclampsia_rciu">Antecedente Preeclampsia / RCIU <i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="RCIU = Restricción del Crecimiento Intrauterino"></i></label>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="fertilizacion_in_vitro" name="fertilizacion_in_vitro" <?php echo (!empty($historial) && $historial['fertilizacion_in_vitro']) ? 'checked' : ''; ?>>
+                        <label class="form-check-label" for="fertilizacion_in_vitro">Fertilización In Vitro</label>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="antecedente_parto_pretermino" name="antecedente_parto_pretermino" <?php echo (!empty($historial) && $historial['antecedente_parto_pretermino']) ? 'checked' : ''; ?>>
+                        <label class="form-check-label" for="antecedente_parto_pretermino">Antecedente Parto Pretérmino</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Signos Vitales -->
     <div class="card mb-4">
         <div class="card-header">
             <i class="fa-solid fa-heart-pulse me-2"></i> Signos Vitales
@@ -141,60 +239,7 @@ require_once __DIR__ . '/../layouts/sidebar.php';
         </div>
     </div>
 
-    <!-- 4. Historial Clínico -->
-    <div class="card mb-4">
-        <div class="card-header">
-            <i class="fa-solid fa-notes-medical me-2"></i> Historial Clínico (Antecedentes)
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-4 mb-2">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="hipertension_cronica" name="hipertension_cronica" <?php echo (!empty($historial) && $historial['hipertension_cronica']) ? 'checked' : ''; ?>>
-                        <label class="form-check-label" for="hipertension_cronica">Hipertensión Crónica</label>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-2">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="diabetes" name="diabetes" <?php echo (!empty($historial) && $historial['diabetes']) ? 'checked' : ''; ?>>
-                        <label class="form-check-label" for="diabetes">Diabetes</label>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-2">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="lupus_les" name="lupus_les" <?php echo (!empty($historial) && $historial['lupus_les']) ? 'checked' : ''; ?>>
-                        <label class="form-check-label" for="lupus_les">Lupus / LES</label>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-2">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="sindrome_antifosfolipido_saf" name="sindrome_antifosfolipido_saf" <?php echo (!empty($historial) && $historial['sindrome_antifosfolipido_saf']) ? 'checked' : ''; ?>>
-                        <label class="form-check-label" for="sindrome_antifosfolipido_saf">Síndrome Antifosfolípido (SAF) <i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="SAF = Síndrome Antifosfolípido, trastorno autoinmune que favorece trombosis y complicaciones en el embarazo"></i></label>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-2">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="antecedente_preeclampsia_rciu" name="antecedente_preeclampsia_rciu" <?php echo (!empty($historial) && $historial['antecedente_preeclampsia_rciu']) ? 'checked' : ''; ?>>
-                        <label class="form-check-label" for="antecedente_preeclampsia_rciu">Antecedente Preeclampsia / RCIU <i class="fa-solid fa-circle-question text-muted ms-1 fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="RCIU = Restricción del Crecimiento Intrauterino"></i></label>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-2">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="fertilizacion_in_vitro" name="fertilizacion_in_vitro" <?php echo (!empty($historial) && $historial['fertilizacion_in_vitro']) ? 'checked' : ''; ?>>
-                        <label class="form-check-label" for="fertilizacion_in_vitro">Fertilización In Vitro</label>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-2">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="antecedente_parto_pretermino" name="antecedente_parto_pretermino" <?php echo (!empty($historial) && $historial['antecedente_parto_pretermino']) ? 'checked' : ''; ?>>
-                        <label class="form-check-label" for="antecedente_parto_pretermino">Antecedente Parto Pretérmino</label>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 5. Anatomía Fetal -->
+    <!-- 4. Anatomía Fetal -->
     <div class="card mb-4" id="card-anatomia">
         <div class="card-header">
             <i class="fa-solid fa-baby me-2"></i> Anatomía Fetal

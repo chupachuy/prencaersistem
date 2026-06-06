@@ -19,6 +19,21 @@
             });
         }
 
+        // Add CSRF token to all POST forms automatically.
+        const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+        if (csrfMeta) {
+            const token = csrfMeta.getAttribute('content');
+            document.querySelectorAll('form[method="post"], form[method="POST"]').forEach(function (form) {
+                if (!form.querySelector('input[name="_csrf"]')) {
+                    const hidden = document.createElement('input');
+                    hidden.type = 'hidden';
+                    hidden.name = '_csrf';
+                    hidden.value = token;
+                    form.appendChild(hidden);
+                }
+            });
+        }
+
         // Inicializar tooltips de Bootstrap (iconos de ayuda en formularios)
         const tooltipEls = document.querySelectorAll('[data-bs-toggle="tooltip"]');
         tooltipEls.forEach(function(el) {

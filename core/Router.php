@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/../helpers/Csrf.php';
+
 class Router
 {
     protected $routes = [];
@@ -52,6 +54,10 @@ class Router
         if (is_array($callback)) {
             // Instantiate the controller if a class name is passed
             $callback[0] = new $callback[0]();
+        }
+
+        if ($method === 'POST') {
+            Csrf::validateRequest();
         }
 
         return call_user_func($callback);

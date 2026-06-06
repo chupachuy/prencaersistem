@@ -5,6 +5,7 @@ class Auth
 {
     public static function login($user)
     {
+        session_regenerate_id(true);
         Session::set('user_id', $user['id']);
         Session::set('user_role_id', $user['rol_id']);
         Session::set('user_name', $user['nombre']);

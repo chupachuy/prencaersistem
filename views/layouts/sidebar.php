@@ -44,6 +44,18 @@ if ($matchPath === '') $matchPath = '/';
         <?php endif; ?>
 
         <li>
+            <a href="<?= Url::to('/referencias') ?>" class="<?php echo strpos($matchPath, '/referencias') === 0 ? 'active' : ''; ?>">
+                <i class="fa-solid fa-share-from-square"></i> Referencias
+            </a>
+        </li>
+        <?php if ($roleId == Auth::ROLE_SUPERADMIN || $roleId == Auth::ROLE_ADMINISTRADOR || $roleId == Auth::ROLE_JEFE): ?>
+        <li>
+            <a href="<?= Url::to('/medicos-referidos') ?>" class="<?php echo strpos($matchPath, '/medicos-referidos') === 0 ? 'active' : ''; ?>">
+                <i class="fa-solid fa-user-doctor"></i> Medicos Referidos
+            </a>
+        </li>
+        <?php endif; ?>
+        <li>
             <a href="<?= Url::to('/informes_exploracion') ?>" class="<?php echo strpos($matchPath, '/informes_exploracion') === 0 ? 'active' : ''; ?>">
                 <i class="fa-solid fa-file-medical-alt"></i> Informes Exploracion
             </a>
@@ -55,6 +67,16 @@ if ($matchPath === '') $matchPath = '/';
         </li>
 
         <?php if ($roleId == Auth::ROLE_MEDICO || $roleId == Auth::ROLE_JEFE || $roleId == Auth::ROLE_SUPERADMIN || $roleId == Auth::ROLE_ADMINISTRADOR): ?>
+        <li>
+            <a href="<?= Url::to('/ultrasonido_temprano') ?>" class="<?php echo strpos($matchPath, '/ultrasonido_temprano') === 0 ? 'active' : ''; ?>">
+                <i class="fa-solid fa-wave-square"></i> Ultrasonido Temprano
+            </a>
+        </li>
+        <li>
+            <a href="<?= Url::to('/evaluaciones_ginecologicas') ?>" class="<?php echo strpos($matchPath, '/evaluaciones_ginecologicas') === 0 ? 'active' : ''; ?>">
+                <i class="fa-solid fa-uterus"></i> USG Ginecológico
+            </a>
+        </li>
         <li>
             <a href="<?= Url::to('/consultas') ?>" class="<?php echo strpos($matchPath, '/consultas') === 0 ? 'active' : ''; ?>">
                 <i class="fa-solid fa-calendar-check"></i> Consultas
@@ -92,8 +114,11 @@ if ($matchPath === '') $matchPath = '/';
         <?php endif; ?>
     </ul>
     
+    <form id="logoutForm" method="POST" action="<?= Url::to('/logout') ?>" style="display:none;">
+        <input type="hidden" name="_csrf" value="<?php echo htmlspecialchars(Csrf::token(), ENT_QUOTES, 'UTF-8'); ?>">
+    </form>
     <div class="mt-auto p-3 border-top" style="border-color: rgba(0,0,0,0.04) !important;">
-        <a href="<?= Url::to('/logout') ?>" class="logout-btn w-100">
+        <a href="#" class="logout-btn w-100" onclick="event.preventDefault(); document.getElementById('logoutForm').submit();">
             <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión
         </a>
     </div>
@@ -121,7 +146,7 @@ if ($matchPath === '') $matchPath = '/';
             <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2" style="border-radius: 12px; padding: 8px;">
                 <li><a class="dropdown-item" href="<?= Url::to('/perfil') ?>" style="border-radius: 8px; padding: 10px 14px;"><i class="fa-regular fa-user me-2"></i> Mi Perfil</a></li>
                 <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item text-danger" href="<?= Url::to('/logout') ?>" style="border-radius: 8px; padding: 10px 14px;"><i class="fa-solid fa-arrow-right-from-bracket me-2"></i> Cerrar Sesión</a></li>
+                <li><a class="dropdown-item text-danger" href="#" onclick="event.preventDefault(); document.getElementById('logoutForm').submit();" style="border-radius: 8px; padding: 10px 14px;"><i class="fa-solid fa-arrow-right-from-bracket me-2"></i> Cerrar Sesión</a></li>
             </ul>
         </div>
     </header>

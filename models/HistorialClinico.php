@@ -22,13 +22,17 @@ class HistorialClinico
             'sindrome_antifosfolipido_saf' => false,
             'antecedente_preeclampsia_rciu' => false,
             'fertilizacion_in_vitro' => false,
-            'antecedente_parto_pretermino' => false
+            'antecedente_parto_pretermino' => false,
+            'num_embarazos' => null,
+            'num_cesareas' => null,
+            'num_abortos' => null,
+            'num_ectopicos' => null
         ];
     }
 
     public function create($data)
     {
-        $stmt = $this->db->prepare("INSERT INTO historial_clinico (paciente_id, hipertension_cronica, diabetes, lupus_les, sindrome_antifosfolipido_saf, antecedente_preeclampsia_rciu, fertilizacion_in_vitro, antecedente_parto_pretermino) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt = $this->db->prepare("INSERT INTO historial_clinico (paciente_id, hipertension_cronica, diabetes, lupus_les, sindrome_antifosfolipido_saf, antecedente_preeclampsia_rciu, fertilizacion_in_vitro, antecedente_parto_pretermino, num_embarazos, num_cesareas, num_abortos, num_ectopicos) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         return $stmt->execute([
             $data['paciente_id'],
             $data['hipertension_cronica'] ?? 0,
@@ -37,13 +41,17 @@ class HistorialClinico
             $data['sindrome_antifosfolipido_saf'] ?? 0,
             $data['antecedente_preeclampsia_rciu'] ?? 0,
             $data['fertilizacion_in_vitro'] ?? 0,
-            $data['antecedente_parto_pretermino'] ?? 0
+            $data['antecedente_parto_pretermino'] ?? 0,
+            $data['num_embarazos'] ?? null,
+            $data['num_cesareas'] ?? null,
+            $data['num_abortos'] ?? null,
+            $data['num_ectopicos'] ?? null
         ]);
     }
 
     public function update($data)
     {
-        $stmt = $this->db->prepare("UPDATE historial_clinico SET hipertension_cronica = ?, diabetes = ?, lupus_les = ?, sindrome_antifosfolipido_saf = ?, antecedente_preeclampsia_rciu = ?, fertilizacion_in_vitro = ?, antecedente_parto_pretermino = ? WHERE paciente_id = ?");
+        $stmt = $this->db->prepare("UPDATE historial_clinico SET hipertension_cronica = ?, diabetes = ?, lupus_les = ?, sindrome_antifosfolipido_saf = ?, antecedente_preeclampsia_rciu = ?, fertilizacion_in_vitro = ?, antecedente_parto_pretermino = ?, num_embarazos = ?, num_cesareas = ?, num_abortos = ?, num_ectopicos = ? WHERE paciente_id = ?");
         return $stmt->execute([
             $data['hipertension_cronica'] ?? 0,
             $data['diabetes'] ?? 0,
@@ -52,6 +60,10 @@ class HistorialClinico
             $data['antecedente_preeclampsia_rciu'] ?? 0,
             $data['fertilizacion_in_vitro'] ?? 0,
             $data['antecedente_parto_pretermino'] ?? 0,
+            $data['num_embarazos'] ?? null,
+            $data['num_cesareas'] ?? null,
+            $data['num_abortos'] ?? null,
+            $data['num_ectopicos'] ?? null,
             $data['paciente_id']
         ]);
     }

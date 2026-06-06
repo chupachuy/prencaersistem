@@ -58,6 +58,10 @@ class AuthController extends Controller
 
     public function logout()
     {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->redirect('/dashboard');
+        }
+
         Auth::logout();
         Session::set('success', 'Ha cerrado sesión correctamente.');
         $this->redirect('/login');

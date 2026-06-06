@@ -43,7 +43,8 @@ class Evaluaciones1erTrimestreController extends Controller
             $this->redirect('/login');
         }
 
-        $evaluaciones = $this->evaluacionModel->getAll();
+        $medicoId = Auth::hasRole(Auth::ROLE_MEDICO) ? Auth::id() : null;
+        $evaluaciones = $this->evaluacionModel->getAll($medicoId);
         $this->render('evaluaciones_1er_trimestre/index', ['evaluaciones' => $evaluaciones]);
     }
 
@@ -179,7 +180,11 @@ class Evaluaciones1erTrimestreController extends Controller
                 'sindrome_antifosfolipido_saf' => isset($_POST['sindrome_antifosfolipido_saf']) ? 1 : 0,
                 'antecedente_preeclampsia_rciu' => isset($_POST['antecedente_preeclampsia_rciu']) ? 1 : 0,
                 'fertilizacion_in_vitro' => isset($_POST['fertilizacion_in_vitro']) ? 1 : 0,
-                'antecedente_parto_pretermino' => isset($_POST['antecedente_parto_pretermino']) ? 1 : 0
+                'antecedente_parto_pretermino' => isset($_POST['antecedente_parto_pretermino']) ? 1 : 0,
+                'num_embarazos' => $_POST['num_embarazos'] ?? null ? (int)$_POST['num_embarazos'] : null,
+                'num_cesareas' => $_POST['num_cesareas'] ?? null ? (int)$_POST['num_cesareas'] : null,
+                'num_abortos' => $_POST['num_abortos'] ?? null ? (int)$_POST['num_abortos'] : null,
+                'num_ectopicos' => $_POST['num_ectopicos'] ?? null ? (int)$_POST['num_ectopicos'] : null
             ];
 
             if ($historialExistente) {
@@ -213,6 +218,11 @@ class Evaluaciones1erTrimestreController extends Controller
         $evaluacion = $this->evaluacionModel->getById($id);
         if (!$evaluacion) {
             Session::set('error', 'Evaluación no encontrada.');
+            $this->redirect('/evaluaciones_1er_trimestre');
+        }
+
+        if (Auth::hasRole(Auth::ROLE_MEDICO) && $evaluacion['medico_id'] != Auth::id()) {
+            Session::set('error', 'No tienes permiso para ver esta evaluación.');
             $this->redirect('/evaluaciones_1er_trimestre');
         }
 
@@ -250,6 +260,11 @@ class Evaluaciones1erTrimestreController extends Controller
             $this->redirect('/evaluaciones_1er_trimestre');
         }
 
+        if (Auth::hasRole(Auth::ROLE_MEDICO) && $evaluacion['medico_id'] != Auth::id()) {
+            Session::set('error', 'No tienes permiso para editar esta evaluación.');
+            $this->redirect('/evaluaciones_1er_trimestre');
+        }
+
         $pacientes = $this->pacienteModel->getAll();
         $medicos = $this->userModel->getMedicos();
         $anatomia = $this->anatomiaModel->getByEvaluacion($id);
@@ -283,6 +298,12 @@ class Evaluaciones1erTrimestreController extends Controller
 
         $id = (int) ($_POST['id'] ?? 0);
         if (!$id) {
+            $this->redirect('/evaluaciones_1er_trimestre');
+        }
+
+        $evaluacion = $this->evaluacionModel->getById($id);
+        if (Auth::hasRole(Auth::ROLE_MEDICO) && (!$evaluacion || $evaluacion['medico_id'] != Auth::id())) {
+            Session::set('error', 'No tienes permiso para modificar esta evaluación.');
             $this->redirect('/evaluaciones_1er_trimestre');
         }
 
@@ -376,7 +397,11 @@ class Evaluaciones1erTrimestreController extends Controller
                 'sindrome_antifosfolipido_saf' => isset($_POST['sindrome_antifosfolipido_saf']) ? 1 : 0,
                 'antecedente_preeclampsia_rciu' => isset($_POST['antecedente_preeclampsia_rciu']) ? 1 : 0,
                 'fertilizacion_in_vitro' => isset($_POST['fertilizacion_in_vitro']) ? 1 : 0,
-                'antecedente_parto_pretermino' => isset($_POST['antecedente_parto_pretermino']) ? 1 : 0
+                'antecedente_parto_pretermino' => isset($_POST['antecedente_parto_pretermino']) ? 1 : 0,
+                'num_embarazos' => $_POST['num_embarazos'] ?? null ? (int)$_POST['num_embarazos'] : null,
+                'num_cesareas' => $_POST['num_cesareas'] ?? null ? (int)$_POST['num_cesareas'] : null,
+                'num_abortos' => $_POST['num_abortos'] ?? null ? (int)$_POST['num_abortos'] : null,
+                'num_ectopicos' => $_POST['num_ectopicos'] ?? null ? (int)$_POST['num_ectopicos'] : null
             ];
 
             if ($historialExistente) {
@@ -408,6 +433,12 @@ class Evaluaciones1erTrimestreController extends Controller
             $this->redirect('/evaluaciones_1er_trimestre');
         }
 
+        $evaluacion = $this->evaluacionModel->getById($id);
+        if (Auth::hasRole(Auth::ROLE_MEDICO) && (!$evaluacion || $evaluacion['medico_id'] != Auth::id())) {
+            Session::set('error', 'No tienes permiso para eliminar esta evaluación.');
+            $this->redirect('/evaluaciones_1er_trimestre');
+        }
+
         if ($this->evaluacionModel->delete($id)) {
             Session::set('success', 'Evaluación eliminada correctamente.');
         } else {
@@ -431,6 +462,11 @@ class Evaluaciones1erTrimestreController extends Controller
         $evaluacion = $this->evaluacionModel->getById($id);
         if (!$evaluacion) {
             Session::set('error', 'Evaluación no encontrada.');
+            $this->redirect('/evaluaciones_1er_trimestre');
+        }
+
+        if (Auth::hasRole(Auth::ROLE_MEDICO) && $evaluacion['medico_id'] != Auth::id()) {
+            Session::set('error', 'No tienes permiso para imprimir esta evaluación.');
             $this->redirect('/evaluaciones_1er_trimestre');
         }
 

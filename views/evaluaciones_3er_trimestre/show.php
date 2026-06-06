@@ -129,6 +129,9 @@ $r('Obstruyen Canal',yb($pl['miomas_obstruyen_canal']??false));
 <?php endif; ?>
 
 <div class="card mb-4"><div class="card-header"><i class="fa-solid fa-notes-medical me-2"></i> Historial Clínico</div><div class="card-body">
+<?php $r('G - Embarazos',sv3($h['num_embarazos']??null));$r('C - Cesáreas',sv3($h['num_cesareas']??null));
+$r('A - Abortos',sv3($h['num_abortos']??null));$r('E - Ectópicos',sv3($h['num_ectopicos']??null));?>
+<hr>
 <?php $r('Hipertensión',yb($h['hipertension_cronica']??false));$r('Diabetes',yb($h['diabetes']??false));
 $r('Lupus/LES',yb($h['lupus_les']??false));$r('SAF',yb($h['sindrome_antifosfolipido_saf']??false));
 $r('Preeclampsia/RCIU',yb($h['antecedente_preeclampsia_rciu']??false));$r('FIV',yb($h['fertilizacion_in_vitro']??false));
