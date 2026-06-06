@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../../helpers/Session.php';
 require_once __DIR__ . '/../../helpers/Url.php';
+require_once __DIR__ . '/../../helpers/Csrf.php';
 
 $error = Session::getFlash('error');
 $success = Session::getFlash('success');
@@ -170,6 +171,7 @@ $token = $_GET['token'] ?? '';
                 </a>
             <?php else: ?>
                 <form action="<?php echo Url::to('/reset-password'); ?>" method="POST">
+                    <input type="hidden" name="_csrf" value="<?php echo htmlspecialchars(Csrf::token(), ENT_QUOTES, 'UTF-8'); ?>">
                     <input type="hidden" name="token" value="<?php echo htmlspecialchars($token); ?>">
                     
                     <div class="mb-3">
