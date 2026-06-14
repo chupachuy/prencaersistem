@@ -22,6 +22,7 @@ require_once __DIR__ . '/../helpers/Session.php';
 class EvaluacionGinecologicaController extends Controller
 {
     private $evaluacionModel;
+    private $mailer;
     private $indicacionesModel;
     private $antecedentesModel;
     private $tecnicaModel;
@@ -41,6 +42,7 @@ class EvaluacionGinecologicaController extends Controller
     public function __construct()
     {
         $this->evaluacionModel = new EvaluacionGinecologica();
+        $this->mailer = new Mailer();
         $this->indicacionesModel = new IndicacionesGinecologicas();
         $this->antecedentesModel = new AntecedentesGinecologicos();
         $this->tecnicaModel = new TecnicaUltrasonidoGinecologico();
@@ -700,5 +702,15 @@ class EvaluacionGinecologicaController extends Controller
             'rec_control_unidad' => $this->txt('rec_control_unidad'),
             'rec_otro' => $this->txt('rec_otro'),
         ];
+    }
+
+    public function pdf()
+    {
+        if (!Auth::check()) { $this->redirect("/login"); }
+        $id = $_GET["id"] ?? null;
+        if (!$id) { $this->redirect("/evaluaciones_ginecologicas"); }
+        $evaluacion = $this->evaluacionModel->getById($id);
+        if (!$evaluacion) { Session::set("error", "No encontrado."); $this->redirect("/evaluaciones_ginecologicas"); }
+        $this->streamPdf("evaluaciones_ginecologicas/imprimir", ["evaluacion" => $evaluacion], $evaluacion["codigo_reporte"] . ".pdf");
     }
 }

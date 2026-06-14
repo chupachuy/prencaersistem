@@ -32,7 +32,9 @@ function pBadge($val) {
     <title>Evaluación 1er Trimestre — <?php echo htmlspecialchars($evaluacion['codigo_reporte']); ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { font-family: 'Helvetica', 'Arial', sans-serif; padding: 30px; color: #333; }
+        body {
+            font-family: 'Helvetica', 'Arial', sans-serif; padding: 150px 30px 40px 30px; color: #333;
+        }
         .document { max-width: 800px; margin: 0 auto; }
         .doc-header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #333; padding-bottom: 15px; }
         .doc-header h1 { font-size: 20px; margin: 0; }
@@ -46,7 +48,6 @@ function pBadge($val) {
         .col { flex: 1; }
         .badge { font-size: 10px; padding: 2px 6px; border-radius: 3px; background: #eee; }
         .footer { margin-top: 40px; font-size: 10px; color: #999; text-align: center; border-top: 1px solid #eee; padding-top: 10px; }
-        @media print { body { padding: 15px; } }
     </style>
 </head>
 <body>
@@ -152,7 +153,7 @@ function pBadge($val) {
         <?php $c = 0; foreach ($imagenes as $img): ?>
             <?php if ($c % 3 == 0): ?><tr><?php endif; ?>
             <td style="text-align:center;padding:8px;vertical-align:top;">
-                <img src="<?php echo Url::to($img['ruta_imagen']); ?>" style="max-width:180px;max-height:180px;border:1px solid #ddd;padding:2px;">
+                <img src="<?php echo ltrim($img['ruta_imagen'], '/'); ?>" style="width:<?=$img['width']?>px;height:<?=$img['height']?>px;border:1px solid #ddd;padding:2px;">
             </td>
             <?php if ($c % 3 == 2): ?></tr><?php endif; ?>
         <?php $c++; endforeach; ?>

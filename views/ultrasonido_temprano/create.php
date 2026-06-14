@@ -38,7 +38,7 @@ $hoy = date('Y-m-d');
                     <label class="form-label">Edad</label>
                     <input type="number" name="edad" class="form-control" placeholder="años" min="10" max="99">
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <label class="form-label">Paciente *</label>
                     <select name="paciente_id" class="form-select" required>
                         <option value="">Seleccionar paciente...</option>
@@ -47,15 +47,49 @@ $hoy = date('Y-m-d');
                         <?php endforeach; ?>
                     </select>
                 </div>
-                <div class="col-md-6">
-                    <label class="form-label">Médico *</label>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header"><h5 class="mb-0"><i class="fa-solid fa-user-doctor me-2"></i>Referencia Médica</h5></div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Médico Solicitante</label>
+                    <select name="medico_solicitante_id" class="form-select">
+                        <option value="">Seleccionar...</option>
+                        <?php foreach ($medicos as $m): ?>
+                            <option value="<?php echo $m['id']; ?>" <?php echo Auth::id() == $m['id'] ? 'selected' : ''; ?>><?php echo htmlspecialchars($m['nombre'] . ' ' . $m['apellido']); ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Médico que Realiza <span class="text-danger">*</span></label>
                     <select name="medico_id" class="form-select" required>
-                        <option value="">Seleccionar médico...</option>
+                        <option value="">Seleccionar...</option>
                         <?php foreach ($medicos as $m): ?>
                             <option value="<?php echo $m['id']; ?>" <?php echo Auth::user()['rol_id'] == Auth::ROLE_MEDICO && Auth::id() == $m['id'] ? 'selected' : ''; ?>><?php echo htmlspecialchars($m['nombre'] . ' ' . $m['apellido']); ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
+                <div class="col-md-4">
+                    <label class="form-label">Médico Referido</label>
+                    <select name="medico_referido_id" class="form-select">
+                        <option value="">Ninguno</option>
+                        <?php foreach ($medicos as $m): ?>
+                            <option value="<?php echo $m['id']; ?>"><?php echo htmlspecialchars($m['nombre'] . ' ' . $m['apellido']); ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header"><h5 class="mb-0"><i class="fa-solid fa-user me-2"></i>Datos del Estudio</h5></div>
+        <div class="card-body">
+            <div class="row g-3">
                 <div class="col-md-4">
                     <label class="form-label">FUM</label>
                     <input type="date" name="fum" id="fum" class="form-control">
@@ -105,14 +139,20 @@ $hoy = date('Y-m-d');
                 <div class="card-header"><h5 class="mb-0"><i class="fa-solid fa-uterus me-2"></i>Útero</h5></div>
                 <div class="card-body">
                     <div class="mb-3">
-                        <label class="form-label">Posición</label>
+                        <label class="form-label fw-bold">Posición</label>
                         <div>
                             <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="utero_posicion" id="utero_anteroversion" value="Anteroversion"><label class="form-check-label" for="utero_anteroversion">Anteroversión</label></div>
                             <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="utero_posicion" id="utero_retroversion" value="Retroversion"><label class="form-check-label" for="utero_retroversion">Retroversión</label></div>
                         </div>
                     </div>
                     <div class="mb-3">
-                        <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" name="utero_contornos_regulares" id="utero_contornos_regulares" value="1" checked><label class="form-check-label" for="utero_contornos_regulares">Contornos regulares</label></div>
+                        <label class="form-label fw-bold">Contornos</label>
+                        <div>
+                            <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="utero_contornos" id="utero_contornos_regulares" value="Regulares" checked><label class="form-check-label" for="utero_contornos_regulares">Regulares</label></div>
+                            <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="utero_contornos" id="utero_contornos_irregulares" value="Irregulares"><label class="form-check-label" for="utero_contornos_irregulares">Irregulares</label></div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
                         <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" name="utero_ecogenicidad_conservada" id="utero_ecogenicidad_conservada" value="1" checked><label class="form-check-label" for="utero_ecogenicidad_conservada">Ecogenicidad conservada</label></div>
                     </div>
                     <div class="row g-2 mb-3">
@@ -121,7 +161,7 @@ $hoy = date('Y-m-d');
                         <div class="col-md-4"><label class="form-label">Dim. Z (mm)</label><input type="number" step="0.1" name="utero_dim_z" class="form-control" placeholder="mm"></div>
                     </div>
                     <div>
-                        <label class="form-label">Endometrio</label>
+                        <label class="form-label fw-bold">Endometrio</label>
                         <input type="text" name="endometrio" class="form-control" placeholder="Describa el endometrio...">
                     </div>
                 </div>
@@ -144,6 +184,13 @@ $hoy = date('Y-m-d');
                     </div>
                 </div>
             </div>
+
+            <div class="card mb-4">
+                <div class="card-header"><h5 class="mb-0"><i class="fa-solid fa-note-sticky me-2"></i>Decidua</h5></div>
+                <div class="card-body">
+                    <textarea name="decidua" class="form-control" rows="3" placeholder="Describa la decidua..."></textarea>
+                </div>
+            </div>
         </div>
 
         <div class="col-lg-6">
@@ -151,97 +198,141 @@ $hoy = date('Y-m-d');
                 <div class="card-header"><h5 class="mb-0"><i class="fa-solid fa-circle me-2"></i>Saco Gestacional</h5></div>
                 <div class="card-body">
                     <div class="mb-3">
-                        <label class="form-label">Tipo</label>
+                        <label class="form-label fw-bold">Tipo</label>
                         <div>
-                            <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="sg_tipo" id="sg_unico" value="Unico"><label class="form-check-label" for="sg_unico">Único</label></div>
-                            <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="sg_tipo" id="sg_multiple" value="Multiple"><label class="form-check-label" for="sg_multiple">Múltiple</label></div>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Morfología</label>
-                        <div>
-                            <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="sg_morfologia" id="sg_regular" value="Regular"><label class="form-check-label" for="sg_regular">Regular</label></div>
-                            <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="sg_morfologia" id="sg_irregular" value="Irregular"><label class="form-check-label" for="sg_irregular">Irregular</label></div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label class="form-label">Medida (mm)</label>
-                            <input type="number" step="0.1" name="sg_medida_mm" class="form-control" placeholder="mm">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card mb-4">
-                <div class="card-header"><h5 class="mb-0"><i class="fa-solid fa-circle-dot me-2"></i>Saco Vitelino</h5></div>
-                <div class="card-body">
-                    <div class="mb-3">
-                        <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="sv_presente" id="sv_presente_si" value="1" onchange="toggleSacoVitelino()"><label class="form-check-label" for="sv_presente_si">Presente</label></div>
-                        <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="sv_presente" id="sv_presente_no" value="0" onchange="toggleSacoVitelino()"><label class="form-check-label" for="sv_presente_no">Ausente</label></div>
-                    </div>
-                    <div id="sv_detalles" style="display:none;">
-                        <div class="row g-2">
-                            <div class="col-md-4">
-                                <label class="form-label">Cantidad</label>
-                                <select name="sv_cantidad" class="form-select">
-                                    <option value="">—</option>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                </select>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="sg_tipo" id="sg_unico" value="Unico" onchange="toggleSgCantidad()" checked>
+                                <label class="form-check-label" for="sg_unico">Único</label>
                             </div>
-                            <div class="col-md-4">
-                                <label class="form-label">Diámetro (mm)</label>
-                                <input type="number" step="0.1" name="sv_diametro_mm" class="form-control" placeholder="mm">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="sg_tipo" id="sg_multiple" value="Multiple" onchange="toggleSgCantidad()">
+                                <label class="form-check-label" for="sg_multiple">Múltiple</label>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <div class="card mb-4">
-                <div class="card-header"><h5 class="mb-0"><i class="fa-solid fa-heart-pulse me-2"></i>Embrión</h5></div>
-                <div class="card-body">
-                    <div class="mb-3">
-                        <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="embrion_visible" id="embrion_visible_si" value="1" onchange="toggleEmbrión()"><label class="form-check-label" for="embrion_visible_si">Visible</label></div>
-                        <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="embrion_visible" id="embrion_visible_no" value="0" onchange="toggleEmbrión()" checked><label class="form-check-label" for="embrion_visible_no">No visible</label></div>
+                    <div id="sg_cantidad_group" style="display:none;" class="mb-3">
+                        <label class="form-label">Número de sacos gestacionales</label>
+                        <select name="sg_cantidad" id="sg_cantidad" class="form-select" onchange="toggleSacoCards()">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                        </select>
                     </div>
-                    <div id="embrion_detalles" style="display:none;">
-                        <div class="mb-3">
-                            <label class="form-label">Número de embriones</label>
-                            <select name="num_embriones" id="numEmbriones" class="form-select" onchange="toggleEmbriónCards()">
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                            </select>
-                        </div>
-                        <div id="embriones_cards">
-                            <?php for ($e = 1; $e <= 3; $e++): ?>
-                            <div class="card mb-3 border" id="embrion_card_<?php echo $e; ?>" <?php echo $e > 1 ? 'style="display:none;"' : ''; ?>>
-                                <div class="card-body">
-                                    <h6 class="fw-bold mb-3">Embrión #<?php echo $e; ?></h6>
-                                    <div class="row g-2">
-                                        <div class="col-md-4">
-                                            <label class="form-label">CRL (mm)</label>
-                                            <input type="number" step="0.1" name="embrion_<?php echo $e; ?>_crl" class="form-control" placeholder="mm">
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label class="form-label">FCF visible</label>
-                                            <div class="form-check mt-2"><input class="form-check-input" type="checkbox" name="embrion_<?php echo $e; ?>_fcf_visible" value="1"><label class="form-check-label">Visible</label></div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label class="form-label">FCF (lpm)</label>
-                                            <input type="number" name="embrion_<?php echo $e; ?>_fcf_lpm" class="form-control" placeholder="lpm">
-                                        </div>
+
+                    <div id="sacos_cards">
+                        <?php for ($s = 1; $s <= 4; $s++): ?>
+                        <div class="card mb-3 border <?php echo $s > 1 ? 'saco-card-hidden' : ''; ?>" id="saco_card_<?php echo $s; ?>" <?php echo $s > 1 ? 'style="display:none;"' : ''; ?>>
+                            <div class="card-header bg-light py-2">
+                                <h6 class="mb-0 fw-bold">Saco Gestacional #<?php echo $s; ?></h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-2 mb-2">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Medida (mm)</label>
+                                        <input type="number" step="0.1" name="saco_<?php echo $s; ?>_medida_mm" class="form-control saco-medida" placeholder="mm">
                                     </div>
-                                    <div class="mt-2">
-                                        <label class="form-label">Localización</label>
-                                        <input type="text" name="embrion_<?php echo $e; ?>_localizacion" class="form-control" placeholder="Localización del embrión...">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Morfología</label>
+                                        <select name="saco_<?php echo $s; ?>_morfologia" class="form-select">
+                                            <option value="">—</option>
+                                            <option value="Regular">Regular</option>
+                                            <option value="Irregular">Irregular</option>
+                                        </select>
                                     </div>
                                 </div>
+                                <hr class="my-2">
+                                <label class="form-label fw-bold">Saco Vitelino</label>
+                                <div class="mb-2">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input sv-radio-presente" type="radio" name="saco_<?php echo $s; ?>_sv_presente" id="saco_<?php echo $s; ?>_sv_presente_si" value="1" onchange="toggleSacoVitelinoDetalle(<?php echo $s; ?>)">
+                                        <label class="form-check-label" for="saco_<?php echo $s; ?>_sv_presente_si">Presente</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input sv-radio-ausente" type="radio" name="saco_<?php echo $s; ?>_sv_presente" id="saco_<?php echo $s; ?>_sv_presente_no" value="0" onchange="toggleSacoVitelinoDetalle(<?php echo $s; ?>)">
+                                        <label class="form-check-label" for="saco_<?php echo $s; ?>_sv_presente_no">Ausente</label>
+                                    </div>
+                                </div>
+                                <div id="saco_<?php echo $s; ?>_sv_detalle" style="display:none;">
+                                    <div class="row g-2">
+                                        <div class="col-md-6">
+                                            <label class="form-label">Diámetro SV (mm)</label>
+                                            <input type="number" step="0.1" name="saco_<?php echo $s; ?>_sv_diametro_mm" class="form-control" placeholder="mm">
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr class="my-2">
+                                <label class="form-label fw-bold">Embrión</label>
+                                <div class="mb-2">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input emb-radio-visible" type="radio" name="saco_<?php echo $s; ?>_embrion_visible" id="saco_<?php echo $s; ?>_embrion_visible_si" value="1" onchange="toggleEmbrionDetalle(<?php echo $s; ?>)">
+                                        <label class="form-check-label" for="saco_<?php echo $s; ?>_embrion_visible_si">Visible</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input emb-radio-novisible" type="radio" name="saco_<?php echo $s; ?>_embrion_visible" id="saco_<?php echo $s; ?>_embrion_visible_no" value="0" onchange="toggleEmbrionDetalle(<?php echo $s; ?>)" checked>
+                                        <label class="form-check-label" for="saco_<?php echo $s; ?>_embrion_visible_no">No visible</label>
+                                    </div>
+                                </div>
+                                <div id="saco_<?php echo $s; ?>_embrion_detalle" style="display:none;">
+                                    <div class="mb-2">
+                                        <label class="form-label">Número de embriones en este saco</label>
+                                        <select name="saco_<?php echo $s; ?>_num_embriones" class="form-select saco-num-embriones" onchange="toggleEmbrionSubCards(<?php echo $s; ?>)">
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                        </select>
+                                    </div>
+                                    <?php for ($e = 1; $e <= 3; $e++): ?>
+                                    <div class="border rounded p-2 mb-2 bg-light" id="saco_<?php echo $s; ?>_embrion_card_<?php echo $e; ?>" <?php echo $e > 1 ? 'style="display:none;"' : ''; ?>>
+                                        <small class="fw-bold text-muted d-block mb-2">Embrión #<?php echo $e; ?></small>
+                                        <div class="row g-1">
+                                            <div class="col-md-4">
+                                                <label class="form-label small">CRL (mm)</label>
+                                                <input type="number" step="0.1" name="saco_<?php echo $s; ?>_embrion_<?php echo $e; ?>_crl" class="form-control form-control-sm crl-input" placeholder="mm">
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label small">FCF visible</label>
+                                                <div class="form-check mt-1">
+                                                    <input class="form-check-input fcf-check" type="checkbox" name="saco_<?php echo $s; ?>_embrion_<?php echo $e; ?>_fcf_visible" value="1">
+                                                    <label class="form-check-label small">Visible</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label small">FCF (lpm)</label>
+                                                <input type="number" name="saco_<?php echo $s; ?>_embrion_<?php echo $e; ?>_fcf_lpm" class="form-control form-control-sm fcf-input" placeholder="lpm">
+                                            </div>
+                                        </div>
+                                        <div class="mt-1">
+                                            <label class="form-label small">Localización</label>
+                                            <input type="text" name="saco_<?php echo $s; ?>_embrion_<?php echo $e; ?>_localizacion" class="form-control form-control-sm" placeholder="Localización...">
+                                        </div>
+                                    </div>
+                                    <?php endfor; ?>
+                                </div>
                             </div>
-                            <?php endfor; ?>
+                        </div>
+                        <?php endfor; ?>
+                    </div>
+                    <small class="text-muted">Saco #1 siempre visible como mínimo. Al seleccionar "Múltiple" se despliegan sacos adicionales.</small>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header"><h5 class="mb-0"><i class="fa-solid fa-heart-pulse me-2"></i>Viabilidad</h5></div>
+                <div class="card-body">
+                    <label class="form-label fw-bold">Determinación de viabilidad</label>
+                    <div class="mb-3">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="viabilidad" id="viabilidad_viable" value="Viable" onchange="sugerirDiagnostico()">
+                            <label class="form-check-label" for="viabilidad_viable">Viable</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="viabilidad" id="viabilidad_noviable" value="No viable" onchange="sugerirDiagnostico()">
+                            <label class="form-check-label" for="viabilidad_noviable">No viable</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="viabilidad" id="viabilidad_incierto" value="Incierto" onchange="sugerirDiagnostico()">
+                            <label class="form-check-label" for="viabilidad_incierto">Incierto</label>
                         </div>
                     </div>
                 </div>
@@ -316,24 +407,12 @@ $hoy = date('Y-m-d');
                         <label class="form-label">Localización</label>
                         <input type="text" name="hematoma_localizacion" class="form-control" placeholder="Localización del hematoma...">
                     </div>
-                    <div class="col-md-2">
-                        <label class="form-label">Dim. X (mm)</label>
-                        <input type="number" step="0.1" name="hematoma_dim_x" class="form-control" placeholder="mm">
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label">Dim. Y (mm)</label>
-                        <input type="number" step="0.1" name="hematoma_dim_y" class="form-control" placeholder="mm">
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label">Dim. Z (mm)</label>
-                        <input type="number" step="0.1" name="hematoma_dim_z" class="form-control" placeholder="mm">
-                    </div>
+                    <div class="col-md-2"><label class="form-label">Dim. X (mm)</label><input type="number" step="0.1" name="hematoma_dim_x" class="form-control" placeholder="mm"></div>
+                    <div class="col-md-2"><label class="form-label">Dim. Y (mm)</label><input type="number" step="0.1" name="hematoma_dim_y" class="form-control" placeholder="mm"></div>
+                    <div class="col-md-2"><label class="form-label">Dim. Z (mm)</label><input type="number" step="0.1" name="hematoma_dim_z" class="form-control" placeholder="mm"></div>
                 </div>
                 <div class="row mt-3">
-                    <div class="col-md-4">
-                        <label class="form-label">Volumen estimado (ml)</label>
-                        <input type="number" step="0.1" name="hematoma_volumen_ml" class="form-control" placeholder="ml">
-                    </div>
+                    <div class="col-md-4"><label class="form-label">Volumen estimado (ml)</label><input type="number" step="0.1" name="hematoma_volumen_ml" class="form-control" placeholder="ml"></div>
                 </div>
             </div>
             <hr>
@@ -355,7 +434,7 @@ $hoy = date('Y-m-d');
             <div class="row g-3">
                 <div class="col-md-3">
                     <label class="form-label">CRL (mm)</label>
-                    <input type="number" step="0.1" name="impresion_crl_mm" class="form-control" placeholder="mm">
+                    <input type="number" step="0.1" name="impresion_crl_mm" id="impresion_crl_mm" class="form-control" placeholder="mm">
                 </div>
                 <div class="col-md-2">
                     <label class="form-label">Semanas</label>
@@ -367,12 +446,64 @@ $hoy = date('Y-m-d');
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">FCF (lpm)</label>
-                    <input type="number" name="impresion_fcf_lpm" class="form-control" placeholder="lpm">
+                    <input type="number" name="impresion_fcf_lpm" id="impresion_fcf_lpm" class="form-control" placeholder="lpm">
                 </div>
             </div>
             <div class="mt-3">
                 <label class="form-label">Texto de impresión diagnóstica</label>
-                <textarea name="impresion_texto" class="form-control" rows="4" placeholder="Escriba la impresión diagnóstica..."></textarea>
+                <textarea name="impresion_texto" id="impresion_texto" class="form-control" rows="4" placeholder="Escriba la impresión diagnóstica..."></textarea>
+                <small class="text-muted">El campo acepta sugerencia automática según los criterios de viabilidad. Puede modificarlo libremente.</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">
+                <button class="btn btn-link text-decoration-none p-0 text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#criteriosCollapse" aria-expanded="false">
+                    <i class="fa-solid fa-book-medical me-2"></i>Criterios de Pérdida Gestacional Precoz (referencia)
+                    <i class="fa-solid fa-chevron-down ms-2 small"></i>
+                </button>
+            </h5>
+        </div>
+        <div id="criteriosCollapse" class="collapse">
+            <div class="card-body">
+                <div class="row g-4">
+                    <div class="col-lg-6">
+                        <h6 class="fw-bold text-warning mb-3"><i class="fa-solid fa-triangle-exclamation me-1"></i> Criterios Sugestivos (NO diagnósticos)</h6>
+                        <div class="table-responsive">
+                            <table class="table table-sm table-bordered small">
+                                <thead class="table-warning"><tr><th>#</th><th>Criterio</th></tr></thead>
+                                <tbody>
+                                    <tr><td>1</td><td>CRL &lt; 7mm sin actividad cardíaca</td></tr>
+                                    <tr><td>2</td><td>Diámetro del saco gestacional entre 16 y 25 mm sin embrión</td></tr>
+                                    <tr><td>3</td><td>Ausencia de embrión con actividad cardíaca entre 7 y 13 días después de una ecografía con SG sin vesícula vitelina</td></tr>
+                                    <tr><td>4</td><td>Ausencia de embrión con actividad cardíaca entre 7 y 10 días después de una ecografía con SG y vesícula vitelina</td></tr>
+                                    <tr><td>5</td><td>Ausencia de embrión ≥ 6 semanas después de la fecha de última regla</td></tr>
+                                    <tr><td>6</td><td>Amnios vacío (amnios visualizado adyacente a vesícula vitelina, sin embrión visible)</td></tr>
+                                    <tr><td>7</td><td>Vesícula vitelina elongada (&gt;7 mm)</td></tr>
+                                    <tr><td>8</td><td>Saco gestacional pequeño en comparación con la medida del embrión (&lt;5 mm de diferencia entre diámetro del SG y el CRL)</td></tr>
+                                    <tr><td>9</td><td>Frecuencia cardíaca inferior a 100 latidos por minuto</td></tr>
+                                    <tr><td>10</td><td>Presencia de hematoma subcoriónico masivo</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <h6 class="fw-bold text-danger mb-3"><i class="fa-solid fa-circle-exclamation me-1"></i> Criterios Diagnósticos (pérdida gestacional precoz)</h6>
+                        <div class="table-responsive">
+                            <table class="table table-sm table-bordered small">
+                                <thead class="table-danger"><tr><th>#</th><th>Criterio (mediante ecografía transvaginal)</th></tr></thead>
+                                <tbody>
+                                    <tr><td>1</td><td><strong>CRL ≥ 7 mm sin actividad cardíaca</strong></td></tr>
+                                    <tr><td>2</td><td>Ausencia de embrión con actividad cardíaca ≥ 2 semanas después de una ecografía con SG sin vesícula vitelina</td></tr>
+                                    <tr><td>3</td><td>Ausencia de embrión con actividad cardíaca &gt; 11 días después de una ecografía con SG y vesícula vitelina</td></tr>
+                                    <tr><td>4</td><td><strong>Diámetro medio del saco gestacional ≥ 25 mm sin embrión</strong> ni vesícula vitelina en su interior</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -401,38 +532,95 @@ $hoy = date('Y-m-d');
 <script>
 const today = '<?php echo $hoy; ?>';
 
-function toggleSacoVitelino() {
-    var svSi = document.getElementById('sv_presente_si');
-    var detalles = document.getElementById('sv_detalles');
-    if (svSi && svSi.checked) {
-        detalles.style.display = 'block';
+function toggleSgCantidad() {
+    var multiple = document.getElementById('sg_multiple');
+    var cntGroup = document.getElementById('sg_cantidad_group');
+    if (multiple && multiple.checked) {
+        cntGroup.style.display = 'block';
+        document.getElementById('sg_cantidad').value = '2';
     } else {
-        detalles.style.display = 'none';
+        cntGroup.style.display = 'none';
+        document.getElementById('sg_cantidad').value = '1';
+    }
+    toggleSacoCards();
+}
+
+function toggleSacoCards() {
+    var multiple = document.getElementById('sg_multiple');
+    var n = (multiple && multiple.checked) ? parseInt(document.getElementById('sg_cantidad').value) || 1 : 1;
+    for (var s = 1; s <= 4; s++) {
+        var card = document.getElementById('saco_card_' + s);
+        if (card) card.style.display = s <= n ? 'block' : 'none';
     }
 }
-function toggleEmbrión() {
-    var vis = document.getElementById('embrion_visible_si');
-    var det = document.getElementById('embrion_detalles');
-    if (vis && vis.checked) {
-        det.style.display = 'block';
-    } else {
-        det.style.display = 'none';
+
+function toggleSacoVitelinoDetalle(s) {
+    var si = document.getElementById('saco_' + s + '_sv_presente_si');
+    var det = document.getElementById('saco_' + s + '_sv_detalle');
+    if (det) det.style.display = (si && si.checked) ? 'block' : 'none';
+}
+
+function toggleEmbrionDetalle(s) {
+    var si = document.getElementById('saco_' + s + '_embrion_visible_si');
+    var det = document.getElementById('saco_' + s + '_embrion_detalle');
+    if (det) det.style.display = (si && si.checked) ? 'block' : 'none';
+    if (si && si.checked) toggleEmbrionSubCards(s);
+}
+
+function toggleEmbrionSubCards(s) {
+    var sel = document.querySelector('select[name="saco_' + s + '_num_embriones"]');
+    var n = sel ? parseInt(sel.value) || 1 : 1;
+    for (var e = 1; e <= 3; e++) {
+        var card = document.getElementById('saco_' + s + '_embrion_card_' + e);
+        if (card) card.style.display = e <= n ? 'block' : 'none';
     }
 }
-function toggleEmbriónCards() {
-    var n = parseInt(document.getElementById('numEmbriones').value) || 1;
-    for (var i = 1; i <= 3; i++) {
-        var card = document.getElementById('embrion_card_' + i);
-        if (card) card.style.display = i <= n ? 'block' : 'none';
-    }
-}
+
 function toggleHematoma() {
     var chk = document.getElementById('hematoma_subcorionico');
     var det = document.getElementById('hematoma_detalles');
-    if (chk && chk.checked) {
-        det.style.display = 'block';
+    if (chk && chk.checked) { det.style.display = 'block'; } else { det.style.display = 'none'; }
+}
+
+function sugerirDiagnostico() {
+    var viabilidad = document.querySelector('input[name="viabilidad"]:checked');
+    var texto = document.getElementById('impresion_texto');
+    if (!viabilidad || !texto) return;
+
+    if (viabilidad.value === 'No viable') {
+        var crlInputs = document.querySelectorAll('.crl-input');
+        var fcfChecks = document.querySelectorAll('.fcf-check');
+        var sacoMedidas = document.querySelectorAll('.saco-medida');
+
+        var hasCrlGte7 = false;
+        crlInputs.forEach(function(inp) {
+            if (parseFloat(inp.value) >= 7) hasCrlGte7 = true;
+        });
+        var anyFcf = false;
+        fcfChecks.forEach(function(chk) {
+            if (chk.checked) anyFcf = true;
+        });
+        var maxSaco = 0;
+        sacoMedidas.forEach(function(inp) {
+            var v = parseFloat(inp.value);
+            if (v > maxSaco) maxSaco = v;
+        });
+
+        var embrionVisibleAny = document.querySelector('input[id$="_embrion_visible_si"]:checked');
+
+        var sugerencia = '';
+        if (hasCrlGte7 && !anyFcf) {
+            sugerencia = 'Embarazo NO viable. Criterio diagnóstico: CRL ≥ 7 mm sin actividad cardíaca en ecografía transvaginal, considerado prueba definitiva de pérdida gestacional precoz.';
+        } else if (maxSaco >= 25 && !embrionVisibleAny) {
+            sugerencia = 'Embarazo NO viable. Criterio diagnóstico: Diámetro medio del saco gestacional ≥ 25 mm sin embrión identificable en ecografía transvaginal, considerado prueba definitiva de pérdida gestacional precoz.';
+        } else {
+            sugerencia = 'Embarazo NO viable según criterios clínicos y ecográficos.';
+        }
+        texto.value = sugerencia;
+    } else if (viabilidad.value === 'Viable') {
+        texto.value = 'Embarazo intrauterino viable.';
     } else {
-        det.style.display = 'none';
+        texto.value = 'Viabilidad incierta. Se recomienda control ecográfico evolutivo.';
     }
 }
 

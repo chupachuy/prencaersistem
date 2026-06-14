@@ -75,8 +75,8 @@ require_once __DIR__ . '/../layouts/sidebar.php';
                                         <a href="<?php echo Url::to('/ultrasonido_temprano/edit?id=' . $ev['id']); ?>" class="action-btn action-btn-edit" title="Editar">
                                             <i class="fa-solid fa-edit"></i>
                                         </a>
-                                        <a href="<?php echo Url::to('/ultrasonido_temprano/print?id=' . $ev['id']); ?>" class="action-btn action-btn-view" target="_blank" title="Imprimir">
-                                            <i class="fa-solid fa-print"></i>
+                                        <a href="<?php echo Url::to('/ultrasonido_temprano/pdf?id=' . $ev['id']); ?>" class="action-btn action-btn-view" target="_blank" title="Descargar PDF">
+                                            <i class="fa-solid fa-download"></i>
                                         </a>
                                     </div>
                                 </td>

@@ -8,7 +8,8 @@ $meses=['','enero','febrero','marzo','abril','mayo','junio','julio','agosto','se
 ?>
 <!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Evaluación 3er Trimestre — <?php echo htmlspecialchars($ev['codigo_reporte']);?></title>
 <style>
-body{font-family:Helvetica,Arial,sans-serif;padding:25px;color:#222;font-size:11px;line-height:1.5;}
+body{
+font-family:Helvetica,Arial,sans-serif;padding:150px 25px 40px 25px;color:#222;font-size:11px;line-height:1.5;}
 .document{max-width:780px;margin:0 auto;}
 .doc-header{text-align:center;margin-bottom:18px;border-bottom:2px solid #333;padding-bottom:12px;}
 .doc-header h1{font-size:16px;margin:0 0 4px 0;text-transform:uppercase;letter-spacing:1px;}
@@ -28,8 +29,8 @@ h3{font-size:11px;background:#eee;padding:4px 10px;margin:10px 0 6px 0;color:#33
 .obs-box{border:1px dashed #ccc;padding:10px;margin:8px 0;min-height:40px;font-style:italic;color:#555;}
 .footer{margin-top:30px;font-size:9px;color:#999;text-align:center;border-top:1px solid #ccc;padding-top:8px;}
 .signature-line{border-top:1px solid #333;margin-top:40px;text-align:center;font-size:11px;padding-top:4px;width:250px;}
-@media print{body{padding:10px;}}
-</style></head><body><div class="document">
+</style></head><body>
+<div class="document">
 
 <div class="doc-header">
     <h1>Evaluación 3er Trimestre</h1>
@@ -173,7 +174,7 @@ Se realizó estudio ultrasonográfico de alta definición<?php echo !empty($ev['
 <?php $c = 0; foreach ($imagenes as $img): ?>
     <?php if ($c % 3 == 0): ?><tr><?php endif; ?>
     <td style="text-align:center;padding:8px;vertical-align:top;">
-        <img src="<?php echo Url::to($img['ruta_imagen']); ?>" style="max-width:180px;max-height:180px;border:1px solid #ddd;padding:2px;">
+        <img src="<?php echo ltrim($img['ruta_imagen'], '/'); ?>" style="width:<?=$img['width']?>px;height:<?=$img['height']?>px;border:1px solid #ddd;padding:2px;">
     </td>
     <?php if ($c % 3 == 2): ?></tr><?php endif; ?>
 <?php $c++; endforeach; ?>

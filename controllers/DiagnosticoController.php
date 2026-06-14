@@ -26,7 +26,7 @@ class DiagnosticoController extends Controller
         $roleId = Session::get('user_role_id');
         $medicoId = Auth::id();
 
-        if ($roleId == Auth::ROLE_SUPERADMIN || $roleId == Auth::ROLE_JEFE) {
+        if ($roleId == Auth::ROLE_SUPERADMIN || $roleId == Auth::ROLE_JEFE || $roleId == Auth::ROLE_ADMINISTRADOR) {
             $diagnosticos = $this->diagnosticoModel->getAll();
         }
         else {
@@ -142,8 +142,16 @@ class DiagnosticoController extends Controller
             $this->redirect('/login');
         }
 
-        $id = $_GET['id'] ?? 0;
+        $id = intval($_GET['id'] ?? 0);
         $diagnostico = $this->diagnosticoModel->findById($id);
+
+        // BUG-06: Verificar que el diagnóstico existe antes de renderizar
+        if (!$diagnostico) {
+            Session::set('error', 'Diagnóstico no encontrado.');
+            $this->redirect('/diagnosticos');
+            return;
+        }
+
         $this->render('diagnosticos/show', ['diagnostico' => $diagnostico]);
     }
 
@@ -209,7 +217,8 @@ class DiagnosticoController extends Controller
         if (strlen($descripcion) > 50) $titulo .= '...';
 
         $roleId = Session::get('user_role_id');
-        $medicoId = null;
+        // BUG-09: Usar Auth::id() como fallback para no dejar medico_id en NULL
+        $medicoId = Auth::id();
 
         if (($roleId == Auth::ROLE_SUPERADMIN || $roleId == Auth::ROLE_JEFE) && !empty($_POST['medico_id'])) {
             $medicoId = intval($_POST['medico_id']);

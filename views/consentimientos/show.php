@@ -22,9 +22,29 @@ require_once __DIR__ . '/../layouts/sidebar.php';
         };
         ?>
         <span class="badge bg-<?php echo $estadoClass; ?> me-2"><?php echo htmlspecialchars($consentimiento['estado']); ?></span>
-        <a href="<?php echo Url::to('/consentimientos/print?id=' . $consentimiento['id']); ?>" class="btn btn-apple btn-apple-secondary" target="_blank">
-            <i class="fa-solid fa-print"></i> PDF
+        <a href="<?php echo Url::to('/consentimientos/pdf?id=' . $consentimiento['id']); ?>" class="btn btn-apple btn-apple-secondary" target="_blank">
+            <i class="fa-solid fa-download"></i> PDF
         </a>
+        <?php if ($consentimiento['estado'] === 'Completado'): ?>
+            <form method="POST" action="<?php echo Url::to('/consentimientos/enviar?id=' . $consentimiento['id']); ?>" style="display:inline;">
+
+                <select name="destinatario" class="form-select form-select-sm" style="width:auto;display:inline;vertical-align:middle;">
+                    <option value="">-- Destinatario --</option>
+                    <?php if (!empty($consentimiento['paciente_email'])): ?>
+                        <option value="paciente"><?php echo htmlspecialchars($consentimiento['paciente_nombre'] . ' ' . $consentimiento['paciente_apellido'] . ' (Paciente)'); ?></option>
+                    <?php endif; ?>
+                    <?php if (!empty($consentimiento['medico_email'])): ?>
+                        <option value="medico"><?php echo htmlspecialchars($consentimiento['medico_nombre'] . ' ' . $consentimiento['medico_apellido'] . ' (Médico)'); ?></option>
+                    <?php endif; ?>
+                    <option value="todos">-- Todos --</option>
+                </select>
+
+                <input type="hidden" name="_csrf" value="<?php echo htmlspecialchars(Csrf::token(), ENT_QUOTES, 'UTF-8'); ?>">
+                <button type="button" class="btn btn-apple btn-apple-primary" onclick="var f=this.form,d=f.destinatario;if(!d.value){alert('Seleccione un destinatario');return;}if(confirm('¿Enviar a '+d.options[d.selectedIndex].text+'?'))f.submit();">
+                    <i class="fa-solid fa-paper-plane"></i> Enviar
+                </button>
+            </form>
+        <?php endif; ?>
         <?php if ($consentimiento['estado'] !== 'Completado' && $consentimiento['estado'] !== 'Revocado'): ?>
         <a href="<?php echo Url::to('/consentimientos/firmar?id=' . $consentimiento['id']); ?>" class="btn btn-apple btn-apple-primary">
             <i class="fa-solid fa-pen-to-square"></i> Firmar

@@ -88,9 +88,9 @@ class Reportes1erTrimestre
 
     public function getById($id)
     {
-        $stmt = $this->db->prepare("SELECT r.*, p.nombre as paciente_nombre, p.apellido as paciente_apellido, p.fecha_nacimiento,
-            m.nombre as medico_nombre, m.apellido as medico_apellido,
-            mr.nombre as medico_referido_nombre, mr.apellido as medico_referido_apellido
+        $stmt = $this->db->prepare("SELECT r.*, p.nombre as paciente_nombre, p.apellido as paciente_apellido, p.fecha_nacimiento, p.email as paciente_email,
+            m.nombre as medico_nombre, m.apellido as medico_apellido, m.email as medico_email,
+            mr.nombre as medico_referido_nombre, mr.apellido as medico_referido_apellido, mr.email as medico_referido_email
             FROM reportes_1er_trimestre r
             LEFT JOIN pacientes p ON r.paciente_id = p.id
             LEFT JOIN usuarios m ON r.medico_id = m.id

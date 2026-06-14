@@ -15,11 +15,13 @@ class EvaluacionGinecologica
         $sql = "
             SELECT e.*, p.nombre as paciente_nombre, p.apellido as paciente_apellido,
                    us.nombre as medico_nombre, us.apellido as medico_apellido,
-                   us2.nombre as solicitante_nombre, us2.apellido as solicitante_apellido
+                   usol.nombre as medico_solicitante_nombre, usol.apellido as medico_solicitante_apellido,
+                   uref.nombre as medico_referido_nombre, uref.apellido as medico_referido_apellido
             FROM evaluaciones_ginecologicas e
             JOIN pacientes p ON e.paciente_id = p.id
             JOIN usuarios us ON e.medico_id = us.id
-            LEFT JOIN usuarios us2 ON e.medico_solicitante_id = us2.id
+            LEFT JOIN usuarios usol ON e.medico_solicitante_id = usol.id
+            LEFT JOIN usuarios uref ON e.medico_referido_id = uref.id
             WHERE e.activo = 1
         ";
         if ($medicoId !== null) {
@@ -35,13 +37,15 @@ class EvaluacionGinecologica
     public function getById($id)
     {
         $stmt = $this->db->prepare("
-            SELECT e.*, p.nombre as paciente_nombre, p.apellido as paciente_apellido, p.fecha_nacimiento,
-                   us.nombre as medico_nombre, us.apellido as medico_apellido,
-                   us2.nombre as solicitante_nombre, us2.apellido as solicitante_apellido
+            SELECT e.*, p.nombre as paciente_nombre, p.apellido as paciente_apellido, p.fecha_nacimiento, p.email as paciente_email,
+                   us.nombre as medico_nombre, us.apellido as medico_apellido, us.email as medico_email,
+                   usol.nombre as medico_solicitante_nombre, usol.apellido as medico_solicitante_apellido, usol.email as medico_solicitante_email,
+                   uref.nombre as medico_referido_nombre, uref.apellido as medico_referido_apellido, uref.email as medico_referido_email
             FROM evaluaciones_ginecologicas e
             JOIN pacientes p ON e.paciente_id = p.id
             JOIN usuarios us ON e.medico_id = us.id
-            LEFT JOIN usuarios us2 ON e.medico_solicitante_id = us2.id
+            LEFT JOIN usuarios usol ON e.medico_solicitante_id = usol.id
+            LEFT JOIN usuarios uref ON e.medico_referido_id = uref.id
             WHERE e.id = ?
         ");
         $stmt->execute([$id]);
@@ -65,15 +69,16 @@ class EvaluacionGinecologica
     {
         $stmt = $this->db->prepare("
             INSERT INTO evaluaciones_ginecologicas (
-                paciente_id, medico_id, medico_solicitante_id, codigo_reporte, fecha_estudio,
+                paciente_id, medico_id, medico_solicitante_id, medico_referido_id, codigo_reporte, fecha_estudio,
                 indicacion_clinica, fum, dia_ciclo_menstrual, observaciones,
                 estado, created_by, updated_by
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ");
         $stmt->execute([
             $data['paciente_id'],
             $data['medico_id'],
             $data['medico_solicitante_id'] ?? null,
+            $data['medico_referido_id'] ?? null,
             $data['codigo_reporte'],
             $data['fecha_estudio'],
             $data['indicacion_clinica'] ?? null,
@@ -91,7 +96,7 @@ class EvaluacionGinecologica
     {
         $stmt = $this->db->prepare("
             UPDATE evaluaciones_ginecologicas SET
-                paciente_id = ?, medico_id = ?, medico_solicitante_id = ?, fecha_estudio = ?,
+                paciente_id = ?, medico_id = ?, medico_solicitante_id = ?, medico_referido_id = ?, fecha_estudio = ?,
                 indicacion_clinica = ?, fum = ?, dia_ciclo_menstrual = ?, observaciones = ?,
                 estado = ?, updated_by = ?
             WHERE id = ?
@@ -100,6 +105,7 @@ class EvaluacionGinecologica
             $data['paciente_id'],
             $data['medico_id'],
             $data['medico_solicitante_id'] ?? null,
+            $data['medico_referido_id'] ?? null,
             $data['fecha_estudio'],
             $data['indicacion_clinica'] ?? null,
             $data['fum'] ?? null,

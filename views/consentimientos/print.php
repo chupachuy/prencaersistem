@@ -10,7 +10,9 @@ $fechaHoy = date('d/m/Y H:i');
     <title>Consentimiento — <?php echo htmlspecialchars($consentimiento['nombre_documento']); ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { font-family: 'Helvetica', 'Arial', sans-serif; padding: 30px; color: #333; }
+        body {
+            font-family: 'Helvetica', 'Arial', sans-serif; padding: 150px 30px 40px 30px; color: #333;
+        }
         .document { max-width: 800px; margin: 0 auto; }
         .doc-header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #333; padding-bottom: 15px; }
         .doc-header h1 { font-size: 20px; margin: 0; }
@@ -27,9 +29,6 @@ $fechaHoy = date('d/m/Y H:i');
         .signature-date { font-size: 10px; color: #888; }
         .footer { margin-top: 40px; font-size: 10px; color: #999; text-align: center; border-top: 1px solid #eee; padding-top: 10px; }
         .denegacion { color: #d00; font-weight: bold; }
-        @media print {
-            body { padding: 15px; }
-        }
     </style>
 </head>
 <body>

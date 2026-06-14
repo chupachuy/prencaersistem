@@ -302,23 +302,21 @@ class Evaluaciones3erTrimestreController extends Controller
         $this->redirect('/evaluaciones_3er_trimestre');
     }
 
-    public function print() {
+    public function pdf() {
         if (!Auth::check()) { $this->redirect('/login'); }
         $id = $_GET['id']??null; $ev = $this->ev->getById($id);
         if(!$ev){$this->redirect('/evaluaciones_3er_trimestre');}
-
         if (Auth::hasRole(Auth::ROLE_MEDICO) && $ev['medico_id'] != Auth::id()) {
-            Session::set('error', 'No tienes permiso para imprimir esta evaluación.');
+            Session::set('error', 'No tienes permiso para generar el PDF.');
             $this->redirect('/evaluaciones_3er_trimestre');
         }
-
-        $this->render('evaluaciones_3er_trimestre/print',['evaluacion'=>$ev,'antecedentes'=>$this->ant->getByEvaluacion($id),
+        $this->streamPdf('evaluaciones_3er_trimestre/imprimir',['evaluacion'=>$ev,'antecedentes'=>$this->ant->getByEvaluacion($id),
             'crecimiento'=>$this->crec->getByEvaluacion($id),'doppler'=>$this->dop->getByEvaluacion($id),
             'anatomia'=>$this->anat->getByEvaluacion($id),'placentaria'=>$this->plac->getByEvaluacion($id),
             'historial'=>$this->hist->getByPaciente($ev['paciente_id']),
             'data1er'=>$this->ev1t->getLatestFullData($ev['paciente_id']),
             'data2do'=>$this->ev2t->getLatestFullData($ev['paciente_id']),
-            'imagenes'=>$this->img->getByEvaluacion('3',$id)]);
+            'imagenes'=>$this->img->getByEvaluacion('3',$id)], $ev['codigo_reporte'] . '.pdf');
     }
 
     private function evaluarMorfologiaNormal($d2)

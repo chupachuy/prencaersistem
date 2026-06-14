@@ -6,7 +6,9 @@
     <title>USG Ginecológico — <?php echo htmlspecialchars($evaluacion['codigo_reporte']); ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { font-size: 11px; color: #000; }
+        body {
+            font-size: 11px; color: #000; padding-top: 150px; padding-bottom: 40px;
+        }
         .container { max-width: 800px; }
         .report-title { font-size: 16px; font-weight: 700; text-align: center; margin-bottom: 4px; }
         .report-subtitle { font-size: 12px; text-align: center; color: #555; margin-bottom: 16px; }
@@ -20,10 +22,6 @@
         .checkbox-label { display: inline-block; margin-right: 12px; }
         .checkbox-label.check::before { content: "☑ "; }
         .checkbox-label.uncheck::before { content: "☐ "; }
-        @media print {
-            body { font-size: 10px; }
-            .no-print { display: none; }
-        }
         <?php
         $siNo = fn($v) => $v ? 'Sí' : 'No';
         $siNoNA = fn($v) => $v === null ? '—' : ($v ? 'Sí' : 'No');
@@ -50,18 +48,13 @@
 <body>
 <div class="container py-4">
 
-    <div class="no-print text-end mb-3">
-        <button class="btn btn-primary btn-sm" onclick="window.print()"><i class="fa-solid fa-print"></i> Imprimir</button>
-        <button class="btn btn-secondary btn-sm" onclick="window.close()">Cerrar</button>
-    </div>
-
     <div class="report-title">REPORTE DE ULTRASONIDO GINECOLÓGICO ENDOVAGINAL</div>
     <div class="report-subtitle">Código: <?php echo htmlspecialchars($evaluacion['codigo_reporte']); ?></div>
 
     <div class="data-row"><span class="data-label">Paciente:</span><span class="data-value"><?php echo $txt($evaluacion['paciente_nombre'] . ' ' . $evaluacion['paciente_apellido']); ?></span></div>
     <div class="data-row"><span class="data-label">Edad:</span><span class="data-value"><?php echo $evaluacion['fecha_nacimiento'] ? (date('Y') - date('Y', strtotime($evaluacion['fecha_nacimiento']))) . ' años' : '—'; ?></span></div>
     <div class="data-row"><span class="data-label">Fecha del estudio:</span><span class="data-value"><?php echo date('d/m/Y', strtotime($evaluacion['fecha_estudio'])); ?></span></div>
-    <div class="data-row"><span class="data-label">Médico solicitante:</span><span class="data-value"><?php echo $txt($evaluacion['solicitante_nombre'] ? $evaluacion['solicitante_nombre'] . ' ' . $evaluacion['solicitante_apellido'] : null); ?></span></div>
+    <div class="data-row"><span class="data-label">Médico solicitante:</span><span class="data-value"><?php echo $txt($evaluacion['medico_solicitante_nombre'] ? $evaluacion['medico_solicitante_nombre'] . ' ' . $evaluacion['medico_solicitante_apellido'] : null); ?></span></div>
     <div class="data-row"><span class="data-label">Médico que realiza:</span><span class="data-value"><?php echo htmlspecialchars($evaluacion['medico_nombre'] . ' ' . $evaluacion['medico_apellido']); ?></span></div>
     <div class="data-row"><span class="data-label">Indicación clínica:</span><span class="data-value"><?php echo $txt($evaluacion['indicacion_clinica']); ?></span></div>
     <div class="data-row"><span class="data-label">FUM:</span><span class="data-value"><?php echo $evaluacion['fum'] ? date('d/m/Y', strtotime($evaluacion['fum'])) : '—'; ?></span></div>
@@ -168,12 +161,6 @@
         <div class="data-row"><span class="data-label">Médico:</span><span class="data-value"><?php echo htmlspecialchars($evaluacion['medico_nombre'] . ' ' . $evaluacion['medico_apellido']); ?></span></div>
     </div>
 
-    <div class="no-print text-end mt-4">
-        <button class="btn btn-primary btn-sm" onclick="window.print()">Imprimir</button>
-        <button class="btn btn-secondary btn-sm" onclick="window.close()">Cerrar</button>
-    </div>
-
 </div>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </body>
 </html>

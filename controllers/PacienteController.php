@@ -40,7 +40,7 @@ class PacienteController extends Controller
     public function create()
     {
         if (!Auth::check()) {
-            $this->redirect('/dashboard');
+            $this->redirect('/login');
         }
 
         $this->render('pacientes/create');
@@ -73,11 +73,11 @@ class PacienteController extends Controller
         if ($pacienteId) {
             // Guardar antecedentes obstétricos
             $this->historialModel->create([
-                'paciente_id' => $pacienteId,
-                'num_embarazos' => $_POST['num_embarazos'] ?? null ? (int)$_POST['num_embarazos'] : null,
-                'num_cesareas' => $_POST['num_cesareas'] ?? null ? (int)$_POST['num_cesareas'] : null,
-                'num_abortos' => $_POST['num_abortos'] ?? null ? (int)$_POST['num_abortos'] : null,
-                'num_ectopicos' => $_POST['num_ectopicos'] ?? null ? (int)$_POST['num_ectopicos'] : null
+                'paciente_id'    => $pacienteId,
+                'num_embarazos'  => isset($_POST['num_embarazos'])  && $_POST['num_embarazos']  !== '' ? (int)$_POST['num_embarazos']  : null,
+                'num_cesareas'   => isset($_POST['num_cesareas'])   && $_POST['num_cesareas']   !== '' ? (int)$_POST['num_cesareas']   : null,
+                'num_abortos'    => isset($_POST['num_abortos'])    && $_POST['num_abortos']    !== '' ? (int)$_POST['num_abortos']    : null,
+                'num_ectopicos'  => isset($_POST['num_ectopicos'])  && $_POST['num_ectopicos']  !== '' ? (int)$_POST['num_ectopicos']  : null
             ]);
             // If it's a doctor creating a patient, automatically assign the patient to them
             if (Auth::hasRole(Auth::ROLE_MEDICO)) {

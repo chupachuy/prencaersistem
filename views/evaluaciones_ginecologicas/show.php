@@ -24,11 +24,28 @@ $num = fn($v) => $v !== null && $v !== '' ? htmlspecialchars($v) : '—';
         <h1 class="page-title mb-0">USG Ginecológico — <?php echo htmlspecialchars($evaluacion['codigo_reporte']); ?></h1>
     </div>
     <div class="page-header-actions">
+        <span class="badge fs-6 <?php echo match($evaluacion['estado'] ?? 'Pendiente') { 'Completado'=>'bg-success','En proceso'=>'bg-warning','Archivado'=>'bg-secondary',default=>'bg-info' }; ?>"><?php echo htmlspecialchars($evaluacion['estado'] ?? 'Pendiente'); ?></span>
+        <?php if (($evaluacion['estado'] ?? '') === 'Completado'): ?>
+            <form method="POST" action="<?php echo Url::to('/evaluaciones_ginecologicas/enviar?id=' . $evaluacion['id']); ?>" style="display:inline;">
+                <select name="destinatario" class="form-select form-select-sm" style="width:auto;display:inline;vertical-align:middle;">
+                    <option value="">-- Destinatario --</option>
+                    <?php if (!empty($evaluacion['paciente_email'])): ?><option value="paciente"><?php echo htmlspecialchars($evaluacion['paciente_nombre'] . ' ' . $evaluacion['paciente_apellido']); ?> (Paciente)</option><?php endif; ?>
+                    <?php if (!empty($evaluacion['medico_email'])): ?><option value="medico"><?php echo htmlspecialchars($evaluacion['medico_nombre'] . ' ' . $evaluacion['medico_apellido']); ?> (Médico)</option><?php endif; ?>
+                    <?php if (!empty($evaluacion['medico_solicitante_email'])): ?><option value="solicitante"><?php echo htmlspecialchars($evaluacion['medico_solicitante_nombre'] . ' ' . $evaluacion['medico_solicitante_apellido']); ?> (Solicitante)</option><?php endif; ?>
+                    <?php if (!empty($evaluacion['medico_referido_email'])): ?><option value="referido"><?php echo htmlspecialchars($evaluacion['medico_referido_nombre'] . ' ' . $evaluacion['medico_referido_apellido']); ?> (Referido)</option><?php endif; ?>
+                    <option value="todos">-- Todos --</option>
+                </select>
+                <input type="hidden" name="_csrf" value="<?php echo htmlspecialchars(Csrf::token(), ENT_QUOTES, 'UTF-8'); ?>">
+                <button type="button" class="btn btn-apple btn-apple-primary" onclick="var f=this.form,d=f.destinatario;if(!d.value){alert('Seleccione un destinatario');return;}if(confirm('¿Enviar a '+d.options[d.selectedIndex].text+'?'))f.submit();">
+                    <i class="fa-solid fa-paper-plane"></i> Enviar
+                </button>
+            </form>
+        <?php endif; ?>
         <a href="<?php echo Url::to('/evaluaciones_ginecologicas/edit?id=' . $evaluacion['id']); ?>" class="btn btn-apple btn-apple-primary">
             <i class="fa-solid fa-edit"></i> Editar
         </a>
-        <a href="<?php echo Url::to('/evaluaciones_ginecologicas/print?id=' . $evaluacion['id']); ?>" class="btn btn-light" target="_blank">
-            <i class="fa-solid fa-print"></i> Imprimir
+        <a href="<?php echo Url::to('/evaluaciones_ginecologicas/pdf?id=' . $evaluacion['id']); ?>" class="btn btn-light" target="_blank">
+            <i class="fa-solid fa-download"></i> Imprimir
         </a>
     </div>
 </div>
@@ -45,9 +62,13 @@ $num = fn($v) => $v !== null && $v !== '' ? htmlspecialchars($v) : '—';
             <dt class="col-sm-3">Fecha del estudio</dt>
             <dd class="col-sm-3"><?php echo date('d/m/Y', strtotime($evaluacion['fecha_estudio'])); ?></dd>
             <dt class="col-sm-3">Médico solicitante</dt>
-            <dd class="col-sm-3"><?php echo $txt($evaluacion['solicitante_nombre'] ? $evaluacion['solicitante_nombre'] . ' ' . $evaluacion['solicitante_apellido'] : null); ?></dd>
+            <dd class="col-sm-3"><?php echo $txt($evaluacion['medico_solicitante_nombre'] ? $evaluacion['medico_solicitante_nombre'] . ' ' . $evaluacion['medico_solicitante_apellido'] : null); ?></dd>
             <dt class="col-sm-3">Médico que realiza</dt>
             <dd class="col-sm-3"><?php echo htmlspecialchars($evaluacion['medico_nombre'] . ' ' . $evaluacion['medico_apellido']); ?></dd>
+            <?php if (!empty($evaluacion['medico_referido_nombre'])): ?>
+            <dt class="col-sm-3">Médico referido</dt>
+            <dd class="col-sm-3"><?php echo htmlspecialchars($evaluacion['medico_referido_nombre'] . ' ' . $evaluacion['medico_referido_apellido']); ?></dd>
+            <?php endif; ?>
             <dt class="col-sm-3">Indicación clínica</dt>
             <dd class="col-sm-9"><?php echo $txt($evaluacion['indicacion_clinica']); ?></dd>
             <dt class="col-sm-3">FUM</dt>

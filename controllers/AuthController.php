@@ -62,8 +62,8 @@ class AuthController extends Controller
             $this->redirect('/dashboard');
         }
 
-        Auth::logout();
         Session::set('success', 'Ha cerrado sesión correctamente.');
+        Auth::logout();
         $this->redirect('/login');
     }
 }

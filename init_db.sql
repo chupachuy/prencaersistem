@@ -1052,6 +1052,19 @@ CREATE TABLE IF NOT EXISTS conclusion_recomendaciones_ginecologicas (
     UNIQUE KEY unique_evaluacion_conclusion_rec (evaluacion_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Bitácora de Auditoría
+CREATE TABLE IF NOT EXISTS bitacora (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_id INT NOT NULL,
+    accion VARCHAR(255) NOT NULL,
+    descripcion TEXT,
+    modulo VARCHAR(100),
+    registro_id INT,
+    ip VARCHAR(45),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- Insertar Superadministrador por defecto (password: Admin123!)
 INSERT IGNORE INTO usuarios (id, nombre, apellido, email, password, rol_id, email_verified) VALUES
-(1, 'Super', 'Admin', 'superadmin@medical.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 1, TRUE);
+(1, 'Super', 'Admin', 'jesuslv2412@hotmail.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 1, TRUE);

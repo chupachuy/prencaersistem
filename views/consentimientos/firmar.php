@@ -104,7 +104,7 @@ require_once __DIR__ . '/../layouts/sidebar.php';
 
         <?php if ($consentimiento['estado'] === 'Completado'): ?>
         <div class="d-grid gap-2">
-            <a href="<?php echo Url::to('/consentimientos/print?id=' . $consentimiento['id']); ?>" class="btn btn-apple btn-apple-primary" target="_blank">
+            <a href="<?php echo Url::to('/consentimientos/pdf?id=' . $consentimiento['id']); ?>" class="btn btn-apple btn-apple-primary" target="_blank">
                 <i class="fa-solid fa-download"></i> Descargar PDF
             </a>
             <a href="<?php echo Url::to('/consentimientos/show?id=' . $consentimiento['id']); ?>" class="btn btn-apple btn-apple-secondary">

@@ -4,6 +4,7 @@ require_once __DIR__ . '/../models/User.php';
 require_once __DIR__ . '/../models/Rol.php';
 require_once __DIR__ . '/../helpers/Auth.php';
 require_once __DIR__ . '/../helpers/Session.php';
+require_once __DIR__ . '/../helpers/Validator.php';
 
 class UserController extends Controller
 {
@@ -18,7 +19,7 @@ class UserController extends Controller
 
     public function index()
     {
-        if (!Auth::check() || (!Auth::hasRole(Auth::ROLE_SUPERADMIN) && !Auth::hasRole(Auth::ROLE_ADMINISTRADOR))) {
+        if (!Auth::check() || (!Auth::hasRole(Auth::ROLE_SUPERADMIN) && !Auth::hasRole(Auth::ROLE_ADMINISTRADOR) && !Auth::hasRole(Auth::ROLE_JEFE))) {
             $this->redirect('/dashboard');
         }
 
@@ -56,7 +57,7 @@ class UserController extends Controller
 
     public function create()
     {
-        if (!Auth::check() || (!Auth::hasRole(Auth::ROLE_SUPERADMIN) && !Auth::hasRole(Auth::ROLE_ADMINISTRADOR))) {
+        if (!Auth::check() || (!Auth::hasRole(Auth::ROLE_SUPERADMIN) && !Auth::hasRole(Auth::ROLE_ADMINISTRADOR) && !Auth::hasRole(Auth::ROLE_JEFE))) {
             $this->redirect('/dashboard');
         }
 
@@ -70,22 +71,41 @@ class UserController extends Controller
             $this->redirect('/usuarios');
         }
 
-        if (!Auth::check() || (!Auth::hasRole(Auth::ROLE_SUPERADMIN) && !Auth::hasRole(Auth::ROLE_ADMINISTRADOR))) {
+        if (!Auth::check() || (!Auth::hasRole(Auth::ROLE_SUPERADMIN) && !Auth::hasRole(Auth::ROLE_ADMINISTRADOR) && !Auth::hasRole(Auth::ROLE_JEFE))) {
             $this->redirect('/dashboard');
         }
 
         $data = [
-            'nombre' => trim($_POST['nombre'] ?? ''),
-            'apellido' => trim($_POST['apellido'] ?? ''),
-            'email' => trim($_POST['email'] ?? ''),
-            'telefono' => trim($_POST['telefono'] ?? ''),
-            'password' => $_POST['password'] ?? '',
-            'rol_id' => $_POST['rol_id'] ?? '',
-            'especialidad' => trim($_POST['especialidad'] ?? ''),
-            'activo' => isset($_POST['activo']) ? 1 : 0,
+            'nombre'      => trim($_POST['nombre'] ?? ''),
+            'apellido'    => trim($_POST['apellido'] ?? ''),
+            'email'       => trim($_POST['email'] ?? ''),
+            'telefono'    => trim($_POST['telefono'] ?? ''),
+            'password'    => $_POST['password'] ?? '',
+            'rol_id'      => $_POST['rol_id'] ?? '',
+            'especialidad'=> trim($_POST['especialidad'] ?? ''),
+            'activo'      => isset($_POST['activo']) ? 1 : 0,
             'email_verified' => 1,
-            'ruta_firma' => null
+            'ruta_firma'  => null
         ];
+
+        // BUG-05: Validar campos obligatorios y contraseña mínima
+        if (empty($data['nombre']) || empty($data['apellido']) || empty($data['email'])) {
+            Session::set('error', 'Nombre, apellido y correo electrónico son obligatorios.');
+            $this->redirect('/usuarios/create');
+            return;
+        }
+
+        if (strlen($data['password']) < 6) {
+            Session::set('error', 'La contraseña debe tener al menos 6 caracteres.');
+            $this->redirect('/usuarios/create');
+            return;
+        }
+
+        if (!Validator::email($data['email'])) {
+            Session::set('error', 'El correo electrónico no tiene un formato válido.');
+            $this->redirect('/usuarios/create');
+            return;
+        }
 
         if (!empty($_FILES['firma']['tmp_name']) && $_FILES['firma']['error'] === UPLOAD_ERR_OK) {
             $rolId = (int) $data['rol_id'];
@@ -141,7 +161,7 @@ class UserController extends Controller
             $this->redirect('/usuarios');
         }
 
-        if (!Auth::check() || (!Auth::hasRole(Auth::ROLE_SUPERADMIN) && !Auth::hasRole(Auth::ROLE_ADMINISTRADOR))) {
+        if (!Auth::check() || (!Auth::hasRole(Auth::ROLE_SUPERADMIN) && !Auth::hasRole(Auth::ROLE_ADMINISTRADOR) && !Auth::hasRole(Auth::ROLE_JEFE))) {
             $this->redirect('/dashboard');
         }
 
@@ -158,8 +178,8 @@ class UserController extends Controller
     public function update($id = null)
     {
         if ($id === null) {
-            // Get ID from query string if not in route parameter
-            $id = $_POST['id'] ?? $_GET['id'] ?? null;
+            // BUG-04: Solo leer el ID del POST para evitar manipulación vía URL
+            $id = $_POST['id'] ?? null;
         }
 
         if (!$id) {
@@ -171,7 +191,7 @@ class UserController extends Controller
             $this->redirect('/usuarios');
         }
 
-        if (!Auth::check() || (!Auth::hasRole(Auth::ROLE_SUPERADMIN) && !Auth::hasRole(Auth::ROLE_ADMINISTRADOR))) {
+        if (!Auth::check() || (!Auth::hasRole(Auth::ROLE_SUPERADMIN) && !Auth::hasRole(Auth::ROLE_ADMINISTRADOR) && !Auth::hasRole(Auth::ROLE_JEFE))) {
             $this->redirect('/dashboard');
         }
 

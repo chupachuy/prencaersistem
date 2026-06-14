@@ -9,12 +9,14 @@ require_once __DIR__ . '/../helpers/Session.php';
 class Reportes1erTrimestreController extends Controller
 {
     private $reporteModel;
+    private $mailer;
     private $pacienteModel;
     private $userModel;
 
     public function __construct()
     {
         $this->reporteModel = new Reportes1erTrimestre();
+        $this->mailer = new Mailer();
         $this->pacienteModel = new Paciente();
         $this->userModel = new User();
     }
@@ -273,5 +275,15 @@ class Reportes1erTrimestreController extends Controller
         $user = Session::get('user');
         
         $this->render('reportes_1er_trimestre/print', ['reporte' => $reporte, 'user' => $user]);
+    }
+
+    public function pdf()
+    {
+        if (!Auth::check()) { $this->redirect("/login"); }
+        $id = $_GET["id"] ?? null;
+        if (!$id) { $this->redirect("/reportes_1er_trimestre"); }
+        $reporte = $this->reporteModel->getById($id);
+        if (!$reporte) { Session::set("error", "No encontrado."); $this->redirect("/reportes_1er_trimestre"); }
+        $this->streamPdf("reportes_1er_trimestre/imprimir", ["reporte" => $reporte], $reporte["codigo_reporte"] . ".pdf");
     }
 }

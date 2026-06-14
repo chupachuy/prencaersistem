@@ -273,7 +273,10 @@ class ReferenciaController extends Controller
             $this->redirect('/referencias');
         }
 
-        if ($referencia['medico_referido_id'] != Auth::id()) {
+        $roleId = Session::get('user_role_id');
+        $isAdmin = ($roleId == Auth::ROLE_SUPERADMIN || $roleId == Auth::ROLE_ADMINISTRADOR || $roleId == Auth::ROLE_JEFE);
+
+        if ($referencia['medico_referido_id'] != Auth::id() && !$isAdmin) {
             Session::set('error', 'Solo el medico referido puede responder a esta referencia.');
             $this->redirect('/referencias');
         }

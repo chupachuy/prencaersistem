@@ -59,6 +59,19 @@ require_once __DIR__ . '/../layouts/sidebar.php';
             </div>
             <div class="row">
                 <div class="col-md-4 mb-3">
+                    <label for="medico_referido_id" class="form-label">Médico Referido</label>
+                    <select class="form-select" id="medico_referido_id" name="medico_referido_id">
+                        <option value="">Ninguno</option>
+                        <?php foreach ($medicos as $m): ?>
+                            <option value="<?php echo $m['id']; ?>">
+                                <?php echo htmlspecialchars($m['nombre'] . ' ' . $m['apellido']); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-3">
                     <label for="fecha_estudio" class="form-label">Fecha de Estudio *</label>
                     <input type="date" class="form-control" id="fecha_estudio" name="fecha_estudio" value="<?php echo date('Y-m-d'); ?>" required>
                 </div>

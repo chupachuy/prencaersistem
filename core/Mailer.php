@@ -8,6 +8,7 @@ use PHPMailer\PHPMailer\Exception;
 class Mailer
 {
     private $mail;
+    public $lastError = null;
 
     public function __construct()
     {
@@ -18,7 +19,6 @@ class Mailer
     private function setup()
     {
         try {
-            //Server settings
             $this->mail->isSMTP();
             $this->mail->Host = MAIL_HOST;
             $this->mail->SMTPAuth = true;
@@ -29,8 +29,7 @@ class Mailer
             } else {
                 $this->mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             }
-            
-            // Fix for Gmail/Hoster SSL issues
+
             $this->mail->SMTPOptions = array(
                 'ssl' => array(
                     'verify_peer' => false,
@@ -41,11 +40,12 @@ class Mailer
             $this->mail->Port = MAIL_PORT;
             $this->mail->CharSet = 'UTF-8';
 
-            //Recipients
             $this->mail->setFrom(MAIL_FROM_ADDRESS, MAIL_FROM_NAME);
+            $this->lastError = null;
         }
         catch (Exception $e) {
-            error_log("Message could not be sent. Mailer Error: {$this->mail->ErrorInfo}");
+            $this->lastError = 'SMTP Setup Error: ' . $this->mail->ErrorInfo;
+            error_log($this->lastError);
         }
     }
 
@@ -59,11 +59,29 @@ class Mailer
             $this->mail->Body = $body;
             $this->mail->AltBody = strip_tags($body);
 
-            return $this->mail->send();
+            $result = $this->mail->send();
+            $this->lastError = null;
+            return $result;
         }
         catch (Exception $e) {
-            error_log("Message could not be sent. Mailer Error: {$this->mail->ErrorInfo}");
+            $this->lastError = 'SMTP Send Error (' . $to . '): ' . $this->mail->ErrorInfo;
+            error_log($this->lastError);
             return false;
         }
+    }
+
+    public function addAttachment($path, $name = '', $encoding = PHPMailer::ENCODING_BASE64, $type = '')
+    {
+        $this->mail->addAttachment($path, $name, $encoding, $type);
+    }
+
+    public function addStringAttachment($string, $filename, $encoding = PHPMailer::ENCODING_BASE64, $type = '')
+    {
+        $this->mail->addStringAttachment($string, $filename, $encoding, $type);
+    }
+
+    public function clearAttachments()
+    {
+        $this->mail->clearAttachments();
     }
 }

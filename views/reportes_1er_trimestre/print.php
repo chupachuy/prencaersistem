@@ -9,12 +9,9 @@ require_once __DIR__ . '/../layouts/header.php';
     <meta charset="UTF-8">
     <title><?php echo $title; ?></title>
     <style>
-        @media print {
-            .no-print { display: none !important; }
-            body { padding: 0; }
-            .card { border: none !important; }
+        body {
+            font-family: Arial, sans-serif; padding: 150px 20px 40px 20px;
         }
-        body { font-family: Arial, sans-serif; padding: 20px; }
         .header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid #333; padding-bottom: 10px; }
         .header h1 { margin: 0; font-size: 24px; }
         .header p { margin: 5px 0 0; color: #666; }
@@ -37,15 +34,6 @@ require_once __DIR__ . '/../layouts/header.php';
     </style>
 </head>
 <body>
-    <div class="no-print btn-print">
-        <button onclick="window.print()" class="btn btn-primary">
-            <i class="fa-solid fa-print"></i> Imprimir
-        </button>
-        <button onclick="window.close()" class="btn btn-secondary">
-            <i class="fa-solid fa-times"></i> Cerrar
-        </button>
-    </div>
-
     <div class="header">
         <h1>REPORTE 1ER TRIMESTRE</h1>
         <p>Código: <?php echo htmlspecialchars($reporte['codigo_reporte']); ?></p>

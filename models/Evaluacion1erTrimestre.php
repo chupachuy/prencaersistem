@@ -33,11 +33,15 @@ class Evaluacion1erTrimestre
     public function getById($id)
     {
         $stmt = $this->db->prepare("
-            SELECT e.*, p.nombre as paciente_nombre, p.apellido as paciente_apellido, p.fecha_nacimiento,
-                   u.nombre as medico_nombre, u.apellido as medico_apellido
+            SELECT e.*, p.nombre as paciente_nombre, p.apellido as paciente_apellido, p.fecha_nacimiento, p.email as paciente_email,
+                   u.nombre as medico_nombre, u.apellido as medico_apellido, u.email as medico_email,
+                   usol.nombre as medico_solicitante_nombre, usol.apellido as medico_solicitante_apellido, usol.email as medico_solicitante_email,
+                   uref.nombre as medico_referido_nombre, uref.apellido as medico_referido_apellido, uref.email as medico_referido_email
             FROM evaluaciones_1er_trimestre e
             JOIN pacientes p ON e.paciente_id = p.id
             JOIN usuarios u ON e.medico_id = u.id
+            LEFT JOIN usuarios usol ON e.medico_solicitante_id = usol.id
+            LEFT JOIN usuarios uref ON e.medico_referido_id = uref.id
             WHERE e.id = ?
         ");
         $stmt->execute([$id]);
@@ -61,16 +65,18 @@ class Evaluacion1erTrimestre
     {
         $stmt = $this->db->prepare("
             INSERT INTO evaluaciones_1er_trimestre (
-                paciente_id, medico_id, codigo_reporte, fecha_evaluacion, fecha_estudio,
+                paciente_id, medico_id, medico_solicitante_id, medico_referido_id, codigo_reporte, fecha_evaluacion, fecha_estudio,
                 peso_kg, talla_cm, ta_sistolica, ta_diastolica,
                 fum, fpp_usg, embarazo_multiple, estado_feto,
                 fcf_lpm, lcc_mm, edad_gestacional_semanas,
                 estado, created_by, updated_by
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ");
         $stmt->execute([
             $data['paciente_id'],
             $data['medico_id'],
+            $data['medico_solicitante_id'] ?? null,
+            $data['medico_referido_id'] ?? null,
             $data['codigo_reporte'],
             $data['fecha_evaluacion'],
             $data['fecha_estudio'] ?? null,
@@ -96,7 +102,7 @@ class Evaluacion1erTrimestre
     {
         $stmt = $this->db->prepare("
             UPDATE evaluaciones_1er_trimestre SET
-                paciente_id = ?, medico_id = ?, fecha_estudio = ?,
+                paciente_id = ?, medico_id = ?, medico_solicitante_id = ?, medico_referido_id = ?, fecha_estudio = ?,
                 peso_kg = ?, talla_cm = ?, ta_sistolica = ?, ta_diastolica = ?,
                 fum = ?, fpp_usg = ?, embarazo_multiple = ?, estado_feto = ?,
                 fcf_lpm = ?, lcc_mm = ?, edad_gestacional_semanas = ?,
@@ -106,6 +112,8 @@ class Evaluacion1erTrimestre
         return $stmt->execute([
             $data['paciente_id'],
             $data['medico_id'],
+            $data['medico_solicitante_id'] ?? null,
+            $data['medico_referido_id'] ?? null,
             $data['fecha_estudio'] ?? null,
             $data['peso_kg'] ?? null,
             $data['talla_cm'] ?? null,

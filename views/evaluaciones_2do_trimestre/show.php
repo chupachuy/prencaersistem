@@ -16,8 +16,34 @@ $ev=$evaluacion;
     <div class="page-header-actions">
         <?php $ec=match($ev['estado']){'Completado'=>'success','En proceso'=>'warning','Archivado'=>'secondary',default=>'info'};?>
         <span class="badge bg-<?php echo $ec; ?> me-2"><?php echo htmlspecialchars($ev['estado']); ?></span>
+        <?php if ($ev['estado'] === 'Completado'): ?>
+            <form method="POST" action="<?php echo Url::to('/evaluaciones_2do_trimestre/enviar?id='.$ev['id']); ?>" style="display:inline;">
+
+                <select name="destinatario" class="form-select form-select-sm" style="width:auto;display:inline;vertical-align:middle;">
+                    <option value="">-- Destinatario --</option>
+                    <?php if (!empty($ev['paciente_email'])): ?>
+                        <option value="paciente"><?php echo htmlspecialchars(($ev['paciente_nombre'] ?? '') . ' ' . ($ev['paciente_apellido'] ?? '') . ' (Paciente)'); ?></option>
+                    <?php endif; ?>
+                    <?php if (!empty($ev['medico_email'])): ?>
+                        <option value="medico"><?php echo htmlspecialchars(($ev['medico_nombre'] ?? '') . ' ' . ($ev['medico_apellido'] ?? '') . ' (Médico)'); ?></option>
+                    <?php endif; ?>
+                    <?php if (!empty($ev['medico_solicitante_email'])): ?>
+                        <option value="solicitante"><?php echo htmlspecialchars(($ev['medico_solicitante_nombre'] ?? 'Médico Solicitante')); ?></option>
+                    <?php endif; ?>
+                    <?php if (!empty($ev['medico_referido_email'])): ?>
+                        <option value="referido"><?php echo htmlspecialchars(($ev['medico_referido_nombre'] ?? 'Médico Referido')); ?></option>
+                    <?php endif; ?>
+                    <option value="todos">-- Todos --</option>
+                </select>
+
+                <input type="hidden" name="_csrf" value="<?php echo htmlspecialchars(Csrf::token(), ENT_QUOTES, 'UTF-8'); ?>">
+                <button type="button" class="btn btn-apple btn-apple-primary" onclick="var f=this.form,d=f.destinatario;if(!d.value){alert('Seleccione un destinatario');return;}if(confirm('¿Enviar a '+d.options[d.selectedIndex].text+'?'))f.submit();">
+                    <i class="fa-solid fa-paper-plane"></i> Enviar
+                </button>
+            </form>
+        <?php endif; ?>
         <a href="<?php echo Url::to('/evaluaciones_2do_trimestre/edit?id='.$ev['id']); ?>" class="btn btn-apple btn-apple-secondary"><i class="fa-solid fa-edit"></i> Editar</a>
-        <a href="<?php echo Url::to('/evaluaciones_2do_trimestre/print?id='.$ev['id']); ?>" class="btn btn-apple btn-apple-primary" target="_blank"><i class="fa-solid fa-print"></i> Imprimir</a>
+        <a href="<?php echo Url::to('/evaluaciones_2do_trimestre/pdf?id='.$ev['id']); ?>" class="btn btn-apple btn-apple-primary" target="_blank"><i class="fa-solid fa-download"></i> Imprimir</a>
     </div>
 </div>
 <div class="row">
@@ -28,6 +54,12 @@ $ev=$evaluacion;
             <div class="row mb-2"><div class="col-md-4 fw-bold">Fecha Estudio:</div><div class="col-md-8"><?php echo $ev['fecha_estudio']?date('d/m/Y',strtotime($ev['fecha_estudio'])):'<span class="text-muted">—</span>'; ?></div></div>
             <div class="row mb-2"><div class="col-md-4 fw-bold">Paciente:</div><div class="col-md-8"><?php echo htmlspecialchars($ev['paciente_nombre'].' '.$ev['paciente_apellido']); ?></div></div>
             <div class="row mb-2"><div class="col-md-4 fw-bold">Médico:</div><div class="col-md-8"><?php echo htmlspecialchars($ev['medico_nombre'].' '.$ev['medico_apellido']); ?></div></div>
+            <?php if (!empty($ev['medico_solicitante_nombre'])): ?>
+            <div class="row mb-2"><div class="col-md-4 fw-bold">Solicitante:</div><div class="col-md-8"><?php echo htmlspecialchars($ev['medico_solicitante_nombre'].' '.$ev['medico_solicitante_apellido']); ?></div></div>
+            <?php endif; ?>
+            <?php if (!empty($ev['medico_referido_nombre'])): ?>
+            <div class="row mb-2"><div class="col-md-4 fw-bold">Referido:</div><div class="col-md-8"><?php echo htmlspecialchars($ev['medico_referido_nombre'].' '.$ev['medico_referido_apellido']); ?></div></div>
+            <?php endif; ?>
         </div></div>
         <?php if (!empty($data1er)): ?>
         <div class="card mb-4"><div class="card-header"><i class="fa-solid fa-folder-open me-2"></i> Datos del 1er Trimestre (referencia)</div><div class="card-body">

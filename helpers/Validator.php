@@ -21,7 +21,7 @@ class Validator
         return strlen(trim($value)) <= $max;
     }
 
-    public static function santize($value)
+    public static function sanitize($value)
     {
         return htmlspecialchars(strip_tags(trim($value)));
     }

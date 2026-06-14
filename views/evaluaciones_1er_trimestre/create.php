@@ -41,7 +41,7 @@ require_once __DIR__ . '/../layouts/sidebar.php';
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-6 mb-3">
+                <div class="col-md-12 mb-3">
                     <label for="paciente_id" class="form-label">Paciente *</label>
                     <select class="form-select" id="paciente_id" name="paciente_id" required>
                         <option value="">Seleccione un paciente</option>
@@ -52,10 +52,43 @@ require_once __DIR__ . '/../layouts/sidebar.php';
                         <?php endforeach; ?>
                     </select>
                 </div>
-                <div class="col-md-6 mb-3">
-                    <label for="medico_id" class="form-label">Médico *</label>
-                    <select class="form-select" id="medico_id" name="medico_id" required>
-                        <option value="">Seleccione un médico</option>
+            </div>
+        </div>
+    </div>
+
+    <!-- Referencia Médica -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fa-solid fa-user-doctor me-2"></i> Referencia Médica
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Médico Solicitante</label>
+                    <select name="medico_solicitante_id" class="form-select">
+                        <option value="">Seleccionar...</option>
+                        <?php foreach ($medicos as $m): ?>
+                            <option value="<?php echo $m['id']; ?>" <?php echo Auth::id() == $m['id'] ? 'selected' : ''; ?>>
+                                <?php echo htmlspecialchars($m['nombre'] . ' ' . $m['apellido'] . ($m['especialidad'] ? ' - ' . $m['especialidad'] : '')); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Médico que Realiza <span class="text-danger">*</span></label>
+                    <select name="medico_id" class="form-select" required>
+                        <option value="">Seleccionar...</option>
+                        <?php foreach ($medicos as $m): ?>
+                            <option value="<?php echo $m['id']; ?>">
+                                <?php echo htmlspecialchars($m['nombre'] . ' ' . $m['apellido'] . ($m['especialidad'] ? ' - ' . $m['especialidad'] : '')); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Médico Referido</label>
+                    <select name="medico_referido_id" class="form-select">
+                        <option value="">Ninguno</option>
                         <?php foreach ($medicos as $m): ?>
                             <option value="<?php echo $m['id']; ?>">
                                 <?php echo htmlspecialchars($m['nombre'] . ' ' . $m['apellido'] . ($m['especialidad'] ? ' - ' . $m['especialidad'] : '')); ?>

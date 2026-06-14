@@ -12,11 +12,26 @@ require_once __DIR__ . '/../layouts/sidebar.php';
         <h1 class="page-title mb-0">Ver Reporte 1er Trimestre</h1>
     </div>
     <div class="page-header-actions">
+        <?php if ($reporte['estado'] === 'Completado'): ?>
+            <form method="POST" action="<?php echo Url::to('/reportes_1er_trimestre/enviar?id=' . $reporte['id']); ?>" style="display:inline;">
+                <select name="destinatario" class="form-select form-select-sm" style="width:auto;display:inline;vertical-align:middle;">
+                    <option value="">-- Destinatario --</option>
+                    <?php if (!empty($reporte['paciente_email'])): ?><option value="paciente"><?php echo htmlspecialchars($reporte['paciente_nombre'] . ' ' . $reporte['paciente_apellido']); ?> (Paciente)</option><?php endif; ?>
+                    <?php if (!empty($reporte['medico_email'])): ?><option value="medico"><?php echo htmlspecialchars($reporte['medico_nombre'] . ' ' . $reporte['medico_apellido']); ?> (Médico)</option><?php endif; ?>
+                    <?php if (!empty($reporte['medico_referido_email'])): ?><option value="referido"><?php echo htmlspecialchars($reporte['medico_referido_nombre'] . ' ' . $reporte['medico_referido_apellido']); ?> (Referido)</option><?php endif; ?>
+                    <option value="todos">-- Todos --</option>
+                </select>
+                <input type="hidden" name="_csrf" value="<?php echo htmlspecialchars(Csrf::token(), ENT_QUOTES, 'UTF-8'); ?>">
+                <button type="button" class="btn btn-apple btn-apple-primary" onclick="var f=this.form,d=f.destinatario;if(!d.value){alert('Seleccione un destinatario');return;}if(confirm('¿Enviar a '+d.options[d.selectedIndex].text+'?'))f.submit();">
+                    <i class="fa-solid fa-paper-plane"></i> Enviar
+                </button>
+            </form>
+        <?php endif; ?>
         <a href="<?php echo Url::to('/reportes_1er_trimestre/edit?id=' . $reporte['id']); ?>" class="btn btn-apple btn-apple-primary">
             <i class="fa-solid fa-edit"></i> Editar
         </a>
-        <a href="<?php echo Url::to('/reportes_1er_trimestre/print?id=' . $reporte['id']); ?>" class="btn btn-apple btn-apple-secondary" target="_blank">
-            <i class="fa-solid fa-print"></i> Imprimir
+        <a href="<?php echo Url::to('/reportes_1er_trimestre/pdf?id=' . $reporte['id']); ?>" class="btn btn-apple btn-apple-secondary" target="_blank">
+            <i class="fa-solid fa-download"></i> Imprimir
         </a>
     </div>
 </div>

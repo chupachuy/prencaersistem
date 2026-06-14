@@ -71,6 +71,15 @@ $num = fn($f) => htmlspecialchars($allData[$f] ?? '');
                         <?php endforeach; ?>
                     </select>
                 </div>
+                <div class="col-md-4">
+                    <label class="form-label">Médico referido</label>
+                    <select name="medico_referido_id" class="form-select">
+                        <option value="">Ninguno</option>
+                        <?php foreach ($medicos as $m): ?>
+                        <option value="<?php echo $m['id']; ?>" <?php echo $sel('medico_referido_id', $m['id']); ?>><?php echo htmlspecialchars($m['nombre'].' '.$m['apellido']); ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
                 <div class="col-md-3">
                     <label class="form-label">Fecha del estudio</label>
                     <input type="date" name="fecha_estudio" class="form-control" value="<?php echo $val('fecha_estudio'); ?>" required>

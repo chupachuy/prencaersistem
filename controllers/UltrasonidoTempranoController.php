@@ -11,6 +11,7 @@ require_once __DIR__ . '/../helpers/Validator.php';
 class UltrasonidoTempranoController extends Controller
 {
     private $ultrasonidoModel;
+    private $mailer;
     private $embrionModel;
     private $pacienteModel;
     private $userModel;
@@ -18,6 +19,7 @@ class UltrasonidoTempranoController extends Controller
     public function __construct()
     {
         $this->ultrasonidoModel = new UltrasonidoTemprano();
+        $this->mailer = new Mailer();
         $this->embrionModel = new EmbrioTemprano();
         $this->pacienteModel = new Paciente();
         $this->userModel = new User();
@@ -478,5 +480,15 @@ class UltrasonidoTempranoController extends Controller
             'evaluacion' => $evaluacion,
             'embriones' => $embriones
         ]);
+    }
+
+    public function pdf()
+    {
+        if (!Auth::check()) { $this->redirect("/login"); }
+        $id = $_GET["id"] ?? null;
+        if (!$id) { $this->redirect("/ultrasonido_temprano"); }
+        $evaluacion = $this->ultrasonidoModel->getById($id);
+        if (!$evaluacion) { Session::set("error", "No encontrado."); $this->redirect("/ultrasonido_temprano"); }
+        $this->streamPdf("ultrasonido_temprano/imprimir", ["evaluacion" => $evaluacion], $evaluacion["codigo_reporte"] . ".pdf");
     }
 }

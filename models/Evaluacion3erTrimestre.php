@@ -33,11 +33,15 @@ class Evaluacion3erTrimestre
     public function getById($id)
     {
         $stmt = $this->db->prepare("
-            SELECT e.*, p.nombre as paciente_nombre, p.apellido as paciente_apellido, p.fecha_nacimiento,
-                   u.nombre as medico_nombre, u.apellido as medico_apellido
+            SELECT e.*, p.nombre as paciente_nombre, p.apellido as paciente_apellido, p.fecha_nacimiento, p.email as paciente_email,
+                   u.nombre as medico_nombre, u.apellido as medico_apellido, u.email as medico_email,
+                   usol.nombre as medico_solicitante_nombre, usol.apellido as medico_solicitante_apellido, usol.email as medico_solicitante_email,
+                   uref.nombre as medico_referido_nombre, uref.apellido as medico_referido_apellido, uref.email as medico_referido_email
             FROM evaluaciones_3er_trimestre e
             JOIN pacientes p ON e.paciente_id = p.id
             JOIN usuarios u ON e.medico_id = u.id
+            LEFT JOIN usuarios usol ON e.medico_solicitante_id = usol.id
+            LEFT JOIN usuarios uref ON e.medico_referido_id = uref.id
             WHERE e.id = ?
         ");
         $stmt->execute([$id]);
@@ -61,16 +65,18 @@ class Evaluacion3erTrimestre
     {
         $stmt = $this->db->prepare("
             INSERT INTO evaluaciones_3er_trimestre (
-                paciente_id, medico_id, codigo_reporte, fecha_evaluacion, fecha_estudio,
+                paciente_id, medico_id, medico_solicitante_id, medico_referido_id, codigo_reporte, fecha_evaluacion, fecha_estudio,
                 estudio_solicitado, edad_gestacional_semanas, fpp_fum, fpp_usg,
                 peso_kg, talla_cm, ta_sistolica, ta_diastolica,
                 situacion_fetal, presentacion_fetal, posicion_fetal, feto_unico_vivo,
                 fcf_lpm, equipo_ultrasonido, observaciones,
                 estado, created_by, updated_by
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ");
         $stmt->execute([
-            $data['paciente_id'], $data['medico_id'], $data['codigo_reporte'],
+            $data['paciente_id'], $data['medico_id'],
+            $data['medico_solicitante_id'] ?? null, $data['medico_referido_id'] ?? null,
+            $data['codigo_reporte'],
             $data['fecha_evaluacion'], $data['fecha_estudio'] ?? null,
             $data['estudio_solicitado'] ?? null,
             $data['edad_gestacional_semanas'] ?? null,
@@ -90,7 +96,7 @@ class Evaluacion3erTrimestre
     {
         $stmt = $this->db->prepare("
             UPDATE evaluaciones_3er_trimestre SET
-                paciente_id = ?, medico_id = ?,
+                paciente_id = ?, medico_id = ?, medico_solicitante_id = ?, medico_referido_id = ?,
                 fecha_estudio = ?, estudio_solicitado = ?,
                 edad_gestacional_semanas = ?, fpp_fum = ?, fpp_usg = ?,
                 peso_kg = ?, talla_cm = ?,
@@ -103,6 +109,7 @@ class Evaluacion3erTrimestre
         ");
         return $stmt->execute([
             $data['paciente_id'], $data['medico_id'],
+            $data['medico_solicitante_id'] ?? null, $data['medico_referido_id'] ?? null,
             $data['fecha_estudio'] ?? null, $data['estudio_solicitado'] ?? null,
             $data['edad_gestacional_semanas'] ?? null,
             $data['fpp_fum'] ?? null, $data['fpp_usg'] ?? null,

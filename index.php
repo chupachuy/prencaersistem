@@ -29,6 +29,7 @@ require_once __DIR__ . '/controllers/UltrasonidoTempranoController.php';
 require_once __DIR__ . '/controllers/EvaluacionGinecologicaController.php';
 require_once __DIR__ . '/controllers/ReferenciaController.php';
 require_once __DIR__ . '/controllers/MedicoReferidoController.php';
+require_once __DIR__ . '/controllers/BitacoraController.php';
 
 $router = new Router();
 
@@ -76,6 +77,8 @@ $router->get('/informes_exploracion/show', [InformesExploracionController::class
 $router->get('/informes_exploracion/edit', [InformesExploracionController::class, 'edit']);
 $router->post('/informes_exploracion/update', [InformesExploracionController::class, 'update']);
 $router->post('/informes_exploracion/delete', [InformesExploracionController::class, 'delete']);
+$router->post('/informes_exploracion/enviar', [InformesExploracionController::class, 'enviar']);
+$router->get('/informes_exploracion/pdf', [InformesExploracionController::class, 'pdf']);
 $router->get('/informes_exploracion/por-paciente', [InformesExploracionController::class, 'porPaciente']);
 
 // Consultas
@@ -83,6 +86,17 @@ $router->get('/consultas', [ConsultaController::class, 'index']);
 $router->get('/consultas/create', [ConsultaController::class, 'create']);
 $router->post('/consultas/store', [ConsultaController::class, 'store']);
 $router->get('/consultas/show', [ConsultaController::class, 'show']);
+
+// Reportes 1er Trimestre
+$router->get('/reportes_1er_trimestre', [Reportes1erTrimestreController::class, 'index']);
+$router->get('/reportes_1er_trimestre/create', [Reportes1erTrimestreController::class, 'create']);
+$router->post('/reportes_1er_trimestre/store', [Reportes1erTrimestreController::class, 'store']);
+$router->get('/reportes_1er_trimestre/show', [Reportes1erTrimestreController::class, 'show']);
+$router->get('/reportes_1er_trimestre/edit', [Reportes1erTrimestreController::class, 'edit']);
+$router->post('/reportes_1er_trimestre/update', [Reportes1erTrimestreController::class, 'update']);
+$router->post('/reportes_1er_trimestre/delete', [Reportes1erTrimestreController::class, 'delete']);
+$router->get('/reportes_1er_trimestre/pdf', [Reportes1erTrimestreController::class, 'pdf']);
+$router->post('/reportes_1er_trimestre/enviar', [Reportes1erTrimestreController::class, 'enviar']);
 
 // Evaluaciones (vista unificada)
 $router->get('/evaluaciones', [EvaluacionesController::class, 'index']);
@@ -94,8 +108,9 @@ $router->post('/evaluaciones_1er_trimestre/store', [Evaluaciones1erTrimestreCont
 $router->get('/evaluaciones_1er_trimestre/show', [Evaluaciones1erTrimestreController::class, 'show']);
 $router->get('/evaluaciones_1er_trimestre/edit', [Evaluaciones1erTrimestreController::class, 'edit']);
 $router->post('/evaluaciones_1er_trimestre/update', [Evaluaciones1erTrimestreController::class, 'update']);
-$router->get('/evaluaciones_1er_trimestre/print', [Evaluaciones1erTrimestreController::class, 'print']);
+$router->get('/evaluaciones_1er_trimestre/pdf', [Evaluaciones1erTrimestreController::class, 'pdf']);
 $router->post('/evaluaciones_1er_trimestre/delete', [Evaluaciones1erTrimestreController::class, 'delete']);
+$router->post('/evaluaciones_1er_trimestre/enviar', [Evaluaciones1erTrimestreController::class, 'enviar']);
 
 // Evaluaciones 2do Trimestre
 $router->get('/evaluaciones_2do_trimestre', [Evaluaciones2doTrimestreController::class, 'index']);
@@ -104,8 +119,9 @@ $router->post('/evaluaciones_2do_trimestre/store', [Evaluaciones2doTrimestreCont
 $router->get('/evaluaciones_2do_trimestre/show', [Evaluaciones2doTrimestreController::class, 'show']);
 $router->get('/evaluaciones_2do_trimestre/edit', [Evaluaciones2doTrimestreController::class, 'edit']);
 $router->post('/evaluaciones_2do_trimestre/update', [Evaluaciones2doTrimestreController::class, 'update']);
-$router->get('/evaluaciones_2do_trimestre/print', [Evaluaciones2doTrimestreController::class, 'print']);
+$router->get('/evaluaciones_2do_trimestre/pdf', [Evaluaciones2doTrimestreController::class, 'pdf']);
 $router->post('/evaluaciones_2do_trimestre/delete', [Evaluaciones2doTrimestreController::class, 'delete']);
+$router->post('/evaluaciones_2do_trimestre/enviar', [Evaluaciones2doTrimestreController::class, 'enviar']);
 
 // Evaluaciones 3er Trimestre
 $router->get('/evaluaciones_3er_trimestre', [Evaluaciones3erTrimestreController::class, 'index']);
@@ -114,8 +130,9 @@ $router->post('/evaluaciones_3er_trimestre/store', [Evaluaciones3erTrimestreCont
 $router->get('/evaluaciones_3er_trimestre/show', [Evaluaciones3erTrimestreController::class, 'show']);
 $router->get('/evaluaciones_3er_trimestre/edit', [Evaluaciones3erTrimestreController::class, 'edit']);
 $router->post('/evaluaciones_3er_trimestre/update', [Evaluaciones3erTrimestreController::class, 'update']);
-$router->get('/evaluaciones_3er_trimestre/print', [Evaluaciones3erTrimestreController::class, 'print']);
+$router->get('/evaluaciones_3er_trimestre/pdf', [Evaluaciones3erTrimestreController::class, 'pdf']);
 $router->post('/evaluaciones_3er_trimestre/delete', [Evaluaciones3erTrimestreController::class, 'delete']);
+$router->post('/evaluaciones_3er_trimestre/enviar', [Evaluaciones3erTrimestreController::class, 'enviar']);
 
 // Ultrasonido Temprano (<11 semanas)
 $router->get('/ultrasonido_temprano', [UltrasonidoTempranoController::class, 'index']);
@@ -125,7 +142,8 @@ $router->get('/ultrasonido_temprano/show', [UltrasonidoTempranoController::class
 $router->get('/ultrasonido_temprano/edit', [UltrasonidoTempranoController::class, 'edit']);
 $router->post('/ultrasonido_temprano/update', [UltrasonidoTempranoController::class, 'update']);
 $router->post('/ultrasonido_temprano/delete', [UltrasonidoTempranoController::class, 'delete']);
-$router->get('/ultrasonido_temprano/print', [UltrasonidoTempranoController::class, 'print']);
+$router->post('/ultrasonido_temprano/enviar', [UltrasonidoTempranoController::class, 'enviar']);
+$router->get('/ultrasonido_temprano/pdf', [UltrasonidoTempranoController::class, 'pdf']);
 
 // Ultrasonido Ginecológico Endovaginal
 $router->get('/evaluaciones_ginecologicas', [EvaluacionGinecologicaController::class, 'index']);
@@ -135,7 +153,8 @@ $router->get('/evaluaciones_ginecologicas/show', [EvaluacionGinecologicaControll
 $router->get('/evaluaciones_ginecologicas/edit', [EvaluacionGinecologicaController::class, 'edit']);
 $router->post('/evaluaciones_ginecologicas/update', [EvaluacionGinecologicaController::class, 'update']);
 $router->post('/evaluaciones_ginecologicas/delete', [EvaluacionGinecologicaController::class, 'delete']);
-$router->get('/evaluaciones_ginecologicas/print', [EvaluacionGinecologicaController::class, 'print']);
+$router->post('/evaluaciones_ginecologicas/enviar', [EvaluacionGinecologicaController::class, 'enviar']);
+$router->get('/evaluaciones_ginecologicas/pdf', [EvaluacionGinecologicaController::class, 'pdf']);
 
 // Referencias
 $router->get('/referencias', [ReferenciaController::class, 'index']);
@@ -165,7 +184,8 @@ $router->post('/consentimientos/store', [ConsentimientoController::class, 'store
 $router->get('/consentimientos/firmar', [ConsentimientoController::class, 'firmar']);
 $router->post('/consentimientos/storeFirma', [ConsentimientoController::class, 'storeFirma']);
 $router->get('/consentimientos/show', [ConsentimientoController::class, 'show']);
-$router->get('/consentimientos/print', [ConsentimientoController::class, 'print']);
+$router->get('/consentimientos/pdf', [ConsentimientoController::class, 'pdf']);
+$router->post('/consentimientos/enviar', [ConsentimientoController::class, 'enviar']);
 $router->get('/consentimientos/catalogo', [ConsentimientoController::class, 'catalogo']);
 $router->get('/consentimientos/catalogo/create', [ConsentimientoController::class, 'catalogoCreate']);
 $router->post('/consentimientos/catalogo/store', [ConsentimientoController::class, 'catalogoStore']);
@@ -186,6 +206,9 @@ $router->post('/reset-password', [PasswordResetController::class, 'resetPassword
 
 // Main Entry Route (Login)
 $router->get('/', [AuthController::class, 'showLogin']);
+
+// Bitácora
+$router->get('/bitacora', [BitacoraController::class, 'index']);
 
 // Debug marker
 $router->resolve();

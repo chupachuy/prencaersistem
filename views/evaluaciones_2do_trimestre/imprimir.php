@@ -1,0 +1,139 @@
+<?php
+$ev=$evaluacion;$b=$biometria;$a=$anatomia;$m=$marcadores;$en=$entorno;$d=$diagnostica;$h=$historial;
+function v($x,$s=''){return ($x===null||$x==='')?'—':htmlspecialchars($x).$s;}
+function fd($x){return $x?date('d/m/Y',strtotime($x)):'—';}
+function si($x){return $x?'Sí':'No';}
+?>
+<!DOCTYPE html><html lang="es">
+<head><meta charset="UTF-8"><title>Evaluación 2do Trimestre — <?php echo htmlspecialchars($ev['codigo_reporte']); ?></title>
+<style>
+@media print { .no-print { display: none !important; } }
+body{
+font-family:Helvetica,Arial,sans-serif;padding:0 30px 40px 30px;color:#333;}
+.document{max-width:800px;margin:0 auto;}.doc-header{text-align:center;margin-bottom:30px;border-bottom:2px solid #333;padding-bottom:15px;}
+.doc-header h1{font-size:20px;margin:0;}.doc-header .code{font-size:13px;color:#666;margin-top:5px;}
+.section{margin-bottom:25px;}.section h2{font-size:13px;background:#f5f5f5;padding:6px 10px;margin:0 0 10px 0;border-left:4px solid #333;}
+.row-item{display:flex;margin-bottom:4px;font-size:12px;}.label{width:170px;font-weight:bold;}.value{flex:1;}
+.two-col{display:flex;gap:30px;}.col{flex:1;}</style></head>
+<body>
+
+<div class="document" style="padding-top:10mm;">
+<div class="doc-header"><h1>EVALUACIÓN 2DO TRIMESTRE</h1><div class="code"><?php echo htmlspecialchars($ev['codigo_reporte']); ?></div></div>
+
+<div class="section"><h2>Datos Generales</h2>
+<div class="row-item"><div class="label">Fecha Evaluación:</div><div class="value"><?php echo fd($ev['fecha_evaluacion']); ?></div></div>
+<div class="row-item"><div class="label">Fecha Estudio:</div><div class="value"><?php echo fd($ev['fecha_estudio']); ?></div></div>
+<div class="row-item"><div class="label">Paciente:</div><div class="value"><?php echo htmlspecialchars($ev['paciente_nombre'].' '.$ev['paciente_apellido']); ?></div></div>
+<div class="row-item"><div class="label">Médico:</div><div class="value"><?php echo htmlspecialchars($ev['medico_nombre'].' '.$ev['medico_apellido']); ?></div></div>
+<div class="row-item"><div class="label">Estado:</div><div class="value"><?php echo htmlspecialchars($ev['estado']); ?></div></div>
+</div>
+
+<?php if (!empty($data1er)): ?>
+<div class="section"><h2>Datos del 1er Trimestre (referencia)</h2>
+<div class="row-item"><div class="label">FPP USG:</div><div class="value"><?php echo !empty($data1er['fpp_usg']) ? date('d/m/Y', strtotime($data1er['fpp_usg'])) : '—'; ?></div></div>
+<div class="row-item"><div class="label">EG 1T:</div><div class="value"><?php echo !empty($data1er['edad_gestacional_semanas']) ? $data1er['edad_gestacional_semanas'].' sem' : '—'; ?></div></div>
+<div class="row-item"><div class="label">Peso 1T:</div><div class="value"><?php echo !empty($data1er['peso_kg']) ? $data1er['peso_kg'].' kg' : '—'; ?></div></div>
+<div class="row-item"><div class="label">Talla 1T:</div><div class="value"><?php echo !empty($data1er['talla_cm']) ? $data1er['talla_cm'].' cm' : '—'; ?></div></div>
+<div class="row-item"><div class="label">Riesgo Preeclampsia:</div><div class="value"><?php echo $data1er['riesgo_preeclampsia_temprana'] ?? '—'; ?></div></div>
+<div class="row-item"><div class="label">Riesgo Cromosomopatías:</div><div class="value"><?php echo $data1er['probabilidad_cromosomopatias'] ?? '—'; ?></div></div>
+<div class="row-item"><div class="label">Riesgo Parto Pretérmino:</div><div class="value"><?php echo $data1er['riesgo_parto_pretermino'] ?? '—'; ?></div></div>
+<?php if (!empty($evaluacion['ganancia_peso_kg'])): ?>
+<div class="row-item"><div class="label">Ganancia de Peso:</div><div class="value"><?php echo $evaluacion['ganancia_peso_kg']; ?> kg (desde 1T: <?php echo $evaluacion['peso_1er_trimestre_kg'] ?? '—'; ?> kg → actual: <?php echo $evaluacion['peso_kg'] ?? '—'; ?> kg)</div></div>
+<?php endif; ?>
+</div>
+<?php endif; ?>
+
+<div class="two-col"><div class="col">
+<div class="section"><h2>Datos Clínicos</h2>
+<div class="row-item"><div class="label">Peso:</div><div class="value"><?php echo v($ev['peso_kg'],' kg'); ?> <?php if(!empty($ev['peso_kg']) && !empty($data1er['peso_kg'])): $dp = round($ev['peso_kg'] - $data1er['peso_kg'], 2); ?><small class="text-muted">(<?php echo $dp >= 0 ? '+' : ''; ?><?php echo $dp; ?> kg vs 1T: <?php echo $data1er['peso_kg']; ?> kg)</small><?php endif; ?></div></div>
+<div class="row-item"><div class="label">Talla:</div><div class="value"><?php echo v($ev['talla_cm'],' cm'); ?> <?php if(!empty($ev['talla_cm']) && !empty($data1er['talla_cm'])): ?><small class="text-muted">(1T: <?php echo $data1er['talla_cm']; ?> cm)</small><?php endif; ?></div></div>
+<div class="row-item"><div class="label">PAM:</div><div class="value"><?php echo v($ev['pam_mmhg'],' mmHg'); ?> <?php if(!empty($ev['pam_mmhg']) && !empty($data1er['ta_sistolica']) && !empty($data1er['ta_diastolica'])): $p1 = round(($data1er['ta_sistolica'] + 2 * $data1er['ta_diastolica']) / 3, 2); $dpam = round($ev['pam_mmhg'] - $p1, 2); ?><small class="text-muted">(<?php echo $dpam >= 0 ? '+' : ''; ?><?php echo $dpam; ?> mmHg vs 1T: <?php echo $p1; ?> mmHg)</small><?php endif; ?></div></div>
+<div class="row-item"><div class="label">UTA PI:</div><div class="value"><?php echo v($ev['uta_pi_promedio']); ?> <?php if(!empty($ev['uta_pi_promedio']) && !empty($data1er['uta_pi_promedio'])): $du = round($ev['uta_pi_promedio'] - $data1er['uta_pi_promedio'], 2); ?><small class="text-muted">(<?php echo $du >= 0 ? '+' : ''; ?><?php echo $du; ?> vs 1T: <?php echo $data1er['uta_pi_promedio']; ?>)</small><?php endif; ?></div></div>
+<div class="row-item"><div class="label">Edad Gestacional:</div><div class="value"><?php echo v($ev['edad_gestacional_semanas'],' sem'); ?></div></div>
+<div class="row-item"><div class="label">FPP Actual:</div><div class="value"><?php echo fd($ev['fpp_actual']); ?></div></div>
+</div>
+<div class="section"><h2>Biometría y Crecimiento</h2>
+<div class="row-item"><div class="label">Estado Feto:</div><div class="value"><?php echo htmlspecialchars($b['estado_feto']??'Vivo'); ?></div></div>
+<div class="row-item"><div class="label">FCF:</div><div class="value"><?php echo v($b['fcf_lpm'],' lpm'); ?></div></div>
+<div class="row-item"><div class="label">Peso Fetal:</div><div class="value"><?php echo v($b['peso_fetal_estimado_gr'],' gr'); ?></div></div>
+<div class="row-item"><div class="label">Percentil Hadlock:</div><div class="value"><?php echo v($b['percentil_hadlock']); ?></div></div>
+<div class="row-item"><div class="label">Crec. Armónico:</div><div class="value"><?php echo si($b['crecimiento_armonico']??true); ?></div></div>
+<div class="row-item"><div class="label">Índice Cefálico:</div><div class="value"><?php echo v($b['indice_cefalico_ci']); ?></div></div>
+<div class="row-item"><div class="label">FL/AC:</div><div class="value"><?php echo v($b['fl_ac_pct'],'%'); ?></div></div>
+<div class="row-item"><div class="label">HC/AC:</div><div class="value"><?php echo v($b['hc_ac_campbell']); ?></div></div>
+</div>
+</div><div class="col">
+<div class="section"><h2>Anatomía Fetal</h2>
+<div class="row-item"><div class="label">Cráneo/SNC:</div><div class="value"><?php echo si($a['craneo_snc_normal']??true); ?></div></div>
+<div class="row-item"><div class="label">Cara/Cuello:</div><div class="value"><?php echo si($a['cara_cuello_normal']??true); ?></div></div>
+<div class="row-item"><div class="label">Corazón:</div><div class="value"><?php echo si($a['corazon_normal']??true); ?></div></div>
+<div class="row-item"><div class="label">Tórax/Diafragma:</div><div class="value"><?php echo si($a['torax_diafragma_normal']??true); ?></div></div>
+<div class="row-item"><div class="label">Abdomen:</div><div class="value"><?php echo si($a['abdomen_normal']??true); ?></div></div>
+<div class="row-item"><div class="label">Genitourinario:</div><div class="value"><?php echo si($a['genitourinario_normal']??true); ?></div></div>
+<div class="row-item"><div class="label">Columna:</div><div class="value"><?php echo si($a['columna_normal']??true); ?></div></div>
+<div class="row-item"><div class="label">Extremidades:</div><div class="value"><?php echo si($a['extremidades_normal']??true); ?></div></div>
+<?php if(!empty($a['detalles_anomalias'])): ?><div class="row-item"><div class="label">Detalles:</div><div class="value"><?php echo nl2br(htmlspecialchars($a['detalles_anomalias'])); ?></div></div><?php endif; ?>
+</div>
+<div class="section"><h2>Marcadores Ecográficos</h2>
+<div class="row-item"><div class="label">Ventriculomegalia:</div><div class="value"><?php echo si($m['ventriculomegalia_leve']??false); ?></div></div>
+<div class="row-item"><div class="label">Quistes Plexos:</div><div class="value"><?php echo si($m['quistes_plexos_coroideos']??false); ?></div></div>
+<div class="row-item"><div class="label">Pliegue Nucal:</div><div class="value"><?php echo si($m['pliegue_nucal_aumentado']??false); ?></div></div>
+<div class="row-item"><div class="label">Hueso Nasal:</div><div class="value"><?php echo ($m['hueso_nasal_ausente']??false)?'Ausente':'Presente'; ?></div></div>
+<div class="row-item"><div class="label">Foco Ecogénico:</div><div class="value"><?php echo si($m['foco_ecogenico_cardiaco']??false); ?></div></div>
+<div class="row-item"><div class="label">Intestino Hiperec:</div><div class="value"><?php echo si($m['intestino_hiperecogenico']??false); ?></div></div>
+<div class="row-item"><div class="label">Fémur Corto:</div><div class="value"><?php echo si($m['femur_corto']??false); ?></div></div>
+<div class="row-item"><div class="label">AU Única:</div><div class="value"><?php echo si($m['arteria_umbilical_unica']??false); ?></div></div>
+</div>
+</div></div>
+
+<div class="two-col"><div class="col">
+<div class="section"><h2>Entorno Placentario</h2>
+<div class="row-item"><div class="label">Posición Placenta:</div><div class="value"><?php echo v($en['placenta_posicion']); ?></div></div>
+<div class="row-item"><div class="label">Dist. Borde OCI:</div><div class="value"><?php echo v($en['distancia_borde_oci_mm'],' mm'); ?></div></div>
+<div class="row-item"><div class="label">Acretismo FIGO:</div><div class="value"><?php echo v($en['acretismo_figo_grado']); ?></div></div>
+<div class="row-item"><div class="label">Bolsillo Máx. Líq.:</div><div class="value"><?php echo v($en['bolsillo_max_liquido_mm'],' mm'); ?></div></div>
+<div class="row-item"><div class="label">Longitud Cervical:</div><div class="value"><?php echo v($en['longitud_cervical_mm'],' mm'); ?></div></div>
+<div class="row-item"><div class="label">Índice Consistencia:</div><div class="value"><?php echo v($en['indice_consistencia_cervical']); ?></div></div>
+<div class="row-item"><div class="label">Funneling:</div><div class="value"><?php echo ($en['funneling_presente']??false)?'Presente '.v($en['funneling_mm'],' mm'):'Ausente'; ?></div></div>
+<div class="row-item"><div class="label">Sludge:</div><div class="value"><?php echo v($en['sludge_intraamniotico']); ?></div></div>
+</div>
+</div><div class="col">
+<div class="section"><h2>Impresión Diagnóstica</h2>
+<div class="row-item"><div class="label">Cromosomopatías:</div><div class="value"><?php echo v($d['riesgo_cromosomopatias']); ?></div></div>
+<div class="row-item"><div class="label">Parto Pretérmino:</div><div class="value"><?php echo v($d['riesgo_parto_pretermino']); ?></div></div>
+<div class="row-item"><div class="label">Preeclampsia:</div><div class="value"><?php echo v($d['riesgo_preeclampsia']); ?></div></div>
+<?php if(!empty($d['observaciones_medicas'])): ?><div class="row-item"><div class="label">Observaciones:</div><div class="value"><?php echo nl2br(htmlspecialchars($d['observaciones_medicas'])); ?></div></div><?php endif; ?>
+</div>
+<div class="section"><h2>Historial Clínico</h2>
+<div class="row-item"><div class="label">Hipertensión:</div><div class="value"><?php echo si($h['hipertension_cronica']??false); ?></div></div>
+<div class="row-item"><div class="label">Diabetes:</div><div class="value"><?php echo si($h['diabetes']??false); ?></div></div>
+<div class="row-item"><div class="label">Lupus/LES:</div><div class="value"><?php echo si($h['lupus_les']??false); ?></div></div>
+<div class="row-item"><div class="label">SAF:</div><div class="value"><?php echo si($h['sindrome_antifosfolipido_saf']??false); ?></div></div>
+<div class="row-item"><div class="label">Preeclampsia/RCIU:</div><div class="value"><?php echo si($h['antecedente_preeclampsia_rciu']??false); ?></div></div>
+<div class="row-item"><div class="label">FIV:</div><div class="value"><?php echo si($h['fertilizacion_in_vitro']??false); ?></div></div>
+<div class="row-item"><div class="label">Parto Pretérmino:</div><div class="value"><?php echo si($h['antecedente_parto_pretermino']??false); ?></div></div>
+</div>
+</div></div>
+
+<?php if (!empty($imagenes)): ?>
+<div class="section"><h2>IMÁGENES DEL ESTUDIO</h2>
+<table style="width:100%;border-collapse:collapse;">
+<?php $c = 0; foreach ($imagenes as $img): ?>
+    <?php if ($c % 3 == 0): ?><tr><?php endif; ?>
+    <td style="text-align:center;padding:8px;vertical-align:top;">
+        <img src="<?php echo Url::to($img['ruta_imagen']); ?>" style="max-width:180px;max-height:180px;border:1px solid #ddd;padding:2px;">
+    </td>
+    <?php if ($c % 3 == 2): ?></tr><?php endif; ?>
+<?php $c++; endforeach; ?>
+<?php if ($c % 3 != 0): ?></tr><?php endif; ?>
+</table>
+</div>
+<?php endif; ?>
+</div>
+
+<div class="no-print" style="text-align:center;margin:20px 0;"><a href="<?php echo Url::to('/evaluaciones_2do_trimestre/pdf?id=' . $ev['id']); ?>"
+       style="padding:10px 30px;font-size:16px;cursor:pointer;border:none;background:#1B4F5A;color:#fff;border-radius:8px;text-decoration:none;display:inline-block;">
+        <i class="fa-solid fa-download"></i> Descargar PDF
+    </a>
+</div>
+</body></html>

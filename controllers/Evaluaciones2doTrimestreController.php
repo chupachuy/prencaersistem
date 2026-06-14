@@ -17,6 +17,7 @@ require_once __DIR__ . '/../helpers/Session.php';
 class Evaluaciones2doTrimestreController extends Controller
 {
     private $evaluacionModel;
+    private $mailer;
     private $evaluacion1erModel;
     private $biometriaModel;
     private $anatomiaModel;
@@ -31,6 +32,7 @@ class Evaluaciones2doTrimestreController extends Controller
     public function __construct()
     {
         $this->evaluacionModel = new Evaluacion2doTrimestre();
+        $this->mailer = new Mailer();
         $this->evaluacion1erModel = new Evaluacion1erTrimestre();
         $this->biometriaModel = new Biometria2doTrimestre();
         $this->anatomiaModel = new AnatomiaFetal2doTrimestre();
@@ -414,5 +416,15 @@ class Evaluaciones2doTrimestreController extends Controller
             'data1er' => $this->evaluacion1erModel->getLatestFullData($evaluacion['paciente_id']),
             'imagenes' => $this->imagenModel->getByEvaluacion('2', $id)
         ]);
+    }
+
+    public function pdf()
+    {
+        if (!Auth::check()) { $this->redirect("/login"); }
+        $id = $_GET["id"] ?? null;
+        if (!$id) { $this->redirect("/evaluaciones_2do_trimestre"); }
+        $ev = $this->evaluacionModel->getById($id);
+        if (!$ev) { Session::set("error", "No encontrado."); $this->redirect("/evaluaciones_2do_trimestre"); }
+        $this->streamPdf("evaluaciones_2do_trimestre/imprimir", ["ev" => $ev], $ev["codigo_reporte"] . ".pdf");
     }
 }

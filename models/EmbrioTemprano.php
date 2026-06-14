@@ -17,14 +17,22 @@ class EmbrioTemprano
         return $stmt->fetchAll();
     }
 
+    public function getBySaco($sacoId)
+    {
+        $stmt = $this->db->prepare("SELECT * FROM embriones_temprano WHERE saco_id = ? ORDER BY numero ASC");
+        $stmt->execute([$sacoId]);
+        return $stmt->fetchAll();
+    }
+
     public function create($data)
     {
         $stmt = $this->db->prepare("
-            INSERT INTO embriones_temprano (ultrasonido_id, numero, crl_mm, fcf_visible, fcf_lpm, localizacion)
-            VALUES (?, ?, ?, ?, ?, ?)
+            INSERT INTO embriones_temprano (ultrasonido_id, saco_id, numero, crl_mm, fcf_visible, fcf_lpm, localizacion)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
         ");
         return $stmt->execute([
             $data['ultrasonido_id'],
+            $data['saco_id'] ?? null,
             $data['numero'],
             $data['crl_mm'] ?? null,
             $data['fcf_visible'] ?? null,

@@ -41,7 +41,7 @@ $roleId = Session::get('user_role_id');
                                 <td><?php echo date('d/m/Y', strtotime($ev['fecha_estudio'])); ?></td>
                                 <td><?php echo htmlspecialchars($ev['paciente_nombre'] . ' ' . $ev['paciente_apellido']); ?></td>
                                 <td><?php echo htmlspecialchars($ev['medico_nombre'] . ' ' . $ev['medico_apellido']); ?></td>
-                                <td><?php echo $ev['solicitante_nombre'] ? htmlspecialchars($ev['solicitante_nombre'] . ' ' . $ev['solicitante_apellido']) : '—'; ?></td>
+                                <td><?php echo $ev['medico_solicitante_nombre'] ? htmlspecialchars($ev['medico_solicitante_nombre'] . ' ' . $ev['medico_solicitante_apellido']) : '—'; ?></td>
                                 <td>
                                     <?php
                                     $estadoClass = match($ev['estado']) {
@@ -61,8 +61,8 @@ $roleId = Session::get('user_role_id');
                                         <a href="<?php echo Url::to('/evaluaciones_ginecologicas/edit?id=' . $ev['id']); ?>" class="action-btn action-btn-edit" title="Editar">
                                             <i class="fa-solid fa-edit"></i>
                                         </a>
-                                        <a href="<?php echo Url::to('/evaluaciones_ginecologicas/print?id=' . $ev['id']); ?>" class="action-btn action-btn-view" target="_blank" title="Imprimir">
-                                            <i class="fa-solid fa-print"></i>
+                                        <a href="<?php echo Url::to('/evaluaciones_ginecologicas/pdf?id=' . $ev['id']); ?>" class="action-btn action-btn-view" target="_blank" title="Descargar PDF">
+                                            <i class="fa-solid fa-download"></i>
                                         </a>
                                         <form method="POST" action="<?php echo Url::to('/evaluaciones_ginecologicas/delete'); ?>" style="display:inline" onsubmit="return confirm('¿Eliminar esta evaluación?');">
                                             <input type="hidden" name="id" value="<?php echo $ev['id']; ?>">

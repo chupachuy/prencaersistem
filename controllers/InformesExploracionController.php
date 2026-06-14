@@ -10,12 +10,14 @@ require_once __DIR__ . '/../helpers/Session.php';
 class InformesExploracionController extends Controller
 {
     private $informeModel;
+    private $mailer;
     private $diagnosticoModel;
     private $userModel;
 
     public function __construct()
     {
         $this->informeModel = new InformesExploracion();
+        $this->mailer = new Mailer();
         $this->diagnosticoModel = new DiagnosticoExploracion();
         $this->userModel = new User();
     }
@@ -276,5 +278,15 @@ class InformesExploracionController extends Controller
             'informes' => $informes,
             'paciente' => $paciente
         ]);
+    }
+
+    public function pdf()
+    {
+        if (!Auth::check()) { $this->redirect("/login"); }
+        $id = $_GET["id"] ?? null;
+        if (!$id) { $this->redirect("/informes_exploracion"); }
+        $informe = $this->informeModel->findById($id);
+        if (!$informe) { Session::set("error", "No encontrado."); $this->redirect("/informes_exploracion"); }
+        $this->streamPdf("informes_exploracion/imprimir", ["informe" => $informe], $informe["codigo_informe"] . ".pdf");
     }
 }

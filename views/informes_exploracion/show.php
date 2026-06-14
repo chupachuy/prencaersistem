@@ -10,8 +10,26 @@ require_once __DIR__ . '/../layouts/sidebar.php';
         <p class="text-muted small mb-0">Informe: <span class="text-primary fw-bold"><?php echo htmlspecialchars($informe['codigo_informe']); ?></span></p>
     </div>
     <div>
+        <?php if ($informe['estado'] === 'Completado'): ?>
+            <form method="POST" action="<?php echo Url::to('/informes_exploracion/enviar?id=' . $informe['id']); ?>" style="display:inline;">
+                <select name="destinatario" class="form-select form-select-sm" style="width:auto;display:inline;vertical-align:middle;">
+                    <option value="">-- Destinatario --</option>
+                    <?php if (!empty($paciente['email'])): ?><option value="paciente"><?php echo htmlspecialchars($paciente['nombre'] . ' ' . $paciente['apellido']); ?> (Paciente)</option><?php endif; ?>
+                    <?php if (!empty($medico['email'])): ?><option value="medico"><?php echo htmlspecialchars($medico['nombre'] . ' ' . $medico['apellido']); ?> (Médico)</option><?php endif; ?>
+                    <?php if (!empty($medicoReferido['email'])): ?><option value="referido"><?php echo htmlspecialchars($medicoReferido['nombre'] . ' ' . $medicoReferido['apellido']); ?> (Referido)</option><?php endif; ?>
+                    <option value="todos">-- Todos --</option>
+                </select>
+                <input type="hidden" name="_csrf" value="<?php echo htmlspecialchars(Csrf::token(), ENT_QUOTES, 'UTF-8'); ?>">
+                <button type="button" class="btn btn-success" onclick="var f=this.form,d=f.destinatario;if(!d.value){alert('Seleccione un destinatario');return;}if(confirm('¿Enviar a '+d.options[d.selectedIndex].text+'?'))f.submit();">
+                    <i class="fa-solid fa-paper-plane"></i> Enviar
+                </button>
+            </form>
+        <?php endif; ?>
         <a href="<?php echo Url::to('/informes_exploracion/edit?id=' . $informe['id']); ?>" class="btn btn-warning">
             <i class="fa-solid fa-pen-to-square"></i> Editar
+        </a>
+        <a href="<?php echo Url::to('/informes_exploracion/pdf?id=' . $informe['id']); ?>" class="btn btn-outline-secondary" target="_blank">
+            <i class="fa-solid fa-download"></i> Imprimir
         </a>
         <a href="<?php echo Url::to('/informes_exploracion'); ?>" class="btn btn-outline-secondary">
             <i class="fa-solid fa-arrow-left"></i> Volver

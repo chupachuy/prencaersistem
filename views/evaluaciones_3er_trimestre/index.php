@@ -22,7 +22,7 @@ require_once __DIR__ . '/../layouts/sidebar.php';
 <td><div class="btn-group btn-group-sm">
 <a href="<?php echo Url::to('/evaluaciones_3er_trimestre/show?id='.$ev['id']);?>" class="action-btn action-btn-view" title="Ver"><i class="fa-solid fa-eye"></i></a>
 <a href="<?php echo Url::to('/evaluaciones_3er_trimestre/edit?id='.$ev['id']);?>" class="action-btn action-btn-edit" title="Editar"><i class="fa-solid fa-edit"></i></a>
-<a href="<?php echo Url::to('/evaluaciones_3er_trimestre/print?id='.$ev['id']);?>" class="action-btn action-btn-view" target="_blank" title="Imprimir"><i class="fa-solid fa-print"></i></a>
+<a href="<?php echo Url::to('/evaluaciones_3er_trimestre/pdf?id='.$ev['id']);?>" class="action-btn action-btn-view" target="_blank" title="Descargar PDF"><i class="fa-solid fa-download"></i></a>
 </div></td></tr>
 <?php endforeach; else:?><tr><td colspan="6" class="text-center text-muted">No hay evaluaciones registradas</td></tr><?php endif;?>
 </tbody></table></div></div></div>

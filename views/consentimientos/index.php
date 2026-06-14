@@ -142,7 +142,7 @@ require_once __DIR__ . '/../layouts/sidebar.php';
             var badgeClass = estadoBadgeClass(c.estado);
             var showUrl = '<?php echo Url::to("/consentimientos/show"); ?>?id=' + c.id;
             var firmarUrl = '<?php echo Url::to("/consentimientos/firmar"); ?>?id=' + c.id;
-            var printUrl = '<?php echo Url::to("/consentimientos/print"); ?>?id=' + c.id;
+            var printUrl = '<?php echo Url::to("/consentimientos/pdf"); ?>?id=' + c.id;
             var nombreDoc = escapeHtml(c.nombre_documento);
             var version = escapeHtml(c.version || '');
             var paciente = escapeHtml((c.paciente_nombre || '') + ' ' + (c.paciente_apellido || ''));
@@ -164,7 +164,7 @@ require_once __DIR__ . '/../layouts/sidebar.php';
             if (c.estado !== 'Completado' && c.estado !== 'Revocado') {
                 html += '<a href="' + firmarUrl + '" class="btn btn-apple btn-apple-secondary" title="Firmar"><i class="fa-solid fa-pen-to-square"></i></a>';
             }
-            html += '<a href="' + printUrl + '" class="btn btn-apple btn-apple-secondary" target="_blank" title="PDF"><i class="fa-solid fa-print"></i></a>';
+            html += '<a href="' + printUrl + '" class="btn btn-apple btn-apple-secondary" target="_blank" title="PDF"><i class="fa-solid fa-download"></i></a>';
             html += '</div></td>';
             html += '</tr>';
         }

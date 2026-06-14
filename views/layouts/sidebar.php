@@ -112,6 +112,14 @@ if ($matchPath === '') $matchPath = '/';
             </a>
         </li>
         <?php endif; ?>
+
+        <?php if ($roleId == Auth::ROLE_SUPERADMIN || $roleId == Auth::ROLE_ADMINISTRADOR): ?>
+        <li>
+            <a href="<?= Url::to('/bitacora') ?>" class="<?php echo strpos($matchPath, '/bitacora') === 0 ? 'active' : ''; ?>">
+                <i class="fa-solid fa-shield-halved"></i> Bitácora
+            </a>
+        </li>
+        <?php endif; ?>
     </ul>
     
     <form id="logoutForm" method="POST" action="<?= Url::to('/logout') ?>" style="display:none;">

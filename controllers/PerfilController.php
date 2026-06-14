@@ -3,6 +3,7 @@ require_once __DIR__ . '/../core/Controller.php';
 require_once __DIR__ . '/../models/User.php';
 require_once __DIR__ . '/../helpers/Auth.php';
 require_once __DIR__ . '/../helpers/Session.php';
+require_once __DIR__ . '/../helpers/Validator.php';
 
 class PerfilController extends Controller
 {
@@ -40,11 +41,28 @@ class PerfilController extends Controller
         $uid = Auth::id();
         $userModel = new User();
 
+        $nombre   = trim($_POST['nombre'] ?? '');
+        $apellido = trim($_POST['apellido'] ?? '');
+        $email    = trim($_POST['email'] ?? '');
+        $telefono = trim($_POST['telefono'] ?? '') ?: null;
+
+        if (empty($nombre) || empty($apellido)) {
+            Session::set('error', 'Nombre y apellido son obligatorios.');
+            $this->redirect('/perfil/edit');
+            return;
+        }
+
+        if (!Validator::email($email)) {
+            Session::set('error', 'El correo electrónico no tiene un formato válido.');
+            $this->redirect('/perfil/edit');
+            return;
+        }
+
         $data = [
-            'nombre' => $_POST['nombre'] ?? '',
-            'apellido' => $_POST['apellido'] ?? '',
-            'email' => $_POST['email'] ?? '',
-            'telefono' => $_POST['telefono'] ?? null,
+            'nombre'   => $nombre,
+            'apellido' => $apellido,
+            'email'    => $email,
+            'telefono' => $telefono,
         ];
 
         $accionFirma = $_POST['accion_firma'] ?? null;

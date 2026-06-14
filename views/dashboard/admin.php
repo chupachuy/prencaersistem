@@ -39,6 +39,15 @@ require_once __DIR__ . '/../layouts/sidebar.php';
             <p class="stats-label">Ver auditoría de diagnósticos</p>
         </div>
     </div>
+    <div class="col-md-6 mb-4">
+        <div class="stats-card" style="cursor: pointer; transition: all 0.2s;" onclick="window.location.href='<?php echo Url::to('/bitacora'); ?>'">
+            <div class="stats-icon" style="background: #cfe2ff; color: #0d6efd;">
+                <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <h3 class="stats-number">Bitácora</h3>
+            <p class="stats-label">Ver auditoría del sistema</p>
+        </div>
+    </div>
 </div>
 
 <?php require_once __DIR__ . '/../layouts/footer.php'; ?>

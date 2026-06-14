@@ -57,7 +57,7 @@ class PasswordResetController extends Controller
                      <p>Haga clic en el siguiente enlace para crear una nueva:</p>
                      <a href='{$link}' style='display: inline-block; background: #367d84; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px;'>Restablecer Contraseña</a>
                      <p style='margin-top: 20px;'>Si no solicitó este cambio, ignore este correo.</p>
-                     <p style='font-size: 12px; color: #86868b;'>Enlace válido por 1 hora.</p>";
+                     <p style='font-size: 12px; color: #86868b;'>Enlace válido por 2 horas.</p>";
 
             // NOTE: This might fail if SMTP config in mail.php is not setup correctly by the user.
             $this->mailer->sendEmail($email, "Restablecimiento de Contraseña - PRENACER", $body);

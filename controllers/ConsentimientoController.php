@@ -14,6 +14,7 @@ use Dompdf\Dompdf;
 class ConsentimientoController extends Controller
 {
     private $asignacionModel;
+    private $mailer;
     private $catalogoModel;
     private $firmaModel;
     private $pacienteModel;
@@ -22,6 +23,7 @@ class ConsentimientoController extends Controller
     public function __construct()
     {
         $this->asignacionModel = new ConsentimientoAsignado();
+        $this->mailer = new Mailer();
         $this->catalogoModel = new CatalogoConsentimiento();
         $this->firmaModel = new RegistroFirma();
         $this->pacienteModel = new Paciente();
@@ -467,5 +469,15 @@ class ConsentimientoController extends Controller
         }
 
         $this->redirect('/consentimientos/catalogo');
+    }
+
+    public function pdf()
+    {
+        if (!Auth::check()) { $this->redirect("/login"); }
+        $id = $_GET["id"] ?? null;
+        if (!$id) { $this->redirect("/consentimientos"); }
+        $consentimiento = $this->asignacionModel->getById($id);
+        if (!$consentimiento) { Session::set("error", "No encontrado."); $this->redirect("/consentimientos"); }
+        $this->streamPdf("consentimientos/imprimir", ["consentimiento" => $consentimiento], "consentimientos" . "_" . $id . ".pdf");
     }
 }
