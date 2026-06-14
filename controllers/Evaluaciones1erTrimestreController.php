@@ -516,10 +516,6 @@ class Evaluaciones1erTrimestreController extends Controller
         $pdfPath = $pdfDir . $pdfFile;
 
         $imagenes = $this->imagenModel->getByEvaluacion('1', $id);
-        foreach ($imagenes as &$img) {
-            $fp = __DIR__ . '/../' . ltrim($img['ruta_imagen'], '/');
-            if (file_exists($fp)) $img['ruta_imagen'] = 'file://' . realpath($fp);
-        }
 
         $pdfData = [
             'evaluacion' => $evaluacion,

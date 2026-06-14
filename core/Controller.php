@@ -43,6 +43,25 @@ class Controller
             . '</div>';
     }
 
+    private function getBackgroundStyle()
+    {
+        $bgPath = __DIR__ . '/../images/fondoprenacer-01.png';
+        if (file_exists($bgPath)) {
+            $bgAbs = 'file://' . realpath($bgPath);
+            return '<style>@page{background-image:url(\'' . $bgAbs . '\');background-image-resize:6;background-position:center center;}</style>';
+        }
+        return '';
+    }
+
+    private function injectBackgroundStyle($html)
+    {
+        $bgStyle = $this->getBackgroundStyle();
+        if ($bgStyle) {
+            return preg_replace('/<head[^>]*>/i', '$0' . $bgStyle, $html, 1);
+        }
+        return $html;
+    }
+
     public function streamPdf($view, $data = [], $filename = 'reporte.pdf')
     {
         ob_start();
@@ -62,6 +81,7 @@ class Controller
                 $mpdf->SetHTMLHeader($headerImg);
             }
             $mpdf->SetHTMLFooter($this->getFooterHtml());
+            $html = $this->injectBackgroundStyle($html);
             $mpdf->WriteHTML($html);
             $mpdf->Output($filename, \Mpdf\Output\Destination::INLINE);
             exit;
@@ -91,6 +111,7 @@ class Controller
                 $mpdf->SetHTMLHeader($headerImg);
             }
             $mpdf->SetHTMLFooter($this->getFooterHtml());
+            $html = $this->injectBackgroundStyle($html);
             $mpdf->WriteHTML($html);
             $mpdf->Output($outputPath, \Mpdf\Output\Destination::FILE);
             return file_exists($outputPath) && filesize($outputPath) > 0;

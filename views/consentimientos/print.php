@@ -1,6 +1,8 @@
 <?php
 $datosDinamicos = $consentimiento['datos_dinamicos'] ? json_decode($consentimiento['datos_dinamicos'], true) : [];
 $fechaHoy = date('d/m/Y H:i');
+$bgPath = __DIR__ . '/../../images/fondoprenacer-01.png';
+$bgAbs = file_exists($bgPath) ? 'file://' . realpath($bgPath) : null;
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -29,6 +31,8 @@ $fechaHoy = date('d/m/Y H:i');
         .signature-date { font-size: 10px; color: #888; }
         .footer { margin-top: 40px; font-size: 10px; color: #999; text-align: center; border-top: 1px solid #eee; padding-top: 10px; }
         .denegacion { color: #d00; font-weight: bold; }
+        <?php if ($bgAbs): ?>@page { background-image: url('<?php echo $bgAbs; ?>'); background-image-resize: 6; background-position: center center; }<?php endif; ?>
+
     </style>
 </head>
 <body>
