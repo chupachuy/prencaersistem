@@ -54,6 +54,16 @@ require_once __DIR__ . '/../layouts/sidebar.php';
                         <textarea class="form-control" id="direccion" name="direccion" rows="2" placeholder="Dirección del paciente"></textarea>
                     </div>
 
+                    <div class="mb-4">
+                        <label for="tipo_seguimiento" class="form-label">Tipo de Seguimiento</label>
+                        <select class="form-select" id="tipo_seguimiento" name="tipo_seguimiento">
+                            <option value="Propia">Propia</option>
+                            <option value="Referida">Referida</option>
+                            <option value="IMSS">IMSS</option>
+                            <option value="ISSSTE">ISSSTE</option>
+                        </select>
+                    </div>
+
                     <h5 class="border-bottom pb-2 mb-3 text-muted"><i class="fa-solid fa-baby me-2"></i> Antecedentes Obstétricos</h5>
                     <div class="row">
                         <div class="col-md-3 mb-3">

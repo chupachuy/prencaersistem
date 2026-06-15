@@ -62,13 +62,14 @@ class PacienteController extends Controller
         $email = trim($_POST['email'] ?? '');
         $telefono = trim($_POST['telefono'] ?? '');
         $direccion = trim($_POST['direccion'] ?? '');
+        $tipo_seguimiento = trim($_POST['tipo_seguimiento'] ?? 'Propia');
 
         if (empty($nombre) || empty($apellido) || empty($fecha_nacimiento)) {
             Session::set('error', 'Nombre, Apellido y Fecha de Nacimiento son obligatorios.');
             $this->redirect('/pacientes/create');
         }
 
-        $pacienteId = $this->pacienteModel->create($nombre, $apellido, Auth::id(), $fecha_nacimiento, $email, $telefono, $direccion);
+        $pacienteId = $this->pacienteModel->create($nombre, $apellido, Auth::id(), $fecha_nacimiento, $email, $telefono, $direccion, $tipo_seguimiento);
 
         if ($pacienteId) {
             // Guardar antecedentes obstétricos

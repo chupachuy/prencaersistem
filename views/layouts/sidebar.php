@@ -25,6 +25,11 @@ if ($matchPath === '') $matchPath = '/';
             </a>
         </li>
         <li>
+            <a href="<?= Url::to('/controles-prenatales') ?>" class="<?php echo strpos($matchPath, '/controles-prenatales') === 0 ? 'active' : ''; ?>">
+                <i class="fa-solid fa-clipboard-list"></i> Controles Prenatales
+            </a>
+        </li>
+        <li>
             <a href="<?= Url::to('/consentimientos') ?>" class="<?php echo strpos($matchPath, '/consentimientos') === 0 ? 'active' : ''; ?>">
                 <i class="fa-solid fa-file-signature"></i> Consentimientos
             </a>

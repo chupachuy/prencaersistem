@@ -30,6 +30,7 @@ $user = Auth::user();
             --apple-gray: #86868b;
             --apple-blue: #367d84;
             --apple-blue-hover: #2a6369;
+            --apple-green: #34c759;
             --apple-border: #d2d2d7;
             --apple-card: #ffffff;
             --apple-sidebar: #ffffff;

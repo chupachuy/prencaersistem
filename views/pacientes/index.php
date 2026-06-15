@@ -24,6 +24,7 @@ require_once __DIR__ . '/../layouts/sidebar.php';
                     <tr>
                         <th>ID</th>
                         <th>Nombre Completo</th>
+                        <th>Tipo Seguimiento</th>
                         <th>Fecha Nacimiento</th>
                         <th>Teléfono</th>
                         <th>Correo</th>
@@ -44,6 +45,20 @@ require_once __DIR__ . '/../layouts/sidebar.php';
                                     </div>
                                 </td>
                                 <td>
+                                    <?php $tipo = $paciente['tipo_seguimiento'] ?? 'Propia'; ?>
+                                    <span class="badge" style="background: <?php
+                                        echo match($tipo) {
+                                            'Propia' => 'var(--apple-green)',
+                                            'Referida' => 'var(--apple-blue)',
+                                            'IMSS' => '#f0ad4e',
+                                            'ISSSTE' => '#d9534f',
+                                            default => 'var(--apple-gray)'
+                                        };
+                                    ?>; padding: 6px 12px; border-radius: 20px; font-weight: 500; font-size: 0.8rem;">
+                                        <?php echo htmlspecialchars($tipo); ?>
+                                    </span>
+                                </td>
+                                <td>
                                     <?php 
                                         $fn = new DateTime($paciente['fecha_nacimiento'] ?? 'now');
                                         echo $fn->format('d/m/Y'); 
@@ -61,7 +76,7 @@ require_once __DIR__ . '/../layouts/sidebar.php';
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="4" class="text-center py-5" style="color: var(--apple-gray);">
+                            <td colspan="5" class="text-center py-5" style="color: var(--apple-gray);">
                                 <i class="fa-solid fa-users-slash fa-3x mb-3" style="opacity: 0.3;"></i>
                                 <h5 style="font-weight: 600;">No hay pacientes registrados</h5>
                                 <p class="mb-0">Comience agregando nuevos pacientes al sistema.</p>

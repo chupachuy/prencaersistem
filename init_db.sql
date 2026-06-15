@@ -62,6 +62,8 @@ CREATE TABLE IF NOT EXISTS pacientes (
 	email VARCHAR(100),
 	telefono VARCHAR(20),
 	direccion TEXT,
+	tipo_seguimiento ENUM('Propia','Referida','IMSS','ISSSTE') DEFAULT 'Propia',
+	fecha_alta DATE NULL,
 	historial_medico TEXT,
 	created_by INT,
 	updated_by INT,

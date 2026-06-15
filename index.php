@@ -30,6 +30,7 @@ require_once __DIR__ . '/controllers/EvaluacionGinecologicaController.php';
 require_once __DIR__ . '/controllers/ReferenciaController.php';
 require_once __DIR__ . '/controllers/MedicoReferidoController.php';
 require_once __DIR__ . '/controllers/BitacoraController.php';
+require_once __DIR__ . '/controllers/ControlesPrenatalesController.php';
 
 $router = new Router();
 
@@ -209,6 +210,11 @@ $router->get('/', [AuthController::class, 'showLogin']);
 
 // Bitácora
 $router->get('/bitacora', [BitacoraController::class, 'index']);
+
+// Controles Prenatales
+$router->get('/controles-prenatales', [ControlesPrenatalesController::class, 'index']);
+$router->post('/controles-prenatales/alta', [ControlesPrenatalesController::class, 'alta']);
+$router->post('/controles-prenatales/update-tipo', [ControlesPrenatalesController::class, 'updateTipo']);
 
 // Debug marker
 $router->resolve();
