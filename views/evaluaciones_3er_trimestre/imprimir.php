@@ -25,7 +25,7 @@ h3{font-size:11px;background:#eee;padding:4px 10px;margin:10px 0 6px 0;color:#33
 .placenta-table th{background:#555;color:#fff;text-align:left;padding:5px 8px;font-size:10px;}
 .placenta-table td{padding:4px 8px;border-bottom:1px solid #ddd;}
 .placenta-table tr:nth-child(even) td{background:#fafafa;}
-.two-col{display:flex;gap:24px;}.col{flex:1;}
+.two-col-table{width:100%;border-collapse:collapse;margin-bottom:14px;}.two-col-table td{vertical-align:top;padding:0 10px;}.two-col-table td:first-child{padding-left:0;}.two-col-table td:last-child{padding-right:0;}
 .row-item{display:flex;margin-bottom:3px;}.label{width:165px;font-weight:bold;flex-shrink:0;}.value{flex:1;}
 .obs-box{border:1px dashed #ccc;padding:10px;margin:8px 0;min-height:40px;font-style:italic;color:#555;}
 .signature-line{border-top:1px solid #333;margin-top:40px;text-align:center;font-size:11px;padding-top:4px;width:250px;}
@@ -62,29 +62,31 @@ Se realizó estudio ultrasonográfico de alta definición<?php echo !empty($ev['
 <?php endif; ?>
 
 <h2>Estática Fetal</h2>
-<div class="two-col"><div class="col">
+<table class="two-col-table"><tr>
+<td style="width:50%;">
 <div class="row-item"><div class="label">Condición Fetal:</div><div class="value">Feto único <?php echo strtolower(vx($ev['feto_unico_vivo']));?></div></div>
 <div class="row-item"><div class="label">FCF:</div><div class="value"><?php echo vx($ev['fcf_lpm'],' latidos/minuto');?></div></div>
 <div class="row-item"><div class="label">Situación:</div><div class="value"><?php echo vx($ev['situacion_fetal']);?></div></div>
-</div><div class="col">
+</td><td style="width:50%;">
 <div class="row-item"><div class="label">Presentación:</div><div class="value"><?php echo vx($ev['presentacion_fetal']);?></div></div>
 <div class="row-item"><div class="label">Posición:</div><div class="value"><?php echo vx($ev['posicion_fetal']);?></div></div>
-</div></div>
+</td></tr></table>
 
 <!-- Checklist 1T y 2T -->
 <?php if (!empty($data1er) || !empty($data2do)): ?>
 <h2>Checklist Prenacer — Antecedentes</h2>
 <?php if (!empty($data1er)): ?>
-<div class="two-col"><div class="col">
+<div class="two-col-table"><tr>
+<td style="width:50%;">
 <div class="row-item"><div class="label">Riesgo Preeclampsia (FMF):</div><div class="value"><?php echo vx($data1er['riesgo_preeclampsia_temprana']??null);?></div></div>
 <div class="row-item"><div class="label">Doppler UT PI:</div><div class="value"><?php echo vx($data1er['uta_pi_promedio']??null);?> <?php echo !empty($data1er['muesca_bilateral'])?'(Muesca bilateral)':'';?></div></div>
 <div class="row-item"><div class="label">PAPP-A MoM:</div><div class="value"><?php echo vx($data1er['papp_a_mom']??null);?></div></div>
 <div class="row-item"><div class="label">PLGF MoM:</div><div class="value"><?php echo vx($data1er['plgf_mom']??null);?></div></div>
-</div><div class="col">
+</td><td style="width:50%;">
 <div class="row-item"><div class="label">Tamizaje Genético:</div><div class="value"><?php echo !empty($data1er['tamizaje_genetico_tipo'])?vx($data1er['tamizaje_genetico_tipo']).' — '.vx($data1er['tamizaje_genetico_resultado']??null):'—';?></div></div>
 <div class="row-item"><div class="label">Longitud Cervical 1T:</div><div class="value"><?php echo !empty($data1er['longitud_cervical_mm'])?$data1er['longitud_cervical_mm'].' mm':'—';?></div></div>
 <div class="row-item"><div class="label">Miomas 1T:</div><div class="value"><?php echo !empty($data1er['miomas_visibles'])?'Sí (FIGO: '.($data1er['miomas_figo_tipo']??'—').')':'No';?></div></div>
-</div></div>
+</td></tr></table>
 <?php endif; ?>
 <?php if (!empty($data2do)): ?><div style="margin-top:10px;"><strong>2do Trimestre:</strong> Morfología: <?php
     $morfNormal=true;$cmf=['craneo_snc_normal','cara_cuello_normal','corazon_normal','torax_diafragma_normal','abdomen_normal','genitourinario_normal','columna_normal','extremidades_normal'];
@@ -116,46 +118,50 @@ Se realizó estudio ultrasonográfico de alta definición<?php echo !empty($ev['
 </table>
 
 <h2>Crecimiento y RCIU</h2>
-<div class="two-col"><div class="col">
+<table class="two-col-table"><tr>
+<td style="width:50%;">
 <div class="row-item"><div class="label">Peso Fetal Estimado:</div><div class="value"><?php echo vx($c['peso_fetal_estimado_gr'],' gr');?></div></div>
 <div class="row-item"><div class="label">Percentil Ajustado:</div><div class="value"><?php echo vx($c['percentil_ajustado']);?></div></div>
-</div><div class="col">
+</td><td style="width:50%;">
 <div class="row-item"><div class="label">Clasificación:</div><div class="value"><?php echo vx($c['clasificacion_crecimiento']);?></div></div>
 <div class="row-item"><div class="label">RCIU Barcelona:</div><div class="value"><?php echo vx($c['estadio_rciu_barcelona']);?></div></div>
-</div></div>
+</td></tr></table>
 
 <h2>Doppler / Hemodinamia</h2>
-<div class="two-col"><div class="col">
+<table class="two-col-table"><tr>
+<td style="width:50%;">
 <div class="row-item"><div class="label">Arteria Umbilical (PI):</div><div class="value"><?php echo vx($d['au_pi']);?></div></div>
 <div class="row-item"><div class="label">Flujo Diastólico AU:</div><div class="value"><?php echo vx($d['au_flujo_diastolico']);?></div></div>
 <div class="row-item"><div class="label">Arteria Cerebral Media (PI):</div><div class="value"><?php echo vx($d['acm_pi']);?></div></div>
 <div class="row-item"><div class="label">Ductus Venoso (Onda A):</div><div class="value"><?php echo vx($d['dv_onda_a']);?></div></div>
-</div><div class="col">
+</td><td style="width:50%;">
 <div class="row-item"><div class="label">Arterias Uterinas (PI prom):</div><div class="value"><?php echo vx($d['uta_pi_promedio']);?></div></div>
 <div class="row-item"><div class="label">Ratio CU/ICP:</div><div class="value"><?php echo vx($d['ratio_cu_icp']);?></div></div>
 <div class="row-item"><div class="label">Vena Umbilical:</div><div class="value"><?php echo vx($d['vena_umbilical']);?></div></div>
 <div class="row-item"><div class="label">Alteración Doppler:</div><div class="value"><?php echo si($d['alteracion_doppler_detectada']??false);?></div></div>
-</div></div>
+</td></tr></table>
 
 <h2>Anatomía y Líquido Amniótico</h2>
-<div class="two-col"><div class="col">
+<table class="two-col-table"><tr>
+<td style="width:50%;">
 <div class="row-item"><div class="label">Circular de Cordón:</div><div class="value"><?php echo vx($an['circular_cordon_cuello']);?></div></div>
 <div class="row-item"><div class="label">Líquido Amniótico:</div><div class="value"><?php echo vx($an['liquido_amniotico_mm'],' mm');?></div></div>
 <div class="row-item"><div class="label">Método Medición:</div><div class="value"><?php echo vx($an['metodo_medicion_liquido']);?></div></div>
-</div><div class="col">
+</td><td style="width:50%;">
 <div class="row-item"><div class="label">Diagnóstico Líquido:</div><div class="value"><?php echo vx($an['diagnostico_liquido']);?></div></div>
 <div class="row-item"><div class="label">Estructuras Normales:</div><div class="value"><?php echo si($an['estructuras_normales']??true);?></div></div>
-</div></div>
+</td></tr></table>
 
 <h2>Antecedentes del 3er Trimestre</h2>
-<div class="two-col"><div class="col">
+<table class="two-col-table"><tr>
+<td style="width:50%;">
 <div class="row-item"><div class="label">Curva Tolerancia Glucosa:</div><div class="value"><?php echo vx($a['curva_tolerancia_glucosa']);?></div></div>
 <div class="row-item"><div class="label">Diabetes Gestacional:</div><div class="value"><?php echo si($a['diabetes_gestacional_actual']??false);?></div></div>
 <div class="row-item"><div class="label">Movimientos Fetales:</div><div class="value"><?php echo vx($a['movimientos_fetales']);?></div></div>
-</div><div class="col">
+</td><td style="width:50%;">
 <div class="row-item"><div class="label">Amenaza Parto Pretérmino:</div><div class="value"><?php echo si($a['signos_amenaza_parto_pretermino']??false);?></div></div>
 <div class="row-item"><div class="label">Plan de Nacimiento:</div><div class="value"><?php echo si($a['plan_nacimiento_definido']??false);?></div></div>
-</div></div>
+</td></tr></table>
 
 <?php if(!empty($pl['miomas_visibles']) || !empty($pl['morfologia_uterina_eshre'])): ?>
 <h3>Miomas y Morfología Uterina</h3>
