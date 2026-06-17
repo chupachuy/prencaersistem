@@ -23,6 +23,7 @@ class PacienteController extends Controller
     {
         if (!Auth::check()) {
             $this->redirect('/login');
+            return;
         }
 
         $roleId = Session::get('user_role_id');
@@ -41,6 +42,7 @@ class PacienteController extends Controller
     {
         if (!Auth::check()) {
             $this->redirect('/login');
+            return;
         }
 
         $this->render('pacientes/create');
@@ -50,10 +52,12 @@ class PacienteController extends Controller
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->redirect('/pacientes/create');
+            return;
         }
 
         if (!Auth::check()) {
             $this->redirect('/login');
+            return;
         }
 
         $nombre = trim($_POST['nombre'] ?? '');
@@ -67,6 +71,7 @@ class PacienteController extends Controller
         if (empty($nombre) || empty($apellido) || empty($fecha_nacimiento)) {
             Session::set('error', 'Nombre, Apellido y Fecha de Nacimiento son obligatorios.');
             $this->redirect('/pacientes/create');
+            return;
         }
 
         $pacienteId = $this->pacienteModel->create($nombre, $apellido, Auth::id(), $fecha_nacimiento, $email, $telefono, $direccion, $tipo_seguimiento);
@@ -108,16 +113,19 @@ class PacienteController extends Controller
         if (!$id) {
             Session::set('error', 'Paciente no especificado.');
             $this->redirect('/pacientes');
+            return;
         }
 
         if (!Auth::check()) {
             $this->redirect('/login');
+            return;
         }
 
         $paciente = $this->pacienteModel->findById($id);
         if (!$paciente) {
             Session::set('error', 'Paciente no encontrado.');
             $this->redirect('/pacientes');
+            return;
         }
 
         $historial = $this->historialModel->getByPaciente($id);
@@ -137,14 +145,17 @@ class PacienteController extends Controller
         if (!$id) {
             Session::set('error', 'Paciente no especificado.');
             $this->redirect('/pacientes');
+            return;
         }
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->redirect('/pacientes');
+            return;
         }
 
         if (!Auth::check()) {
             $this->redirect('/login');
+            return;
         }
 
         $nombre = trim($_POST['nombre'] ?? '');
@@ -158,6 +169,7 @@ class PacienteController extends Controller
         if (empty($nombre) || empty($apellido) || empty($fecha_nacimiento)) {
             Session::set('error', 'Nombre, Apellido y Fecha de Nacimiento son obligatorios.');
             $this->redirect('/pacientes/edit?id=' . $id);
+            return;
         }
 
         $updated = $this->pacienteModel->update($id, [
@@ -172,19 +184,21 @@ class PacienteController extends Controller
         ]);
 
         if ($updated !== false) {
+            // BUG-09 FIX: Leer campos del historial desde $_POST en lugar de hardcodear 0
+            // Los campos booleans (checkboxes) son 0 si no están en POST
             $this->historialModel->update([
                 'paciente_id'    => $id,
                 'num_embarazos'  => isset($_POST['num_embarazos'])  && $_POST['num_embarazos']  !== '' ? (int)$_POST['num_embarazos']  : null,
                 'num_cesareas'   => isset($_POST['num_cesareas'])   && $_POST['num_cesareas']   !== '' ? (int)$_POST['num_cesareas']   : null,
                 'num_abortos'    => isset($_POST['num_abortos'])    && $_POST['num_abortos']    !== '' ? (int)$_POST['num_abortos']    : null,
                 'num_ectopicos'  => isset($_POST['num_ectopicos'])  && $_POST['num_ectopicos']  !== '' ? (int)$_POST['num_ectopicos']  : null,
-                'hipertension_cronica' => 0,
-                'diabetes' => 0,
-                'lupus_les' => 0,
-                'sindrome_antifosfolipido_saf' => 0,
-                'antecedente_preeclampsia_rciu' => 0,
-                'fertilizacion_in_vitro' => 0,
-                'antecedente_parto_pretermino' => 0
+                'hipertension_cronica'           => isset($_POST['hipertension_cronica']) ? 1 : 0,
+                'diabetes'                       => isset($_POST['diabetes']) ? 1 : 0,
+                'lupus_les'                      => isset($_POST['lupus_les']) ? 1 : 0,
+                'sindrome_antifosfolipido_saf'   => isset($_POST['sindrome_antifosfolipido_saf']) ? 1 : 0,
+                'antecedente_preeclampsia_rciu'  => isset($_POST['antecedente_preeclampsia_rciu']) ? 1 : 0,
+                'fertilizacion_in_vitro'         => isset($_POST['fertilizacion_in_vitro']) ? 1 : 0,
+                'antecedente_parto_pretermino'   => isset($_POST['antecedente_parto_pretermino']) ? 1 : 0
             ]);
 
             Session::set('success', 'Paciente actualizado correctamente.');

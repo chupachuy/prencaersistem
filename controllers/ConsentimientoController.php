@@ -218,6 +218,14 @@ class ConsentimientoController extends Controller
                 continue;
             }
 
+            // BUG-06 FIX: Verificar que el contenido decodificado sea realmente una imagen válida
+            // Esto previene que se suban archivos PHP u otros archivos maliciosos codificados en base64
+            $imgInfo = @getimagesizefromstring($imageData);
+            if ($imgInfo === false) {
+                error_log("storeFirma: se intentó subir un archivo que no es imagen válida (asignacion_id={$asignacionId}, index={$index})");
+                continue;
+            }
+
             $nombreArchivo = 'firma_' . $asignacionId . '_' . time() . '_' . $index . '.png';
             $rutaCompleta = $storageDir . $nombreArchivo;
 
@@ -478,6 +486,10 @@ class ConsentimientoController extends Controller
         if (!$id) { $this->redirect("/consentimientos"); }
         $consentimiento = $this->asignacionModel->getById($id);
         if (!$consentimiento) { Session::set("error", "No encontrado."); $this->redirect("/consentimientos"); }
-        $this->streamPdf("consentimientos/imprimir", ["consentimiento" => $consentimiento], "consentimientos" . "_" . $id . ".pdf");
+        $firmas = $this->firmaModel->getByAsignacion($id);
+        $this->streamPdf("consentimientos/imprimir", [
+            "consentimiento" => $consentimiento,
+            "firmas" => $firmas
+        ], "consentimientos" . "_" . $id . ".pdf");
     }
 }

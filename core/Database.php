@@ -24,6 +24,15 @@ class Database
         }
     }
 
+    // OPT-03: Prevenir clonación de la instancia singleton
+    private function __clone() {}
+
+    // OPT-03: Prevenir deserialización de la instancia singleton
+    public function __wakeup()
+    {
+        throw new \Exception('No se puede deserializar el singleton Database.');
+    }
+
     public static function getInstance()
     {
         if (self::$instance === null) {

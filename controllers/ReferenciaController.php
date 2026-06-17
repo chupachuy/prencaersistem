@@ -129,16 +129,19 @@ class ReferenciaController extends Controller
         if (!$pacienteId || empty($tipoEstudio) || empty($motivoReferencia)) {
             Session::set('error', 'Por favor, complete todos los campos obligatorios.');
             $this->redirect('/referencias/create');
+            return;
         }
 
         if (!$medicoReferidoId && !$medicoReferidoExternoId) {
             Session::set('error', 'Debe seleccionar un medico referido.');
             $this->redirect('/referencias/create');
+            return;
         }
 
         if ($medicoReferidoId && $medicoSolicitanteId === $medicoReferidoId) {
             Session::set('error', 'No puede referirse a usted mismo.');
             $this->redirect('/referencias/create');
+            return;
         }
 
         $referenciaId = $this->referenciaModel->create([

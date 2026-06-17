@@ -489,6 +489,10 @@ class UltrasonidoTempranoController extends Controller
         if (!$id) { $this->redirect("/ultrasonido_temprano"); }
         $evaluacion = $this->ultrasonidoModel->getById($id);
         if (!$evaluacion) { Session::set("error", "No encontrado."); $this->redirect("/ultrasonido_temprano"); }
-        $this->streamPdf("ultrasonido_temprano/imprimir", ["evaluacion" => $evaluacion], $evaluacion["codigo_reporte"] . ".pdf");
+        $embriones = $this->embrionModel->getByUltrasonido($id);
+        $this->streamPdf("ultrasonido_temprano/imprimir", [
+            "evaluacion" => $evaluacion,
+            "embriones" => $embriones
+        ], $evaluacion["codigo_reporte"] . ".pdf");
     }
 }

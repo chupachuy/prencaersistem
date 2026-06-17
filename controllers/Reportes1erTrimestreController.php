@@ -5,6 +5,7 @@ require_once __DIR__ . '/../models/Paciente.php';
 require_once __DIR__ . '/../models/User.php';
 require_once __DIR__ . '/../helpers/Auth.php';
 require_once __DIR__ . '/../helpers/Session.php';
+require_once __DIR__ . '/../helpers/Url.php';
 
 class Reportes1erTrimestreController extends Controller
 {
@@ -25,6 +26,7 @@ class Reportes1erTrimestreController extends Controller
     {
         if (!Auth::check()) {
             $this->redirect('/login');
+            return;
         }
 
         $reportes = $this->reporteModel->getAll();
@@ -35,6 +37,7 @@ class Reportes1erTrimestreController extends Controller
     {
         if (!Auth::check()) {
             $this->redirect('/login');
+            return;
         }
 
         $pacienteId = $_GET['paciente_id'] ?? null;
@@ -54,20 +57,23 @@ class Reportes1erTrimestreController extends Controller
     public function store()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->redirect('/pacientes');
+            $this->redirect('/reportes_1er_trimestre/create');
+            return;
         }
 
         if (!Auth::check()) {
             $this->redirect('/login');
+            return;
         }
 
-        $user = Session::get('user');
+        // BUG-02 FIX: Usar Auth::id() en lugar de Session::get('user') que siempre retorna null
+        $userId = Auth::id();
         
         $data = [
-            'paciente_id' => (int) $_POST['paciente_id'],
-            'medico_id' => (int) $_POST['medico_id'],
+            'paciente_id' => (int) ($_POST['paciente_id'] ?? 0),
+            'medico_id' => (int) ($_POST['medico_id'] ?? 0),
             'medico_referido_id' => !empty($_POST['medico_referido_id']) ? (int) $_POST['medico_referido_id'] : null,
-            'codigo_reporte' => $_POST['codigo_reporte'],
+            'codigo_reporte' => $_POST['codigo_reporte'] ?? '',
             'fecha_reporte' => !empty($_POST['fecha_reporte']) ? $_POST['fecha_reporte'] : date('Y-m-d'),
             'lugar' => !empty($_POST['lugar']) ? $_POST['lugar'] : null,
             'peso' => !empty($_POST['peso']) ? $_POST['peso'] : null,
@@ -100,13 +106,14 @@ class Reportes1erTrimestreController extends Controller
             'cervix' => !empty($_POST['cervix']) ? $_POST['cervix'] : null,
             'activo' => 1,
             'estado' => $_POST['estado'] ?? 'Pendiente',
-            'created_by' => $user['id'],
-            'updated_by' => $user['id']
+            'created_by' => $userId,
+            'updated_by' => $userId
         ];
 
         if (empty($data['paciente_id']) || empty($data['medico_id'])) {
             Session::set('error', 'Debe seleccionar un paciente y un médico.');
             $this->redirect('/reportes_1er_trimestre/create');
+            return;
         }
 
         try {
@@ -129,17 +136,20 @@ class Reportes1erTrimestreController extends Controller
     {
         if (!Auth::check()) {
             $this->redirect('/login');
+            return;
         }
 
         $id = $_GET['id'] ?? null;
         if (!$id) {
             $this->redirect('/reportes_1er_trimestre');
+            return;
         }
 
         $reporte = $this->reporteModel->getById($id);
         if (!$reporte) {
             Session::set('error', 'Reporte no encontrado.');
             $this->redirect('/reportes_1er_trimestre');
+            return;
         }
 
         $this->render('reportes_1er_trimestre/show', ['reporte' => $reporte]);
@@ -149,17 +159,20 @@ class Reportes1erTrimestreController extends Controller
     {
         if (!Auth::check()) {
             $this->redirect('/login');
+            return;
         }
 
         $id = $_GET['id'] ?? null;
         if (!$id) {
             $this->redirect('/reportes_1er_trimestre');
+            return;
         }
 
         $reporte = $this->reporteModel->getById($id);
         if (!$reporte) {
             Session::set('error', 'Reporte no encontrado.');
             $this->redirect('/reportes_1er_trimestre');
+            return;
         }
 
         $pacientes = $this->pacienteModel->getAll();
@@ -176,18 +189,22 @@ class Reportes1erTrimestreController extends Controller
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->redirect('/reportes_1er_trimestre');
+            return;
         }
 
         if (!Auth::check()) {
             $this->redirect('/login');
+            return;
         }
 
         $id = $_POST['id'] ?? null;
         if (!$id) {
             $this->redirect('/reportes_1er_trimestre');
+            return;
         }
 
-        $user = Session::get('user');
+        // BUG-02 FIX: Usar Auth::id() en lugar de Session::get('user') que retorna null
+        $userId = Auth::id();
 
         $data = [
             'paciente_id' => (int) $_POST['paciente_id'],
@@ -223,7 +240,7 @@ class Reportes1erTrimestreController extends Controller
             'cervix' => !empty($_POST['cervix']) ? $_POST['cervix'] : null,
             'activo' => isset($_POST['activo']) ? 1 : 0,
             'estado' => $_POST['estado'] ?? 'Pendiente',
-            'updated_by' => $user['id']
+            'updated_by' => $userId
         ];
 
         if ($this->reporteModel->update($id, $data)) {
@@ -237,13 +254,20 @@ class Reportes1erTrimestreController extends Controller
 
     public function delete()
     {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->redirect('/reportes_1er_trimestre');
+            return;
+        }
+
         if (!Auth::check()) {
             $this->redirect('/login');
+            return;
         }
 
         $id = $_POST['id'] ?? null;
         if (!$id) {
             $this->redirect('/reportes_1er_trimestre');
+            return;
         }
 
         if ($this->reporteModel->delete($id)) {
@@ -259,20 +283,24 @@ class Reportes1erTrimestreController extends Controller
     {
         if (!Auth::check()) {
             $this->redirect('/login');
+            return;
         }
 
         $id = $_GET['id'] ?? null;
         if (!$id) {
             $this->redirect('/reportes_1er_trimestre');
+            return;
         }
 
         $reporte = $this->reporteModel->getById($id);
         if (!$reporte) {
             Session::set('error', 'Reporte no encontrado.');
             $this->redirect('/reportes_1er_trimestre');
+            return;
         }
 
-        $user = Session::get('user');
+        // BUG-02 FIX: Auth::user() en lugar de Session::get('user') que siempre retorna null
+        $user = Auth::user();
         
         $this->render('reportes_1er_trimestre/print', ['reporte' => $reporte, 'user' => $user]);
     }

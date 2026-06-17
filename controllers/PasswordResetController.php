@@ -36,6 +36,7 @@ class PasswordResetController extends Controller
         if (!Validator::email($email)) {
             Session::set('error', 'Por favor, ingrese un correo válido.');
             $this->redirect('/forgot-password');
+            return;
         }
 
         $user = $this->userModel->findByEmail($email);
@@ -110,6 +111,7 @@ class PasswordResetController extends Controller
         if (strlen($password) < 8 || $password !== $password_confirm) {
             Session::set('error', 'Las contraseñas no coinciden o tienen menos de 8 caracteres.');
             $this->redirect('/reset-password?token=' . $token);
+            return;
         }
 
         $user = $this->userModel->findByEmail($resetData['email']);

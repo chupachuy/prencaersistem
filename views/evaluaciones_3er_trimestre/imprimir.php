@@ -1,201 +1,611 @@
 <?php
 $ev=$evaluacion;$a=$antecedentes;$c=$crecimiento;$d=$doppler;$an=$anatomia;$pl=$placentaria;$h=$historial;
-function vx($x,$s=''){return($x===null||$x==='')?'—':htmlspecialchars($x).$s;}
-function fd($x){return$x?date('d/m/Y',strtotime($x)):'—';}
-function si($x,$t='Sí'){return$x?$t:'No';}
-function nb($x){return nl2br(htmlspecialchars($x??''));}
+if (!function_exists('vx')) {
+    function vx($x,$s=''){return($x===null||$x==='')?'—':htmlspecialchars($x).$s;}
+}
+if (!function_exists('fd')) {
+    function fd($x){return$x?date('d/m/Y',strtotime($x)):'—';}
+}
+if (!function_exists('si')) {
+    function si($x,$t='Sí'){return$x?$t:'No';}
+}
+if (!function_exists('nb')) {
+    function nb($x){return nl2br(htmlspecialchars($x??''));}
+}
 $meses=['','enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+
+if (!function_exists('pRiskBadge')) {
+    function pRiskBadge($val) {
+        if ($val === null || $val === '') return '—';
+        $valStr = strtolower(trim($val));
+        $class = 'badge-secondary';
+        if (strpos($valStr, 'bajo') !== false || strpos($valStr, 'normal') !== false || strpos($valStr, 'negativo') !== false) {
+            $class = 'badge-success';
+        } elseif (strpos($valStr, 'alto') !== false || strpos($valStr, 'alterado') !== false || strpos($valStr, 'positivo') !== false) {
+            $class = 'badge-danger';
+        } elseif (strpos($valStr, 'medio') !== false || strpos($valStr, 'moderado') !== false || strpos($valStr, 'intermedio') !== false || strpos($valStr, 'rciu') !== false) {
+            $class = 'badge-warning';
+        }
+        return '<span class="badge ' . $class . '">' . htmlspecialchars($val) . '</span>';
+    }
+}
+
+if (!function_exists('pBool')) {
+    function pBool($val, $normal = 'Normal', $alt = 'Alterado') {
+        $valStr = $val ? $normal : $alt;
+        $class = $val ? 'badge-success' : 'badge-danger';
+        return '<span class="badge ' . $class . '">' . $valStr . '</span>';
+    }
+}
 ?>
-<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Evaluación 3er Trimestre — <?php echo htmlspecialchars($ev['codigo_reporte']);?></title>
-<style>
-@media print { .no-print { display: none !important; } }
-body{
-font-family:Helvetica,Arial,sans-serif;padding:0 25px 40px 25px;color:#222;font-size:11px;line-height:1.5;}
-.document{max-width:780px;margin:0 auto;}
-.doc-header{text-align:center;margin-bottom:18px;border-bottom:2px solid #333;padding-bottom:12px;}
-.doc-header h1{font-size:16px;margin:0 0 4px 0;text-transform:uppercase;letter-spacing:1px;}
-.doc-header .sub{font-size:11px;color:#555;}
-.patient-bar{border:1px solid #ccc;padding:10px 14px;margin-bottom:18px;font-size:11px;}
-.patient-bar table{width:100%;border-collapse:collapse;}
-.patient-bar td{padding:2px 4px;vertical-align:top;}
-.patient-bar .lbl{font-weight:bold;white-space:nowrap;width:140px;}
-h2{font-size:12px;background:#555;color:#fff;padding:4px 10px;margin:16px 0 8px 0;text-transform:uppercase;letter-spacing:0.5px;}
-h3{font-size:11px;background:#eee;padding:4px 10px;margin:10px 0 6px 0;color:#333;}
-.placenta-table{width:100%;border-collapse:collapse;margin:8px 0;font-size:11px;}
-.placenta-table th{background:#555;color:#fff;text-align:left;padding:5px 8px;font-size:10px;}
-.placenta-table td{padding:4px 8px;border-bottom:1px solid #ddd;}
-.placenta-table tr:nth-child(even) td{background:#fafafa;}
-.two-col-table{width:100%;border-collapse:collapse;margin-bottom:14px;}.two-col-table td{vertical-align:top;padding:0 10px;}.two-col-table td:first-child{padding-left:0;}.two-col-table td:last-child{padding-right:0;}
-.row-item{display:flex;margin-bottom:3px;}.label{width:165px;font-weight:bold;flex-shrink:0;}.value{flex:1;}
-.obs-box{border:1px dashed #ccc;padding:10px;margin:8px 0;min-height:40px;font-style:italic;color:#555;}
-.signature-line{border-top:1px solid #333;margin-top:40px;text-align:center;font-size:11px;padding-top:4px;width:250px;}
-</style></head><body>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Evaluación 3er Trimestre — <?php echo htmlspecialchars($ev['codigo_reporte']);?></title>
+    <style>
+        @media print { .no-print { display: none !important; } }
+        body {
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            color: #2A2A2A;
+            line-height: 1.5;
+            font-size: 11px;
+            padding: 0 10px;
+        }
+        .document {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .title-container {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #1B4F5A;
+            padding-bottom: 10px;
+        }
+        .title-container h1 {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1B4F5A;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .title-container .subtitle {
+            font-size: 12px;
+            color: #81BABB;
+            margin-top: 5px;
+            font-weight: bold;
+        }
+        h2 {
+            font-size: 11px;
+            background-color: #1B4F5A;
+            color: #FFFFFF;
+            padding: 6px 10px;
+            margin: 15px 0 8px 0;
+            border-bottom: 2px solid #81BABB;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        h3 {
+            font-size: 10px;
+            background-color: #F4F7F6;
+            color: #1B4F5A;
+            padding: 4px 8px;
+            margin: 8px 0 5px 0;
+            border-left: 3px solid #81BABB;
+            font-weight: bold;
+        }
+        .patient-card {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background-color: #F4F7F6;
+            border-left: 4px solid #1B4F5A;
+        }
+        .patient-card td {
+            padding: 6px 10px;
+            font-size: 10.5px;
+            vertical-align: top;
+        }
+        .patient-card .lbl {
+            font-weight: bold;
+            color: #1B4F5A;
+            width: 120px;
+        }
+        .patient-card .val {
+            color: #2A2A2A;
+        }
+        .two-col-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 12px;
+        }
+        .two-col-table td {
+            vertical-align: top;
+            padding: 0 8px;
+        }
+        .two-col-table td:first-child {
+            padding-left: 0;
+        }
+        .two-col-table td:last-child {
+            padding-right: 0;
+        }
+        .section-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 5px;
+        }
+        .section-table td {
+            padding: 4px 6px;
+            font-size: 10.5px;
+            border-bottom: 1px solid #E5EDED;
+            vertical-align: middle;
+        }
+        .section-table tr:last-child td {
+            border-bottom: none;
+        }
+        .section-table .lbl {
+            font-weight: bold;
+            color: #1B4F5A;
+            width: 155px;
+            text-align: left;
+        }
+        .section-table .val {
+            color: #2A2A2A;
+            text-align: right;
+        }
+        .placenta-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+        .placenta-table th {
+            background-color: #1B4F5A;
+            color: #FFFFFF;
+            text-align: left;
+            padding: 5px 8px;
+            font-size: 10px;
+            font-weight: bold;
+            border-bottom: 2px solid #81BABB;
+        }
+        .placenta-table td {
+            padding: 5px 8px;
+            font-size: 10px;
+            border-bottom: 1px solid #E5EDED;
+        }
+        .placenta-table tr:nth-child(even) td {
+            background-color: #F9FBFA;
+        }
+        .obs-box {
+            background-color: #F4F7F6;
+            border: 1px solid #D1DDDC;
+            padding: 8px 12px;
+            font-size: 10px;
+            color: #333333;
+            margin-top: 5px;
+            text-align: left;
+        }
+        .badge {
+            display: inline-block;
+            padding: 1px 5px;
+            font-size: 9px;
+            font-weight: bold;
+            border-radius: 3px;
+        }
+        .badge-success {
+            background-color: #EAF8F0;
+            color: #226E43;
+        }
+        .badge-warning {
+            background-color: #FCF7E6;
+            color: #8F6E0A;
+        }
+        .badge-danger {
+            background-color: #FDF0F0;
+            color: #A82424;
+        }
+        .badge-secondary {
+            background-color: #F0F4F8;
+            color: #475D74;
+        }
+        .image-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .image-table td {
+            text-align: center;
+            padding: 10px;
+            vertical-align: top;
+            width: 33.33%;
+        }
+        .image-frame {
+            border: 1px solid #D1DDDC;
+            background-color: #F4F7F6;
+            padding: 6px;
+        }
+        .image-frame img {
+            max-width: 180px;
+            max-height: 180px;
+            display: block;
+            margin: 0 auto 5px auto;
+        }
+        .image-caption {
+            font-size: 10px;
+            color: #555;
+            font-style: italic;
+        }
+        .signature-table {
+            width: 100%;
+            margin-top: 30px;
+            border-collapse: collapse;
+        }
+        .signature-table td {
+            padding: 10px;
+            vertical-align: top;
+        }
+        .signature-line {
+            border-top: 1px solid #1B4F5A;
+            width: 220px;
+            margin: 0 auto;
+            padding-top: 5px;
+            font-size: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
 
-<div class="document" style="padding-top:10mm;">
+<div class="document" style="padding-top:5mm;">
 
-<div class="doc-header">
-    <h1>Evaluación 3er Trimestre</h1>
-    <div class="sub"><?php echo htmlspecialchars($ev['codigo_reporte']);?> — <?php echo date('j').' de '.$meses[date('n')].' del '.date('Y');?></div>
+    <div class="title-container">
+        <h1>EVALUACIÓN 3ER TRIMESTRE</h1>
+        <div class="subtitle"><?php echo htmlspecialchars($ev['codigo_reporte']);?> — <?php echo date('j').' de '.$meses[date('n')].' del '.date('Y');?></div>
+    </div>
+
+    <!-- Datos del paciente y estudio -->
+    <table class="patient-card">
+        <tr>
+            <td class="lbl">Paciente:</td>
+            <td class="val"><strong><?php echo htmlspecialchars($ev['paciente_nombre'].' '.$ev['paciente_apellido']);?></strong></td>
+            <td class="lbl">Peso:</td>
+            <td class="val"><?php echo vx($ev['peso_kg'], ' kg');?></td>
+        </tr>
+        <tr>
+            <td class="lbl">Médico Tratante:</td>
+            <td class="val"><?php echo htmlspecialchars($ev['medico_nombre'].' '.$ev['medico_apellido']);?></td>
+            <td class="lbl">Talla:</td>
+            <td class="val"><?php echo vx($ev['talla_cm'], ' cm');?></td>
+        </tr>
+        <tr>
+            <td class="lbl">Fecha Evaluación:</td>
+            <td class="val"><?php echo fd($ev['fecha_evaluacion']);?></td>
+            <td class="lbl">Presión Arterial:</td>
+            <td class="val"><?php echo vx($ev['ta_sistolica']);?> / <?php echo vx($ev['ta_diastolica'], ' mmHg');?></td>
+        </tr>
+        <tr>
+            <td class="lbl">Fecha Estudio:</td>
+            <td class="val"><?php echo fd($ev['fecha_estudio']);?></td>
+            <td class="lbl">Estudio Solicitado:</td>
+            <td class="val"><?php echo vx($ev['estudio_solicitado']);?></td>
+        </tr>
+        <tr>
+            <td class="lbl">Edad Gestacional:</td>
+            <td class="val"><?php echo vx($ev['edad_gestacional_semanas'], ' sem');?></td>
+            <td class="lbl">FPP (FUM):</td>
+            <td class="val"><?php echo $ev['fpp_fum'] ? date('d/m/Y', strtotime($ev['fpp_fum'])) : '—';?></td>
+        </tr>
+        <tr>
+            <td class="lbl">FPP (USG):</td>
+            <td class="val"><?php echo $ev['fpp_usg'] ? date('d/m/Y', strtotime($ev['fpp_usg'])) : '—';?></td>
+            <td class="lbl">Equipo:</td>
+            <td class="val"><?php echo vx($ev['equipo_ultrasonido']);?></td>
+        </tr>
+    </table>
+
+    <?php if(!empty($ev['equipo_ultrasonido']) || !empty($ev['estudio_solicitado'])): ?>
+    <p style="font-size:10px; color:#555; margin-bottom:12px; text-align:justify; font-style:italic;">
+        Se realizó estudio ultrasonográfico de alta definición<?php echo !empty($ev['equipo_ultrasonido']) ? ', utilizando un equipo '.htmlspecialchars($ev['equipo_ultrasonido']).' con transductor convexo transabdominal, volumétrico de banda ancha' : ''; ?>, reportando los siguientes hallazgos:
+    </p>
+    <?php endif; ?>
+
+    <!-- Fila 1: Estática Fetal | Crecimiento y RCIU -->
+    <table class="two-col-table">
+        <tr>
+            <td style="width: 50%;">
+                <h2>Estática Fetal</h2>
+                <table class="section-table">
+                    <tr>
+                        <td class="lbl">Condición Fetal:</td>
+                        <td class="val">Feto único <?php echo strtolower(vx($ev['feto_unico_vivo']));?></td>
+                    </tr>
+                    <tr>
+                        <td class="lbl">FCF:</td>
+                        <td class="val"><?php echo vx($ev['fcf_lpm'],' lpm');?></td>
+                    </tr>
+                    <tr>
+                        <td class="lbl">Situación:</td>
+                        <td class="val"><?php echo vx($ev['situacion_fetal']);?></td>
+                    </tr>
+                    <tr>
+                        <td class="lbl">Presentación:</td>
+                        <td class="val"><?php echo vx($ev['presentacion_fetal']);?></td>
+                    </tr>
+                    <tr>
+                        <td class="lbl">Posición:</td>
+                        <td class="val"><?php echo vx($ev['posicion_fetal']);?></td>
+                    </tr>
+                </table>
+            </td>
+            <td style="width: 50%;">
+                <h2>Crecimiento y RCIU</h2>
+                <table class="section-table">
+                    <tr>
+                        <td class="lbl">Peso Fetal Estimado:</td>
+                        <td class="val"><?php echo vx($c['peso_fetal_estimado_gr'],' gr');?></td>
+                    </tr>
+                    <tr>
+                        <td class="lbl">Percentil Ajustado:</td>
+                        <td class="val"><?php echo vx($c['percentil_ajustado']);?></td>
+                    </tr>
+                    <tr>
+                        <td class="lbl">Clasificación:</td>
+                        <td class="val"><?php echo pRiskBadge($c['clasificacion_crecimiento']);?></td>
+                    </tr>
+                    <tr>
+                        <td class="lbl">RCIU Barcelona:</td>
+                        <td class="val"><?php echo pRiskBadge($c['estadio_rciu_barcelona']);?></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="border-bottom:none;">&nbsp;</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <!-- Checklist 1T y 2T (si existen antecedentes) -->
+    <?php if (!empty($data1er) || !empty($data2do)): ?>
+    <h2>Checklist Prenacer — Antecedentes Históricos</h2>
+    <table class="section-table" style="margin-bottom:15px;">
+        <?php if (!empty($data1er)): ?>
+        <tr>
+            <td style="width: 100%; padding: 6px;" colspan="2">
+                <strong>Primer Trimestre (1T):</strong>
+                Riesgo Preeclampsia (FMF): <?php echo pRiskBadge($data1er['riesgo_preeclampsia_temprana']??null);?> | 
+                Doppler UT PI: <?php echo vx($data1er['uta_pi_promedio']??null);?> <?php echo !empty($data1er['muesca_bilateral'])?'(Muesca bilateral)':'';?> | 
+                PAPP-A MoM: <?php echo vx($data1er['papp_a_mom']??null);?> | 
+                PLGF MoM: <?php echo vx($data1er['plgf_mom']??null);?> | 
+                Cervical: <?php echo !empty($data1er['longitud_cervical_mm'])?$data1er['longitud_cervical_mm'].' mm':'—';?>
+            </td>
+        </tr>
+        <?php endif; ?>
+        <?php if (!empty($data2do)): ?>
+        <tr>
+            <td style="width: 100%; padding: 6px;" colspan="2">
+                <strong>Segundo Trimestre (2T):</strong>
+                Morfología: <?php
+                    $morfNormal=true;$cmf=['craneo_snc_normal','cara_cuello_normal','corazon_normal','torax_diafragma_normal','abdomen_normal','genitourinario_normal','columna_normal','extremidades_normal'];
+                    foreach($cmf as $cm) if(isset($data2do[$cm])&&$data2do[$cm]==0){$morfNormal=false;break;}
+                    echo $morfNormal ? '<span class="badge badge-success">Normal</span>' : '<span class="badge badge-danger">Alterada</span>';
+                ?> | 
+                Doppler UT PI: <?php echo vx($data2do['uta_pi_promedio']??null);?> | 
+                Placenta: <?php echo vx($data2do['placenta_posicion']??null);?> | 
+                Cervical: <?php echo !empty($data2do['longitud_cervical_mm'])?$data2do['longitud_cervical_mm'].' mm':'—';?> | 
+                Funneling: <?php echo !empty($data2do['funneling_presente'])?'Sí':'No';?>
+            </td>
+        </tr>
+        <?php endif; ?>
+    </table>
+    <?php endif; ?>
+
+    <!-- Evaluación Placentaria -->
+    <div style="page-break-inside: avoid;">
+        <h2>Evaluación Placentaria (AJOG 2025 / FIGO 2023)</h2>
+        <table class="placenta-table">
+            <thead>
+                <tr>
+                    <th style="width: 35%;">Parámetro</th>
+                    <th style="width: 35%;">Valor normal / referencia</th>
+                    <th style="width: 30%;">Hallazgo</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>Localización</td><td>Anterior / Posterior / Fúndica / Lateral</td><td><?php echo vx($pl['localizacion_placentaria']);?></td></tr>
+                <tr><td>Relación con OCI</td><td>≥20 mm del OCI = normal</td><td><?php echo vx($pl['distancia_oci_mm'],' mm');?></td></tr>
+                <tr><td>Grado de madurez placentaria</td><td>Grado 0–1 normal hasta 34 sem</td><td><?php echo vx($pl['grado_madurez']);?></td></tr>
+                <tr><td>Grosor placentario</td><td>25–50 mm (según EG)</td><td><?php echo vx($pl['grosor_placentario_mm'],' mm');?></td></tr>
+                <tr><td>Ecogenicidad</td><td>Homogénea</td><td><?php echo vx($pl['ecogenicidad']);?></td></tr>
+                <tr><td>Lagunas vasculares</td><td>Ausentes / mínimas (Grado 0–1 FIGO)</td><td><?php echo vx($pl['lagunas_vasculares']);?></td></tr>
+                <tr><td>Interfase miometrio-placentaria</td><td>Íntegra</td><td><?php echo vx($pl['interfase_miometrial']);?></td></tr>
+                <tr><td>Zona retroplacentaria</td><td>Presente, hipoecoica</td><td><?php echo vx($pl['zona_retroplacentaria']);?></td></tr>
+                <tr><td>Vasos puente miometriales</td><td>Ausentes</td><td><?php echo si($pl['vasos_puente']??false, 'Presentes');?></td></tr>
+                <tr><td>Protrusión placentaria</td><td>No</td><td><?php echo si($pl['protrusion_placentaria']??false);?></td></tr>
+                <tr><td>Vascularización anómala (Doppler)</td><td>Flujo periférico fino / sin turbulencia</td><td><?php echo vx($pl['vascularizacion_anomala_doppler']);?></td></tr>
+                <tr><td>Inserción del cordón</td><td>Central / Paracentral / Marginal / Velamentosa</td><td><?php echo vx($pl['insercion_cordon']);?></td></tr>
+                <tr><td>Número de vasos umbilicales</td><td>3 vasos</td><td><?php echo vx($pl['numero_vasos_umbilicales']);?></td></tr>
+                <tr><td>Calcificaciones</td><td>Leves en 3er trimestre</td><td><?php echo vx($pl['calcificaciones']);?></td></tr>
+                <tr><td>Doppler 3D (Perfusión)</td><td>VI 20–40%, FI 30–50%, VFI 5–15%</td><td><?php echo vx($pl['perfusion_vi'],'%').' / '.vx($pl['perfusion_fi'],'%').' / '.vx($pl['perfusion_vfi'],'%');?></td></tr>
+                <tr><td>Acretismo FIGO (PAS)</td><td>Grado 0 — Normal</td><td><?php echo pRiskBadge($pl['acretismo_figo_pas']);?></td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Fila 2: Doppler / Hemodinamia | Anatomía y Líquido Amniótico -->
+    <table class="two-col-table" style="page-break-inside: avoid;">
+        <tr>
+            <td style="width: 50%;">
+                <h2>Doppler / Hemodinamia</h2>
+                <table class="section-table">
+                    <tr>
+                        <td class="lbl">Arteria Umbilical (PI):</td>
+                        <td class="val"><?php echo vx($d['au_pi']);?></td>
+                    </tr>
+                    <tr>
+                        <td class="lbl">Flujo Diastólico AU:</td>
+                        <td class="val"><?php echo vx($d['au_flujo_diastolico']);?></td>
+                    </tr>
+                    <tr>
+                        <td class="lbl">Art. Cerebral Media (PI):</td>
+                        <td class="val"><?php echo vx($d['acm_pi']);?></td>
+                    </tr>
+                    <tr>
+                        <td class="lbl">Ductus Venoso (Onda A):</td>
+                        <td class="val"><?php echo vx($d['dv_onda_a']);?></td>
+                    </tr>
+                    <tr>
+                        <td class="lbl">Art. Uterinas (PI prom):</td>
+                        <td class="val"><?php echo vx($d['uta_pi_promedio']);?></td>
+                    </tr>
+                    <tr>
+                        <td class="lbl">Ratio CU / ICP:</td>
+                        <td class="val"><?php echo vx($d['ratio_cu_icp']);?></td>
+                    </tr>
+                    <tr>
+                        <td class="lbl">Vena Umbilical:</td>
+                        <td class="val"><?php echo vx($d['vena_umbilical']);?></td>
+                    </tr>
+                    <tr>
+                        <td class="lbl">Alteración Doppler:</td>
+                        <td class="val"><?php echo pBool($d['alteracion_doppler_detectada']??false, 'Detectada', 'No detectada'); ?></td>
+                    </tr>
+                </table>
+            </td>
+            <td style="width: 50%;">
+                <h2>Anatomía y Líquido Amniótico</h2>
+                <table class="section-table">
+                    <tr>
+                        <td class="lbl">Circular de Cordón:</td>
+                        <td class="val"><?php echo vx($an['circular_cordon_cuello']);?></td>
+                    </tr>
+                    <tr>
+                        <td class="lbl">Líquido Amniótico:</td>
+                        <td class="val"><?php echo vx($an['liquido_amniotico_mm'],' mm');?></td>
+                    </tr>
+                    <tr>
+                        <td class="lbl">Método Medición:</td>
+                        <td class="val"><?php echo vx($an['metodo_medicion_liquido']);?></td>
+                    </tr>
+                    <tr>
+                        <td class="lbl">Diagnóstico Líquido:</td>
+                        <td class="val"><?php echo vx($an['diagnostico_liquido']);?></td>
+                    </tr>
+                    <tr>
+                        <td class="lbl">Estructuras Fetales:</td>
+                        <td class="val"><?php echo pBool($an['estructuras_normales']??true);?></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <!-- Fila 3: Antecedentes 3T | Miomas y Morfología Uterina -->
+    <table class="two-col-table" style="page-break-inside: avoid;">
+        <tr>
+            <td style="width: 50%;">
+                <h2>Antecedentes del 3er Trimestre</h2>
+                <table class="section-table">
+                    <tr>
+                        <td class="lbl">Curva Tolerancia Glucosa:</td>
+                        <td class="val"><?php echo vx($a['curva_tolerancia_glucosa']);?></td>
+                    </tr>
+                    <tr>
+                        <td class="lbl">Diabetes Gestacional:</td>
+                        <td class="val"><?php echo si($a['diabetes_gestacional_actual']??false);?></td>
+                    </tr>
+                    <tr>
+                        <td class="lbl">Movimientos Fetales:</td>
+                        <td class="val"><?php echo vx($a['movimientos_fetales']);?></td>
+                    </tr>
+                    <tr>
+                        <td class="lbl">Amenaza Parto Pretérmino:</td>
+                        <td class="val"><?php echo si($a['signos_amenaza_parto_pretermino']??false);?></td>
+                    </tr>
+                    <tr>
+                        <td class="lbl">Plan de Nacimiento:</td>
+                        <td class="val"><?php echo si($a['plan_nacimiento_definido']??false);?></td>
+                    </tr>
+                </table>
+            </td>
+            <td style="width: 50%;">
+                <h2>Miomas y Morfología Uterina</h2>
+                <table class="section-table">
+                    <tr>
+                        <td class="lbl">Morfología ESHRE-ESGE:</td>
+                        <td class="val"><?php echo vx($pl['morfologia_uterina_eshre']);?></td>
+                    </tr>
+                    <tr>
+                        <td class="lbl">Miomas Visibles:</td>
+                        <td class="val">
+                            <?php echo si($pl['miomas_visibles']??false);?> 
+                            <?php echo !empty($pl['miomas_figo_tipo'])?'| FIGO: '.vx($pl['miomas_figo_tipo']):'';?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="lbl">Dimensiones Miomas:</td>
+                        <td class="val"><?php echo vx($pl['miomas_dimensiones_mm'],' mm');?></td>
+                    </tr>
+                    <tr>
+                        <td class="lbl">Obstruyen Canal:</td>
+                        <td class="val"><?php echo si($pl['miomas_obstruyen_canal']??false);?></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="border-bottom:none;">&nbsp;</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <?php if(!empty($ev['observaciones'])): ?>
+    <div style="page-break-inside: avoid; margin-bottom: 15px;">
+        <span style="font-weight: bold; color: #1B4F5A; display: block; font-size: 11px;">Observaciones del Estudio:</span>
+        <div class="obs-box"><?php echo nb($ev['observaciones']);?></div>
+    </div>
+    <?php endif; ?>
+
+    <?php if (!empty($imagenes)): ?>
+    <div style="page-break-inside: avoid;">
+        <h2>IMÁGENES DEL ESTUDIO</h2>
+        <table class="image-table">
+        <?php $c = 0; foreach ($imagenes as $img): ?>
+            <?php if ($c % 3 == 0): ?><tr><?php endif; ?>
+            <td>
+                <div class="image-frame">
+                    <img src="<?php echo Url::to($img['ruta_imagen']); ?>">
+                    <?php if (!empty($img['descripcion_imagen'])): ?>
+                        <div class="image-caption"><?php echo htmlspecialchars($img['descripcion_imagen']); ?></div>
+                    <?php endif; ?>
+                </div>
+            </td>
+            <?php if ($c % 3 == 2): ?></tr><?php endif; ?>
+        <?php $c++; endforeach; ?>
+        <?php if ($c % 3 != 0): ?></tr><?php endif; ?>
+        </table>
+    </div>
+    <?php endif; ?>
+
+    <table class="signature-table" style="page-break-inside: avoid;">
+        <tr>
+            <td style="width: 50%; text-align: center;">
+                <div class="signature-line">
+                    <strong>Dr(a). <?php echo htmlspecialchars($ev['medico_nombre'].' '.$ev['medico_apellido']); ?></strong><br>
+                    Firma del Médico
+                </div>
+            </td>
+            <td style="width: 50%; text-align: center; font-size: 10px; color: #777; padding-top: 15px;">
+                Fecha de impresión: <?php echo date('d/m/Y H:i'); ?>
+            </td>
+        </tr>
+    </table>
+
 </div>
 
-<!-- Datos del paciente y estudio -->
-<div class="patient-bar"><table>
-    <tr><td class="lbl">Paciente:</td><td><strong><?php echo htmlspecialchars($ev['paciente_nombre'].' '.$ev['paciente_apellido']);?></strong></td>
-        <td class="lbl">Peso:</td><td><?php echo vx($ev['peso_kg'],' kg');?></td></tr>
-    <tr><td class="lbl">Médico:</td><td><?php echo htmlspecialchars($ev['medico_nombre'].' '.$ev['medico_apellido']);?></td>
-        <td class="lbl">Talla:</td><td><?php echo vx($ev['talla_cm'],' cm');?></td></tr>
-    <tr><td class="lbl">Fecha Evaluación:</td><td><?php echo fd($ev['fecha_evaluacion']);?></td>
-        <td class="lbl">TA:</td><td><?php echo vx($ev['ta_sistolica']);?> / <?php echo vx($ev['ta_diastolica'],' mmHg');?></td></tr>
-    <tr><td class="lbl">Fecha Estudio:</td><td><?php echo fd($ev['fecha_estudio']);?></td>
-        <td class="lbl">Estudio Solicitado:</td><td><?php echo vx($ev['estudio_solicitado']);?></td></tr>
-    <tr><td class="lbl">Edad Gestacional:</td><td><?php echo vx($ev['edad_gestacional_semanas'],' semanas');?></td>
-        <td class="lbl">FPP (FUM):</td><td><?php echo $ev['fpp_fum']?date('d \d\e F \d\e Y',strtotime($ev['fpp_fum'])):'—';?></td></tr>
-    <tr><td class="lbl">FPP (USG):</td><td><?php echo $ev['fpp_usg']?date('d \d\e F \d\e Y',strtotime($ev['fpp_usg'])):'—';?></td>
-        <td class="lbl">Equipo:</td><td><?php echo vx($ev['equipo_ultrasonido']);?></td></tr>
-</table></div>
-
-<!-- Descripción del estudio -->
-<?php if(!empty($ev['equipo_ultrasonido']) || !empty($ev['estudio_solicitado'])): ?>
-<p style="font-size:10px;color:#555;margin-bottom:18px;text-align:justify;">
-Se realizó estudio ultrasonográfico de alta definición<?php echo !empty($ev['equipo_ultrasonido']) ? ', utilizando un equipo '.htmlspecialchars($ev['equipo_ultrasonido']).' con transductor convexo transabdominal, volumétrico de banda ancha' : ''; ?>, encontrando:
-</p>
-<?php endif; ?>
-
-<h2>Estática Fetal</h2>
-<table class="two-col-table"><tr>
-<td style="width:50%;">
-<div class="row-item"><div class="label">Condición Fetal:</div><div class="value">Feto único <?php echo strtolower(vx($ev['feto_unico_vivo']));?></div></div>
-<div class="row-item"><div class="label">FCF:</div><div class="value"><?php echo vx($ev['fcf_lpm'],' latidos/minuto');?></div></div>
-<div class="row-item"><div class="label">Situación:</div><div class="value"><?php echo vx($ev['situacion_fetal']);?></div></div>
-</td><td style="width:50%;">
-<div class="row-item"><div class="label">Presentación:</div><div class="value"><?php echo vx($ev['presentacion_fetal']);?></div></div>
-<div class="row-item"><div class="label">Posición:</div><div class="value"><?php echo vx($ev['posicion_fetal']);?></div></div>
-</td></tr></table>
-
-<!-- Checklist 1T y 2T -->
-<?php if (!empty($data1er) || !empty($data2do)): ?>
-<h2>Checklist Prenacer — Antecedentes</h2>
-<?php if (!empty($data1er)): ?>
-<div class="two-col-table"><tr>
-<td style="width:50%;">
-<div class="row-item"><div class="label">Riesgo Preeclampsia (FMF):</div><div class="value"><?php echo vx($data1er['riesgo_preeclampsia_temprana']??null);?></div></div>
-<div class="row-item"><div class="label">Doppler UT PI:</div><div class="value"><?php echo vx($data1er['uta_pi_promedio']??null);?> <?php echo !empty($data1er['muesca_bilateral'])?'(Muesca bilateral)':'';?></div></div>
-<div class="row-item"><div class="label">PAPP-A MoM:</div><div class="value"><?php echo vx($data1er['papp_a_mom']??null);?></div></div>
-<div class="row-item"><div class="label">PLGF MoM:</div><div class="value"><?php echo vx($data1er['plgf_mom']??null);?></div></div>
-</td><td style="width:50%;">
-<div class="row-item"><div class="label">Tamizaje Genético:</div><div class="value"><?php echo !empty($data1er['tamizaje_genetico_tipo'])?vx($data1er['tamizaje_genetico_tipo']).' — '.vx($data1er['tamizaje_genetico_resultado']??null):'—';?></div></div>
-<div class="row-item"><div class="label">Longitud Cervical 1T:</div><div class="value"><?php echo !empty($data1er['longitud_cervical_mm'])?$data1er['longitud_cervical_mm'].' mm':'—';?></div></div>
-<div class="row-item"><div class="label">Miomas 1T:</div><div class="value"><?php echo !empty($data1er['miomas_visibles'])?'Sí (FIGO: '.($data1er['miomas_figo_tipo']??'—').')':'No';?></div></div>
-</td></tr></table>
-<?php endif; ?>
-<?php if (!empty($data2do)): ?><div style="margin-top:10px;"><strong>2do Trimestre:</strong> Morfología: <?php
-    $morfNormal=true;$cmf=['craneo_snc_normal','cara_cuello_normal','corazon_normal','torax_diafragma_normal','abdomen_normal','genitourinario_normal','columna_normal','extremidades_normal'];
-    foreach($cmf as $cm) if(isset($data2do[$cm])&&$data2do[$cm]==0){$morfNormal=false;break;}
-    echo $morfNormal?'Normal':'<strong>Alterada</strong>';
-?> | Doppler UT PI: <?php echo vx($data2do['uta_pi_promedio']??null);?> | Placenta: <?php echo vx($data2do['placenta_posicion']??null);?> | Cervical: <?php echo !empty($data2do['longitud_cervical_mm'])?$data2do['longitud_cervical_mm'].' mm':'—';?> | Funneling: <?php echo !empty($data2do['funneling_presente'])?'Sí':'No';?></div>
-<?php endif; ?>
-<?php endif; ?>
-
-<h2>Evaluación Placentaria (AJOG 2025 / FIGO 2023)</h2>
-<table class="placenta-table">
-<tr><th>Parámetro</th><th>Valor normal / referencia</th><th>Hallazgo</th></tr>
-<tr><td>Localización</td><td>Anterior / Posterior / Fúndica / Lateral</td><td><?php echo vx($pl['localizacion_placentaria']);?></td></tr>
-<tr><td>Relación con OCI</td><td>≥20 mm del OCI = normal</td><td><?php echo vx($pl['distancia_oci_mm'],' mm');?></td></tr>
-<tr><td>Grado de madurez placentaria</td><td>Grado 0–1 normal hasta 34 sem</td><td><?php echo vx($pl['grado_madurez']);?></td></tr>
-<tr><td>Grosor placentario</td><td>25–50 mm (según EG)</td><td><?php echo vx($pl['grosor_placentario_mm'],' mm');?></td></tr>
-<tr><td>Ecogenicidad</td><td>Homogénea</td><td><?php echo vx($pl['ecogenicidad']);?></td></tr>
-<tr><td>Lagunas vasculares</td><td>Ausentes / mínimas (Grado 0–1 FIGO)</td><td><?php echo vx($pl['lagunas_vasculares']);?></td></tr>
-<tr><td>Interfase miometrio-placentaria</td><td>Íntegra</td><td><?php echo vx($pl['interfase_miometrial']);?></td></tr>
-<tr><td>Zona retroplacentaria</td><td>Presente, hipoecoica</td><td><?php echo vx($pl['zona_retroplacentaria']);?></td></tr>
-<tr><td>Vasos puente miometriales</td><td>Ausentes</td><td><?php echo si($pl['vasos_puente']??false,'Presentes');?></td></tr>
-<tr><td>Protrusión placentaria</td><td>No</td><td><?php echo si($pl['protrusion_placentaria']??false);?></td></tr>
-<tr><td>Vascularización anómala (Color Doppler)</td><td>Flujo periférico fino / sin turbulencia</td><td><?php echo vx($pl['vascularizacion_anomala_doppler']);?></td></tr>
-<tr><td>Inserción del cordón</td><td>Central / Paracentral / Marginal / Velamentosa</td><td><?php echo vx($pl['insercion_cordon']);?></td></tr>
-<tr><td>Número de vasos umbilicales</td><td>3 vasos</td><td><?php echo vx($pl['numero_vasos_umbilicales']);?></td></tr>
-<tr><td>Calcificaciones</td><td>Leves en 3er trimestre</td><td><?php echo vx($pl['calcificaciones']);?></td></tr>
-<tr><td>Índice de perfusión placentaria (Doppler 3D)</td><td>VI 20–40%, FI 30–50%, VFI 5–15%</td><td><?php echo vx($pl['perfusion_vi'],'%').' / '.vx($pl['perfusion_fi'],'%').' / '.vx($pl['perfusion_vfi'],'%');?></td></tr>
-<tr><td>Acretismo FIGO (PAS)</td><td>Grado 0 — Normal</td><td><?php echo vx($pl['acretismo_figo_pas']);?></td></tr>
-</table>
-
-<h2>Crecimiento y RCIU</h2>
-<table class="two-col-table"><tr>
-<td style="width:50%;">
-<div class="row-item"><div class="label">Peso Fetal Estimado:</div><div class="value"><?php echo vx($c['peso_fetal_estimado_gr'],' gr');?></div></div>
-<div class="row-item"><div class="label">Percentil Ajustado:</div><div class="value"><?php echo vx($c['percentil_ajustado']);?></div></div>
-</td><td style="width:50%;">
-<div class="row-item"><div class="label">Clasificación:</div><div class="value"><?php echo vx($c['clasificacion_crecimiento']);?></div></div>
-<div class="row-item"><div class="label">RCIU Barcelona:</div><div class="value"><?php echo vx($c['estadio_rciu_barcelona']);?></div></div>
-</td></tr></table>
-
-<h2>Doppler / Hemodinamia</h2>
-<table class="two-col-table"><tr>
-<td style="width:50%;">
-<div class="row-item"><div class="label">Arteria Umbilical (PI):</div><div class="value"><?php echo vx($d['au_pi']);?></div></div>
-<div class="row-item"><div class="label">Flujo Diastólico AU:</div><div class="value"><?php echo vx($d['au_flujo_diastolico']);?></div></div>
-<div class="row-item"><div class="label">Arteria Cerebral Media (PI):</div><div class="value"><?php echo vx($d['acm_pi']);?></div></div>
-<div class="row-item"><div class="label">Ductus Venoso (Onda A):</div><div class="value"><?php echo vx($d['dv_onda_a']);?></div></div>
-</td><td style="width:50%;">
-<div class="row-item"><div class="label">Arterias Uterinas (PI prom):</div><div class="value"><?php echo vx($d['uta_pi_promedio']);?></div></div>
-<div class="row-item"><div class="label">Ratio CU/ICP:</div><div class="value"><?php echo vx($d['ratio_cu_icp']);?></div></div>
-<div class="row-item"><div class="label">Vena Umbilical:</div><div class="value"><?php echo vx($d['vena_umbilical']);?></div></div>
-<div class="row-item"><div class="label">Alteración Doppler:</div><div class="value"><?php echo si($d['alteracion_doppler_detectada']??false);?></div></div>
-</td></tr></table>
-
-<h2>Anatomía y Líquido Amniótico</h2>
-<table class="two-col-table"><tr>
-<td style="width:50%;">
-<div class="row-item"><div class="label">Circular de Cordón:</div><div class="value"><?php echo vx($an['circular_cordon_cuello']);?></div></div>
-<div class="row-item"><div class="label">Líquido Amniótico:</div><div class="value"><?php echo vx($an['liquido_amniotico_mm'],' mm');?></div></div>
-<div class="row-item"><div class="label">Método Medición:</div><div class="value"><?php echo vx($an['metodo_medicion_liquido']);?></div></div>
-</td><td style="width:50%;">
-<div class="row-item"><div class="label">Diagnóstico Líquido:</div><div class="value"><?php echo vx($an['diagnostico_liquido']);?></div></div>
-<div class="row-item"><div class="label">Estructuras Normales:</div><div class="value"><?php echo si($an['estructuras_normales']??true);?></div></div>
-</td></tr></table>
-
-<h2>Antecedentes del 3er Trimestre</h2>
-<table class="two-col-table"><tr>
-<td style="width:50%;">
-<div class="row-item"><div class="label">Curva Tolerancia Glucosa:</div><div class="value"><?php echo vx($a['curva_tolerancia_glucosa']);?></div></div>
-<div class="row-item"><div class="label">Diabetes Gestacional:</div><div class="value"><?php echo si($a['diabetes_gestacional_actual']??false);?></div></div>
-<div class="row-item"><div class="label">Movimientos Fetales:</div><div class="value"><?php echo vx($a['movimientos_fetales']);?></div></div>
-</td><td style="width:50%;">
-<div class="row-item"><div class="label">Amenaza Parto Pretérmino:</div><div class="value"><?php echo si($a['signos_amenaza_parto_pretermino']??false);?></div></div>
-<div class="row-item"><div class="label">Plan de Nacimiento:</div><div class="value"><?php echo si($a['plan_nacimiento_definido']??false);?></div></div>
-</td></tr></table>
-
-<?php if(!empty($pl['miomas_visibles']) || !empty($pl['morfologia_uterina_eshre'])): ?>
-<h3>Miomas y Morfología Uterina</h3>
-<div class="row-item"><div class="label">Morfología ESHRE-ESGE:</div><div class="value"><?php echo vx($pl['morfologia_uterina_eshre']);?></div></div>
-<div class="row-item"><div class="label">Miomas Visibles:</div><div class="value"><?php echo si($pl['miomas_visibles']??false);?> <?php echo !empty($pl['miomas_figo_tipo'])?'| FIGO: '.vx($pl['miomas_figo_tipo']):'';?> <?php echo !empty($pl['miomas_dimensiones_mm'])?'| '.vx($pl['miomas_dimensiones_mm'],' mm'):'';?></div></div>
-<div class="row-item"><div class="label">Obstruyen Canal:</div><div class="value"><?php echo si($pl['miomas_obstruyen_canal']??false);?></div></div>
-<?php endif; ?>
-
-<?php if(!empty($ev['observaciones'])): ?>
-<h3>Observaciones</h3>
-<div class="obs-box"><?php echo nb($ev['observaciones']);?></div>
-<?php endif; ?>
-
-<?php if (!empty($imagenes)): ?>
-<h2>IMÁGENES DEL ESTUDIO</h2>
-<table style="width:100%;border-collapse:collapse;">
-<?php $c = 0; foreach ($imagenes as $img): ?>
-    <?php if ($c % 3 == 0): ?><tr><?php endif; ?>
-    <td style="text-align:center;padding:8px;vertical-align:top;">
-        <img src="<?php echo Url::to($img['ruta_imagen']); ?>" style="max-width:180px;max-height:180px;border:1px solid #ddd;padding:2px;">
-    </td>
-    <?php if ($c % 3 == 2): ?></tr><?php endif; ?>
-<?php $c++; endforeach; ?>
-<?php if ($c % 3 != 0): ?></tr><?php endif; ?>
-</table>
-<?php endif; ?>
-
-<div class="signature-line">Firma del Médico: <?php echo htmlspecialchars($ev['medico_nombre'].' '.$ev['medico_apellido']);?></div>
-
-</div>
-
-<div class="no-print" style="text-align:center;margin:20px 0;"><a href="<?php echo Url::to('/evaluaciones_3er_trimestre/pdf?id=' . $ev['id']); ?>"
-       style="padding:10px 30px;font-size:16px;cursor:pointer;border:none;background:#1B4F5A;color:#fff;border-radius:8px;text-decoration:none;display:inline-block;">
+<div class="no-print" style="text-align:center;margin:30px 0;">
+    <a href="<?php echo Url::to('/evaluaciones_3er_trimestre/pdf?id=' . $ev['id']); ?>"
+       style="padding:10px 30px;font-size:14px;cursor:pointer;border:none;background:#1B4F5A;color:#fff;border-radius:8px;text-decoration:none;display:inline-block;font-weight:bold;">
         <i class="fa-solid fa-download"></i> Descargar PDF
     </a>
 </div>
+
 </body></html>

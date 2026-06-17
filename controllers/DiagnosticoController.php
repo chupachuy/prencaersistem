@@ -10,17 +10,21 @@ class DiagnosticoController extends Controller
 {
     private $diagnosticoModel;
     private $userModel;
+    private $pacienteModel;
 
     public function __construct()
     {
         $this->diagnosticoModel = new Diagnostico();
         $this->userModel = new User();
+        // OPT-01: Instanciar Paciente en el constructor en lugar de en cada método
+        $this->pacienteModel = new Paciente();
     }
 
     public function index()
     {
         if (!Auth::check()) {
             $this->redirect('/login');
+            return;
         }
 
         $roleId = Session::get('user_role_id');
@@ -64,10 +68,12 @@ class DiagnosticoController extends Controller
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->redirect('/diagnosticos/create');
+            return;
         }
 
         if (!Auth::check()) {
             $this->redirect('/login');
+            return;
         }
 
         $pacienteInput = trim($_POST['paciente'] ?? '');
@@ -77,11 +83,11 @@ class DiagnosticoController extends Controller
         if (empty($pacienteInput) || empty($descripcion)) {
             Session::set('error', 'Por favor, complete todos los campos obligatorios.');
             $this->redirect('/diagnosticos/create');
+            return;
         }
 
-        $pacienteModel = new Paciente();
-
-        $paciente = $pacienteModel->findByIdOrName($pacienteInput);
+        // OPT-01: Usar $this->pacienteModel en lugar de instanciar new Paciente()
+        $paciente = $this->pacienteModel->findByIdOrName($pacienteInput);
         $pacienteId = null;
 
         if ($paciente) {
@@ -91,7 +97,7 @@ class DiagnosticoController extends Controller
             $parts = explode(' ', $pacienteInput, 2);
             $nombre = $parts[0];
             $apellido = $parts[1] ?? '';
-            $pacienteId = $pacienteModel->create($nombre, $apellido, Auth::id());
+            $pacienteId = $this->pacienteModel->create($nombre, $apellido, Auth::id());
         }
 
         $titulo = substr($descripcion, 0, 50);
@@ -140,6 +146,7 @@ class DiagnosticoController extends Controller
     {
         if (!Auth::check()) {
             $this->redirect('/login');
+            return;
         }
 
         $id = intval($_GET['id'] ?? 0);
@@ -159,6 +166,7 @@ class DiagnosticoController extends Controller
     {
         if (!Auth::check()) {
             $this->redirect('/login');
+            return;
         }
 
         $id = $_GET['id'] ?? 0;
@@ -185,10 +193,12 @@ class DiagnosticoController extends Controller
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->redirect('/diagnosticos');
+            return;
         }
 
         if (!Auth::check()) {
             $this->redirect('/login');
+            return;
         }
 
         $id = intval($_POST['id'] ?? 0);
@@ -199,10 +209,11 @@ class DiagnosticoController extends Controller
         if (!$id || empty($pacienteInput) || empty($descripcion)) {
             Session::set('error', 'Por favor, complete todos los campos obligatorios.');
             $this->redirect('/diagnosticos/edit?id=' . $id);
+            return;
         }
 
-        $pacienteModel = new Paciente();
-        $paciente = $pacienteModel->findByIdOrName($pacienteInput);
+        // OPT-01: Usar $this->pacienteModel en lugar de instanciar new Paciente()
+        $paciente = $this->pacienteModel->findByIdOrName($pacienteInput);
         
         if ($paciente) {
             $pacienteId = $paciente['id'];
@@ -210,7 +221,7 @@ class DiagnosticoController extends Controller
             $parts = explode(' ', $pacienteInput, 2);
             $nombre = $parts[0];
             $apellido = $parts[1] ?? '';
-            $pacienteId = $pacienteModel->create($nombre, $apellido, Auth::id());
+            $pacienteId = $this->pacienteModel->create($nombre, $apellido, Auth::id());
         }
 
         $titulo = substr($descripcion, 0, 50);

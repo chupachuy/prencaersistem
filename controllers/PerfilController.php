@@ -78,6 +78,14 @@ class PerfilController extends Controller
             $firmaData = preg_replace('#^data:image/\w+;base64,#i', '', $firmaData);
             $img = base64_decode($firmaData);
             if ($img !== false) {
+                // BUG-07 FIX: Verificar que el contenido decodificado sea realmente una imagen válida
+                // Previene la subida de archivos PHP u otros archivos maliciosos codificados en base64
+                $imgInfo = @getimagesizefromstring($img);
+                if ($imgInfo === false) {
+                    Session::set('error', 'El archivo de firma no es una imagen válida.');
+                    $this->redirect('/perfil/edit');
+                    return;
+                }
                 $dir = __DIR__ . '/../storage/firmas/medicos/';
                 if (!is_dir($dir)) mkdir($dir, 0775, true);
                 $nombre = 'firma_medico_' . $uid . '.png';

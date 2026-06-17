@@ -107,6 +107,31 @@ class UserController extends Controller
             return;
         }
 
+        // BUG-04 FIX: Validar que el rol_id que se asigna sea permitido según el rol del operador
+        $rolIdSolicitado = (int) $data['rol_id'];
+        $rolOperador = (int) Session::get('user_role_id');
+        $rolesValidos = [Auth::ROLE_SUPERADMIN, Auth::ROLE_ADMINISTRADOR, Auth::ROLE_JEFE, Auth::ROLE_MEDICO];
+
+        if (!in_array($rolIdSolicitado, $rolesValidos)) {
+            Session::set('error', 'Rol no válido.');
+            $this->redirect('/usuarios/create');
+            return;
+        }
+
+        // Un Jefe solo puede asignar hasta MEDICO (4), no puede crear Admins ni Superadmins
+        if ($rolOperador === Auth::ROLE_JEFE && $rolIdSolicitado < Auth::ROLE_JEFE) {
+            Session::set('error', 'No tiene permisos para asignar ese rol.');
+            $this->redirect('/usuarios/create');
+            return;
+        }
+
+        // Un Administrador solo puede asignar hasta JEFE (3), no puede crear Superadmins
+        if ($rolOperador === Auth::ROLE_ADMINISTRADOR && $rolIdSolicitado < Auth::ROLE_ADMINISTRADOR) {
+            Session::set('error', 'No tiene permisos para asignar ese rol.');
+            $this->redirect('/usuarios/create');
+            return;
+        }
+
         if (!empty($_FILES['firma']['tmp_name']) && $_FILES['firma']['error'] === UPLOAD_ERR_OK) {
             $rolId = (int) $data['rol_id'];
             if (in_array($rolId, [3, 4]) && $_FILES['firma']['size'] <= 2 * 1024 * 1024) {
@@ -211,6 +236,29 @@ class UserController extends Controller
             'especialidad' => trim($_POST['especialidad'] ?? ''),
             'activo' => isset($_POST['activo']) ? 1 : 0
         ];
+
+        // BUG-04 FIX: Validar que el rol_id solicitado sea permitido según el rol del operador
+        $rolIdSolicitado = (int) $data['rol_id'];
+        $rolOperador = (int) Session::get('user_role_id');
+        $rolesValidos = [Auth::ROLE_SUPERADMIN, Auth::ROLE_ADMINISTRADOR, Auth::ROLE_JEFE, Auth::ROLE_MEDICO];
+
+        if (!in_array($rolIdSolicitado, $rolesValidos)) {
+            Session::set('error', 'Rol no válido.');
+            $this->redirect('/usuarios/edit?id=' . $id);
+            return;
+        }
+
+        if ($rolOperador === Auth::ROLE_JEFE && $rolIdSolicitado < Auth::ROLE_JEFE) {
+            Session::set('error', 'No tiene permisos para asignar ese rol.');
+            $this->redirect('/usuarios/edit?id=' . $id);
+            return;
+        }
+
+        if ($rolOperador === Auth::ROLE_ADMINISTRADOR && $rolIdSolicitado < Auth::ROLE_ADMINISTRADOR) {
+            Session::set('error', 'No tiene permisos para asignar ese rol.');
+            $this->redirect('/usuarios/edit?id=' . $id);
+            return;
+        }
 
         // Si se proporciona una nueva contraseña, actualizarla
         if (!empty($_POST['password'] ?? '')) {

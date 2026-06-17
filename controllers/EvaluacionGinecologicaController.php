@@ -711,6 +711,21 @@ class EvaluacionGinecologicaController extends Controller
         if (!$id) { $this->redirect("/evaluaciones_ginecologicas"); }
         $evaluacion = $this->evaluacionModel->getById($id);
         if (!$evaluacion) { Session::set("error", "No encontrado."); $this->redirect("/evaluaciones_ginecologicas"); }
-        $this->streamPdf("evaluaciones_ginecologicas/imprimir", ["evaluacion" => $evaluacion], $evaluacion["codigo_reporte"] . ".pdf");
+        $this->streamPdf("evaluaciones_ginecologicas/imprimir", [
+            'evaluacion' => $evaluacion,
+            'indicaciones' => $this->indicacionesModel->getByEvaluacion($id),
+            'antecedentes' => $this->antecedentesModel->getByEvaluacion($id),
+            'tecnica' => $this->tecnicaModel->getByEvaluacion($id),
+            'uteroCervix' => $this->uteroCervixModel->getByEvaluacion($id),
+            'miomas' => $this->miomasModel->getByEvaluacion($id),
+            'miomasDetalle' => $this->miomasDetalleModel->getByEvaluacion($id),
+            'adenomiosis' => $this->adenomiosisModel->getByEvaluacion($id),
+            'endometrio' => $this->endometrioModel->getByEvaluacion($id),
+            'ovarios' => $this->ovariosModel->getByEvaluacion($id),
+            'anexos' => $this->anexosModel->getByEvaluacion($id),
+            'clasificacion' => $this->clasificacionModel->getByEvaluacion($id),
+            'impresion' => $this->impresionModel->getByEvaluacion($id),
+            'conclusion' => $this->conclusionModel->getByEvaluacion($id)
+        ], $evaluacion["codigo_reporte"] . ".pdf");
     }
 }

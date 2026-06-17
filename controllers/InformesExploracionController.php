@@ -26,6 +26,7 @@ class InformesExploracionController extends Controller
     {
         if (!Auth::check()) {
             $this->redirect('/login');
+            return;
         }
 
         $roleId = Session::get('user_role_id');
@@ -55,6 +56,7 @@ class InformesExploracionController extends Controller
     {
         if (!Auth::check()) {
             $this->redirect('/login');
+            return;
         }
 
         $roleId = Session::get('user_role_id');
@@ -77,10 +79,12 @@ class InformesExploracionController extends Controller
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->redirect('/informes_exploracion/create');
+            return;
         }
 
         if (!Auth::check()) {
             $this->redirect('/login');
+            return;
         }
 
         $roleId = Session::get('user_role_id');
@@ -98,6 +102,7 @@ class InformesExploracionController extends Controller
         if (!$pacienteId || empty($trimestre) || !$medicoReferidoId) {
             Session::set('error', 'Por favor, complete todos los campos obligatorios.');
             $this->redirect('/informes_exploracion/create');
+            return;
         }
 
         $informeId = $this->informeModel->crearInforme([
@@ -125,6 +130,7 @@ class InformesExploracionController extends Controller
     {
         if (!Auth::check()) {
             $this->redirect('/login');
+            return;
         }
 
         $id = intval($_GET['id'] ?? 0);
@@ -133,6 +139,7 @@ class InformesExploracionController extends Controller
         if (!$informe) {
             Session::set('error', 'Informe no encontrado.');
             $this->redirect('/informes_exploracion');
+            return;
         }
 
         $diagnosticos = $this->diagnosticoModel->getByInforme($id);
@@ -151,10 +158,12 @@ class InformesExploracionController extends Controller
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->redirect('/informes_exploracion');
+            return;
         }
 
         if (!Auth::check()) {
             $this->redirect('/login');
+            return;
         }
 
         $id = intval($_POST['id'] ?? 0);
@@ -203,6 +212,7 @@ class InformesExploracionController extends Controller
     {
         if (!Auth::check()) {
             $this->redirect('/login');
+            return;
         }
 
         $id = intval($_GET['id'] ?? 0);
@@ -211,12 +221,14 @@ class InformesExploracionController extends Controller
         if (!$informe) {
             Session::set('error', 'Informe no encontrado.');
             $this->redirect('/informes_exploracion');
+            return;
         }
 
         $diagnosticos = $this->diagnosticoModel->getByInforme($id);
         
         $pacienteModel = new Paciente();
-        $paciente = $pacienteModel->findByIdOrName($informe['paciente_id']);
+        // BUG-03 FIX: Usar findById() en lugar de findByIdOrName() para búsqueda por ID numérico
+        $paciente = $pacienteModel->findById($informe['paciente_id']);
         $medico = $this->userModel->findById($informe['medico_id']);
         $medicoReferido = $this->userModel->findById($informe['medico_referido_id']);
 
@@ -233,15 +245,18 @@ class InformesExploracionController extends Controller
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->redirect('/informes_exploracion');
+            return;
         }
 
         if (!Auth::check()) {
             $this->redirect('/login');
+            return;
         }
 
         if (!Auth::hasRole(Auth::ROLE_SUPERADMIN)) {
             Session::set('error', 'No tiene permisos para eliminar informes.');
             $this->redirect('/informes_exploracion');
+            return;
         }
 
         $id = intval($_POST['id'] ?? 0);
@@ -260,6 +275,7 @@ class InformesExploracionController extends Controller
     {
         if (!Auth::check()) {
             $this->redirect('/login');
+            return;
         }
 
         $pacienteId = intval($_GET['paciente_id'] ?? 0);
@@ -267,12 +283,14 @@ class InformesExploracionController extends Controller
         if (!$pacienteId) {
             Session::set('error', 'Paciente no especificado.');
             $this->redirect('/pacientes');
+            return;
         }
 
         $informes = $this->informeModel->getByPaciente($pacienteId);
         
         $pacienteModel = new Paciente();
-        $paciente = $pacienteModel->findByIdOrName($pacienteId);
+        // BUG-03 FIX: Usar findById() en lugar de findByIdOrName() para búsqueda por ID numérico
+        $paciente = $pacienteModel->findById($pacienteId);
 
         $this->render('informes_exploracion/por_paciente', [
             'informes' => $informes,
@@ -287,6 +305,17 @@ class InformesExploracionController extends Controller
         if (!$id) { $this->redirect("/informes_exploracion"); }
         $informe = $this->informeModel->findById($id);
         if (!$informe) { Session::set("error", "No encontrado."); $this->redirect("/informes_exploracion"); }
-        $this->streamPdf("informes_exploracion/imprimir", ["informe" => $informe], $informe["codigo_informe"] . ".pdf");
+        
+        $pacienteModel = new Paciente();
+        $paciente = $pacienteModel->findById($informe['paciente_id']);
+        $medico = $this->userModel->findById($informe['medico_id']);
+        $medicoReferido = $this->userModel->findById($informe['medico_referido_id']);
+        
+        $this->streamPdf("informes_exploracion/imprimir", [
+            "informe" => $informe,
+            "paciente" => $paciente,
+            "medico" => $medico,
+            "medicoReferido" => $medicoReferido
+        ], $informe["codigo_informe"] . ".pdf");
     }
 }
