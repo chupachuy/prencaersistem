@@ -98,4 +98,100 @@ class PacienteController extends Controller
             $this->redirect('/pacientes/create');
         }
     }
+
+    public function edit($id = null)
+    {
+        if ($id === null) {
+            $id = $_GET['id'] ?? null;
+        }
+
+        if (!$id) {
+            Session::set('error', 'Paciente no especificado.');
+            $this->redirect('/pacientes');
+        }
+
+        if (!Auth::check()) {
+            $this->redirect('/login');
+        }
+
+        $paciente = $this->pacienteModel->findById($id);
+        if (!$paciente) {
+            Session::set('error', 'Paciente no encontrado.');
+            $this->redirect('/pacientes');
+        }
+
+        $historial = $this->historialModel->getByPaciente($id);
+
+        $this->render('pacientes/edit', [
+            'paciente' => $paciente,
+            'historial' => $historial
+        ]);
+    }
+
+    public function update($id = null)
+    {
+        if ($id === null) {
+            $id = $_POST['id'] ?? null;
+        }
+
+        if (!$id) {
+            Session::set('error', 'Paciente no especificado.');
+            $this->redirect('/pacientes');
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->redirect('/pacientes');
+        }
+
+        if (!Auth::check()) {
+            $this->redirect('/login');
+        }
+
+        $nombre = trim($_POST['nombre'] ?? '');
+        $apellido = trim($_POST['apellido'] ?? '');
+        $fecha_nacimiento = trim($_POST['fecha_nacimiento'] ?? '');
+        $email = trim($_POST['email'] ?? '');
+        $telefono = trim($_POST['telefono'] ?? '');
+        $direccion = trim($_POST['direccion'] ?? '');
+        $tipo_seguimiento = trim($_POST['tipo_seguimiento'] ?? 'Propia');
+
+        if (empty($nombre) || empty($apellido) || empty($fecha_nacimiento)) {
+            Session::set('error', 'Nombre, Apellido y Fecha de Nacimiento son obligatorios.');
+            $this->redirect('/pacientes/edit?id=' . $id);
+        }
+
+        $updated = $this->pacienteModel->update($id, [
+            'nombre' => $nombre,
+            'apellido' => $apellido,
+            'fecha_nacimiento' => $fecha_nacimiento,
+            'email' => $email,
+            'telefono' => $telefono,
+            'direccion' => $direccion,
+            'tipo_seguimiento' => $tipo_seguimiento,
+            'updated_by' => Auth::id()
+        ]);
+
+        if ($updated !== false) {
+            $this->historialModel->update([
+                'paciente_id'    => $id,
+                'num_embarazos'  => isset($_POST['num_embarazos'])  && $_POST['num_embarazos']  !== '' ? (int)$_POST['num_embarazos']  : null,
+                'num_cesareas'   => isset($_POST['num_cesareas'])   && $_POST['num_cesareas']   !== '' ? (int)$_POST['num_cesareas']   : null,
+                'num_abortos'    => isset($_POST['num_abortos'])    && $_POST['num_abortos']    !== '' ? (int)$_POST['num_abortos']    : null,
+                'num_ectopicos'  => isset($_POST['num_ectopicos'])  && $_POST['num_ectopicos']  !== '' ? (int)$_POST['num_ectopicos']  : null,
+                'hipertension_cronica' => 0,
+                'diabetes' => 0,
+                'lupus_les' => 0,
+                'sindrome_antifosfolipido_saf' => 0,
+                'antecedente_preeclampsia_rciu' => 0,
+                'fertilizacion_in_vitro' => 0,
+                'antecedente_parto_pretermino' => 0
+            ]);
+
+            Session::set('success', 'Paciente actualizado correctamente.');
+            $this->redirect('/pacientes');
+        } else {
+            Session::set('error', 'Error al actualizar el paciente.');
+            $this->redirect('/pacientes/edit?id=' . $id);
+        }
+    }
 }

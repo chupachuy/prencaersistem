@@ -101,4 +101,20 @@ class Paciente
         $stmt->execute([$id]);
         return $stmt->fetch();
     }
+
+    public function update($id, $data)
+    {
+        $stmt = $this->db->prepare("UPDATE pacientes SET nombre = ?, apellido = ?, fecha_nacimiento = ?, email = ?, telefono = ?, direccion = ?, tipo_seguimiento = ?, updated_by = ? WHERE id = ?");
+        return $stmt->execute([
+            $data['nombre'],
+            $data['apellido'],
+            $data['fecha_nacimiento'],
+            $data['email'],
+            $data['telefono'],
+            $data['direccion'],
+            $data['tipo_seguimiento'],
+            $data['updated_by'],
+            $id
+        ]);
+    }
 }

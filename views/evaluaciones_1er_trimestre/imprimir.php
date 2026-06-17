@@ -65,6 +65,7 @@ function pBadge($val) {
     </div>
 
     <div class="two-col">
+        <!-- COLUMNA IZQUIERDA: Datos Maternos -->
         <div class="col">
             <div class="section">
                 <h2>Signos Vitales</h2>
@@ -72,6 +73,16 @@ function pBadge($val) {
                 <div class="row-item"><div class="label">Talla:</div><div class="value"><?php echo pVal($evaluacion['talla_cm'], ' cm'); ?></div></div>
                 <div class="row-item"><div class="label">TA Sistólica:</div><div class="value"><?php echo pVal($evaluacion['ta_sistolica'], ' mmHg'); ?></div></div>
                 <div class="row-item"><div class="label">TA Diastólica:</div><div class="value"><?php echo pVal($evaluacion['ta_diastolica'], ' mmHg'); ?></div></div>
+            </div>
+            <div class="section">
+                <h2>Datos Obstétricos</h2>
+                <div class="row-item"><div class="label">FUM:</div><div class="value"><?php echo pFecha($evaluacion['fum']); ?></div></div>
+                <div class="row-item"><div class="label">FPP (USG):</div><div class="value"><?php echo pFecha($evaluacion['fpp_usg']); ?></div></div>
+                <div class="row-item"><div class="label">Edad Gestacional:</div><div class="value"><?php echo pVal($evaluacion['edad_gestacional_semanas'], ' sem'); ?></div></div>
+                <div class="row-item"><div class="label">LCC:</div><div class="value"><?php echo pVal($evaluacion['lcc_mm'], ' mm'); ?></div></div>
+                <div class="row-item"><div class="label">FCF:</div><div class="value"><?php echo pVal($evaluacion['fcf_lpm'], ' lpm'); ?></div></div>
+                <div class="row-item"><div class="label">Estado Feto:</div><div class="value"><?php echo htmlspecialchars($evaluacion['estado_feto'] ?? 'Vivo'); ?></div></div>
+                <div class="row-item"><div class="label">Múltiple:</div><div class="value"><?php echo $evaluacion['embarazo_multiple'] ? 'Sí' : 'No'; ?></div></div>
             </div>
             <div class="section">
                 <h2>Historial Clínico</h2>
@@ -84,30 +95,18 @@ function pBadge($val) {
                 <div class="row-item"><div class="label">Parto Pretérmino:</div><div class="value"><?php echo ($historial['antecedente_parto_pretermino'] ?? 0) ? 'Sí' : 'No'; ?></div></div>
             </div>
             <div class="section">
-                <h2>Marcadores FMF</h2>
-                <div class="row-item"><div class="label">Translucencia Nucal:</div><div class="value"><?php echo pVal($marcadores['translucencia_nucal_mm'], ' mm'); ?></div></div>
-                <div class="row-item"><div class="label">Hueso Nasal:</div><div class="value"><?php echo ($marcadores['hueso_nasal_presente'] ?? true) ? 'Presente' : 'Ausente'; ?></div></div>
-                <div class="row-item"><div class="label">Ductus Venoso:</div><div class="value"><?php echo pBadge($marcadores['ductus_venoso_onda_a']); ?></div></div>
-                <div class="row-item"><div class="label">Reg. Tricuspídea:</div><div class="value"><?php echo ($marcadores['regurgitacion_tricuspidea_ausente'] ?? true) ? 'Ausente' : 'Presente'; ?></div></div>
-                <div class="row-item"><div class="label">Vejiga Fetal:</div><div class="value"><?php echo pVal($marcadores['vejiga_fetal_mm'], ' mm'); ?></div></div>
-                <div class="row-item"><div class="label">UTA PI:</div><div class="value"><?php echo pVal($marcadores['uta_pi_promedio']); ?></div></div>
-                <div class="row-item"><div class="label">Muesca Bilateral:</div><div class="value"><?php echo ($marcadores['muesca_bilateral'] ?? 0) ? 'Presente' : 'Ausente'; ?></div></div>
-                <div class="row-item"><div class="label">PAPP-A (MoM):</div><div class="value"><?php echo pVal($marcadores['papp_a_mom']); ?></div></div>
-                <div class="row-item"><div class="label">PLGF (MoM):</div><div class="value"><?php echo pVal($marcadores['plgf_mom']); ?></div></div>
-                <div class="row-item"><div class="label">Tamizaje Genético:</div><div class="value"><?php echo ($marcadores['tamizaje_genetico_tipo'] ?? 'No realizado') !== 'No realizado' ? htmlspecialchars($marcadores['tamizaje_genetico_tipo'] . ' — ' . ($marcadores['tamizaje_genetico_resultado'] ?? '—')) : 'No realizado'; ?></div></div>
+                <h2>Entorno Materno</h2>
+                <div class="row-item"><div class="label">Líquido Amniótico:</div><div class="value"><?php echo htmlspecialchars($entorno['liquido_amniotico'] ?? '—'); ?></div></div>
+                <div class="row-item"><div class="label">Posición Placenta:</div><div class="value"><?php echo pBadge($entorno['placenta_posicion']); ?></div></div>
+                <div class="row-item"><div class="label">Inserción:</div><div class="value"><?php echo pBadge($entorno['placenta_insercion']); ?></div></div>
+                <div class="row-item"><div class="label">Longitud Cervical:</div><div class="value"><?php echo pVal($entorno['longitud_cervical_mm'], ' mm'); ?></div></div>
+                <div class="row-item"><div class="label">Índice Consistencia:</div><div class="value"><?php echo pVal($entorno['indice_consistencia_cervical_pct'], '%'); ?></div></div>
+                <div class="row-item"><div class="label">ESHRE-ESGE:</div><div class="value"><?php echo pBadge($entorno['morfologia_uterina_eshre']); ?></div></div>
+                <div class="row-item"><div class="label">Miomas:</div><div class="value"><?php echo ($entorno['miomas_visibles'] ?? 0) ? 'Sí (' . htmlspecialchars($entorno['miomas_figo_tipo'] ?? '') . ')' : 'No'; ?></div></div>
             </div>
         </div>
+        <!-- COLUMNA DERECHA: Datos Fetales y Diagnóstico -->
         <div class="col">
-            <div class="section">
-                <h2>Datos Obstétricos</h2>
-                <div class="row-item"><div class="label">FUM:</div><div class="value"><?php echo pFecha($evaluacion['fum']); ?></div></div>
-                <div class="row-item"><div class="label">FPP (USG):</div><div class="value"><?php echo pFecha($evaluacion['fpp_usg']); ?></div></div>
-                <div class="row-item"><div class="label">Edad Gestacional:</div><div class="value"><?php echo pVal($evaluacion['edad_gestacional_semanas'], ' sem'); ?></div></div>
-                <div class="row-item"><div class="label">LCC:</div><div class="value"><?php echo pVal($evaluacion['lcc_mm'], ' mm'); ?></div></div>
-                <div class="row-item"><div class="label">FCF:</div><div class="value"><?php echo pVal($evaluacion['fcf_lpm'], ' lpm'); ?></div></div>
-                <div class="row-item"><div class="label">Estado Feto:</div><div class="value"><?php echo htmlspecialchars($evaluacion['estado_feto'] ?? 'Vivo'); ?></div></div>
-                <div class="row-item"><div class="label">Múltiple:</div><div class="value"><?php echo $evaluacion['embarazo_multiple'] ? 'Sí' : 'No'; ?></div></div>
-            </div>
             <div class="section">
                 <h2>Anatomía Fetal</h2>
                 <div class="row-item"><div class="label">Exploración:</div><div class="value"><?php echo htmlspecialchars($anatomia['estado_exploracion'] ?? '—'); ?></div></div>
@@ -122,26 +121,28 @@ function pBadge($val) {
                 <?php endif; ?>
             </div>
             <div class="section">
-                <h2>Entorno Materno</h2>
-                <div class="row-item"><div class="label">Líquido Amniótico:</div><div class="value"><?php echo htmlspecialchars($entorno['liquido_amniotico'] ?? '—'); ?></div></div>
-                <div class="row-item"><div class="label">Posición Placenta:</div><div class="value"><?php echo pBadge($entorno['placenta_posicion']); ?></div></div>
-                <div class="row-item"><div class="label">Inserción:</div><div class="value"><?php echo pBadge($entorno['placenta_insercion']); ?></div></div>
-                <div class="row-item"><div class="label">Longitud Cervical:</div><div class="value"><?php echo pVal($entorno['longitud_cervical_mm'], ' mm'); ?></div></div>
-                <div class="row-item"><div class="label">Índice Consistencia:</div><div class="value"><?php echo pVal($entorno['indice_consistencia_cervical_pct'], '%'); ?></div></div>
-                <div class="row-item"><div class="label">ESHRE-ESGE:</div><div class="value"><?php echo pBadge($entorno['morfologia_uterina_eshre']); ?></div></div>
-                <div class="row-item"><div class="label">Miomas:</div><div class="value"><?php echo ($entorno['miomas_visibles'] ?? 0) ? 'Sí (' . htmlspecialchars($entorno['miomas_figo_tipo'] ?? '') . ')' : 'No'; ?></div></div>
+                <h2>Marcadores FMF</h2>
+                <div class="row-item"><div class="label">Translucencia Nucal:</div><div class="value"><?php echo pVal($marcadores['translucencia_nucal_mm'], ' mm'); ?></div></div>
+                <div class="row-item"><div class="label">Hueso Nasal:</div><div class="value"><?php echo ($marcadores['hueso_nasal_presente'] ?? true) ? 'Presente' : 'Ausente'; ?></div></div>
+                <div class="row-item"><div class="label">Ductus Venoso:</div><div class="value"><?php echo pBadge($marcadores['ductus_venoso_onda_a']); ?></div></div>
+                <div class="row-item"><div class="label">Reg. Tricuspídea:</div><div class="value"><?php echo ($marcadores['regurgitacion_tricuspidea_ausente'] ?? true) ? 'Ausente' : 'Presente'; ?></div></div>
+                <div class="row-item"><div class="label">Vejiga Fetal:</div><div class="value"><?php echo pVal($marcadores['vejiga_fetal_mm'], ' mm'); ?></div></div>
+                <div class="row-item"><div class="label">UTA PI:</div><div class="value"><?php echo pVal($marcadores['uta_pi_promedio']); ?></div></div>
+                <div class="row-item"><div class="label">Muesca Bilateral:</div><div class="value"><?php echo ($marcadores['muesca_bilateral'] ?? 0) ? 'Presente' : 'Ausente'; ?></div></div>
+                <div class="row-item"><div class="label">PAPP-A (MoM):</div><div class="value"><?php echo pVal($marcadores['papp_a_mom']); ?></div></div>
+                <div class="row-item"><div class="label">PLGF (MoM):</div><div class="value"><?php echo pVal($marcadores['plgf_mom']); ?></div></div>
+                <div class="row-item"><div class="label">Tamizaje Genético:</div><div class="value"><?php echo ($marcadores['tamizaje_genetico_tipo'] ?? 'No realizado') !== 'No realizado' ? htmlspecialchars($marcadores['tamizaje_genetico_tipo'] . ' — ' . ($marcadores['tamizaje_genetico_resultado'] ?? '—')) : 'No realizado'; ?></div></div>
+            </div>
+            <div class="section">
+                <h2>Impresión Diagnóstica</h2>
+                <div class="row-item"><div class="label">Riesgo Basal:</div><div class="value"><?php echo pBadge($diagnostica['riesgo_basal_cromosomopatias']); ?></div></div>
+                <div class="row-item"><div class="label">Riesgo Ajustado:</div><div class="value"><?php echo pBadge($diagnostica['riesgo_ajustado_cromosomopatias']); ?></div></div>
+                <div class="row-item"><div class="label">Prob. Cromosomopatías:</div><div class="value"><?php echo pBadge($diagnostica['probabilidad_cromosomopatias']); ?></div></div>
+                <div class="row-item"><div class="label">Preeclampsia Temprana:</div><div class="value"><?php echo pBadge($diagnostica['riesgo_preeclampsia_temprana']); ?></div></div>
+                <div class="row-item"><div class="label">Enf. Placentaria Tardía:</div><div class="value"><?php echo pBadge($diagnostica['riesgo_enfermedad_placentaria_tardia']); ?></div></div>
+                <div class="row-item"><div class="label">Parto Pretérmino:</div><div class="value"><?php echo pBadge($diagnostica['riesgo_parto_pretermino']); ?></div></div>
             </div>
         </div>
-    </div>
-
-    <div class="section">
-        <h2>Impresión Diagnóstica</h2>
-        <div class="row-item"><div class="label">Riesgo Basal:</div><div class="value"><?php echo pBadge($diagnostica['riesgo_basal_cromosomopatias']); ?></div></div>
-        <div class="row-item"><div class="label">Riesgo Ajustado:</div><div class="value"><?php echo pBadge($diagnostica['riesgo_ajustado_cromosomopatias']); ?></div></div>
-        <div class="row-item"><div class="label">Prob. Cromosomopatías:</div><div class="value"><?php echo pBadge($diagnostica['probabilidad_cromosomopatias']); ?></div></div>
-        <div class="row-item"><div class="label">Preeclampsia Temprana:</div><div class="value"><?php echo pBadge($diagnostica['riesgo_preeclampsia_temprana']); ?></div></div>
-        <div class="row-item"><div class="label">Enf. Placentaria Tardía:</div><div class="value"><?php echo pBadge($diagnostica['riesgo_enfermedad_placentaria_tardia']); ?></div></div>
-        <div class="row-item"><div class="label">Parto Pretérmino:</div><div class="value"><?php echo pBadge($diagnostica['riesgo_parto_pretermino']); ?></div></div>
     </div>
 
     <?php if (!empty($imagenes)): ?>

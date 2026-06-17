@@ -117,7 +117,17 @@ class Evaluaciones3erTrimestreController extends Controller
 
             $this->anat->create(['evaluacion_id'=>$eid,'circular_cordon_cuello'=>$this->nv('circular_cordon_cuello'),
                 'liquido_amniotico_mm'=>$this->nv('liquido_amniotico_mm'),'metodo_medicion_liquido'=>$this->nv('metodo_medicion_liquido'),
-                'diagnostico_liquido'=>$this->nv('diagnostico_liquido'),'estructuras_normales'=>($this->bk)('estructuras_normales')]);
+                'diagnostico_liquido'=>$this->nv('diagnostico_liquido'),
+                'estructuras_normales'=>(($this->bk)('craneo_snc_normal') && ($this->bk)('cara_cuello_normal') && ($this->bk)('corazon_normal') && ($this->bk)('torax_diafragma_normal') && ($this->bk)('abdomen_normal') && ($this->bk)('genitourinario_normal') && ($this->bk)('columna_normal') && ($this->bk)('extremidades_normal')) ? 1 : 0,
+                'craneo_snc_normal'=>($this->bk)('craneo_snc_normal'),'cara_cuello_normal'=>($this->bk)('cara_cuello_normal'),
+                'corazon_normal'=>($this->bk)('corazon_normal'),'torax_diafragma_normal'=>($this->bk)('torax_diafragma_normal'),
+                'abdomen_normal'=>($this->bk)('abdomen_normal'),'genitourinario_normal'=>($this->bk)('genitourinario_normal'),
+                'columna_normal'=>($this->bk)('columna_normal'),'extremidades_normal'=>($this->bk)('extremidades_normal'),
+                'detalles_anatomia'=>$this->nv('detalles_anatomia'),
+                'ventriculomegalia_leve'=>($this->bk)('ventriculomegalia_leve'),'quistes_plexos_coroideos'=>($this->bk)('quistes_plexos_coroideos'),
+                'pliegue_nucal_aumentado'=>($this->bk)('pliegue_nucal_aumentado'),'hueso_nasal_ausente'=>($this->bk)('hueso_nasal_ausente'),
+                'foco_ecogenico_cardiaco'=>($this->bk)('foco_ecogenico_cardiaco'),'intestino_hiperecogenico'=>($this->bk)('intestino_hiperecogenico'),
+                'femur_corto'=>($this->bk)('femur_corto'),'arteria_umbilical_unica'=>($this->bk)('arteria_umbilical_unica')]);
 
             $this->plac->create(['evaluacion_id'=>$eid,
                 'localizacion_placentaria'=>$this->nv('localizacion_placentaria'),
@@ -251,7 +261,17 @@ class Evaluaciones3erTrimestreController extends Controller
                 'alteracion_doppler_detectada'=>($this->bk)('alteracion_doppler_detectada')]);
             $this->anat->update(['evaluacion_id'=>$id,'circular_cordon_cuello'=>$this->nv('circular_cordon_cuello'),
                 'liquido_amniotico_mm'=>$this->nv('liquido_amniotico_mm'),'metodo_medicion_liquido'=>$this->nv('metodo_medicion_liquido'),
-                'diagnostico_liquido'=>$this->nv('diagnostico_liquido'),'estructuras_normales'=>($this->bk)('estructuras_normales')]);
+                'diagnostico_liquido'=>$this->nv('diagnostico_liquido'),
+                'estructuras_normales'=>(($this->bk)('craneo_snc_normal') && ($this->bk)('cara_cuello_normal') && ($this->bk)('corazon_normal') && ($this->bk)('torax_diafragma_normal') && ($this->bk)('abdomen_normal') && ($this->bk)('genitourinario_normal') && ($this->bk)('columna_normal') && ($this->bk)('extremidades_normal')) ? 1 : 0,
+                'craneo_snc_normal'=>($this->bk)('craneo_snc_normal'),'cara_cuello_normal'=>($this->bk)('cara_cuello_normal'),
+                'corazon_normal'=>($this->bk)('corazon_normal'),'torax_diafragma_normal'=>($this->bk)('torax_diafragma_normal'),
+                'abdomen_normal'=>($this->bk)('abdomen_normal'),'genitourinario_normal'=>($this->bk)('genitourinario_normal'),
+                'columna_normal'=>($this->bk)('columna_normal'),'extremidades_normal'=>($this->bk)('extremidades_normal'),
+                'detalles_anatomia'=>$this->nv('detalles_anatomia'),
+                'ventriculomegalia_leve'=>($this->bk)('ventriculomegalia_leve'),'quistes_plexos_coroideos'=>($this->bk)('quistes_plexos_coroideos'),
+                'pliegue_nucal_aumentado'=>($this->bk)('pliegue_nucal_aumentado'),'hueso_nasal_ausente'=>($this->bk)('hueso_nasal_ausente'),
+                'foco_ecogenico_cardiaco'=>($this->bk)('foco_ecogenico_cardiaco'),'intestino_hiperecogenico'=>($this->bk)('intestino_hiperecogenico'),
+                'femur_corto'=>($this->bk)('femur_corto'),'arteria_umbilical_unica'=>($this->bk)('arteria_umbilical_unica')]);
             $this->plac->update(['evaluacion_id'=>$id,
                 'localizacion_placentaria'=>$this->nv('localizacion_placentaria'),
                 'distancia_oci_mm'=>$this->nv('distancia_oci_mm'),

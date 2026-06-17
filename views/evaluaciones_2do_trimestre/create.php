@@ -156,20 +156,20 @@ require_once __DIR__ . '/../layouts/sidebar.php';
     <!-- Anatomía Fetal -->
     <div class="card mb-4"><div class="card-header"><i class="fa-solid fa-baby me-2"></i> Anatomía Fetal</div><div class="card-body">
         <div class="row">
-            <div class="col-md-3 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="craneo_snc_normal" checked><label class="form-check-label">Cráneo/SNC Normal</label></div></div>
-            <div class="col-md-3 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="cara_cuello_normal" checked><label class="form-check-label">Cara/Cuello Normal</label></div></div>
-            <div class="col-md-3 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="corazon_normal" checked><label class="form-check-label">Corazón Normal</label></div></div>
-            <div class="col-md-3 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="torax_diafragma_normal" checked><label class="form-check-label">Tórax/Diafragma Normal</label></div></div>
-            <div class="col-md-3 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="abdomen_normal" checked><label class="form-check-label">Abdomen Normal</label></div></div>
-            <div class="col-md-3 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="genitourinario_normal" checked><label class="form-check-label">Genitourinario Normal</label></div></div>
-            <div class="col-md-3 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="columna_normal" checked><label class="form-check-label">Columna Normal</label></div></div>
-            <div class="col-md-3 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="extremidades_normal" checked><label class="form-check-label">Extremidades Normal</label></div></div>
+            <div class="col-md-6 mb-3"><div class="form-check"><input class="form-check-input anat-check" type="checkbox" name="craneo_snc_normal" checked onchange="toggleMarcadores()"><label class="form-check-label fw-bold">Cráneo/SNC sin alteraciones</label><small class="text-muted d-block ms-4">Forma y tamaño normal, SNC íntegro, ventriculomegalia &lt; 10 mm, plexos coroideos simétricos</small></div></div>
+            <div class="col-md-6 mb-3"><div class="form-check"><input class="form-check-input anat-check" type="checkbox" name="cara_cuello_normal" checked onchange="toggleMarcadores()"><label class="form-check-label fw-bold">Cara/Cuello sin alteraciones</label><small class="text-muted d-block ms-4">Órbitas presentes y simétricas, labio superior íntegro, perfil facial normal, pliegue nucal &lt; 6 mm</small></div></div>
+            <div class="col-md-6 mb-3"><div class="form-check"><input class="form-check-input anat-check" type="checkbox" name="corazon_normal" checked onchange="toggleMarcadores()"><label class="form-check-label fw-bold">Corazón sin alteraciones</label><small class="text-muted d-block ms-4">Situs solitus, eje cardíaco normal (45°), 4 cámaras presentes, cruce de grandes vasos normal, ritmo regular</small></div></div>
+            <div class="col-md-6 mb-3"><div class="form-check"><input class="form-check-input anat-check" type="checkbox" name="torax_diafragma_normal" checked onchange="toggleMarcadores()"><label class="form-check-label fw-bold">Tórax/Diafragma sin alteraciones</label><small class="text-muted d-block ms-4">Pulmones homogéneos de tamaño normal, diafragma íntegro, no hay derrame pleural</small></div></div>
+            <div class="col-md-6 mb-3"><div class="form-check"><input class="form-check-input anat-check" type="checkbox" name="abdomen_normal" checked onchange="toggleMarcadores()"><label class="form-check-label fw-bold">Abdomen sin alteraciones</label><small class="text-muted d-block ms-4">Estómago presente en hipocondrio izquierdo, intestino sin dilataciones, pared abdominal íntegra, cordón umbilical de inserción normal</small></div></div>
+            <div class="col-md-6 mb-3"><div class="form-check"><input class="form-check-input anat-check" type="checkbox" name="genitourinario_normal" checked onchange="toggleMarcadores()"><label class="form-check-label fw-bold">Genitourinario sin alteraciones</label><small class="text-muted d-block ms-4">Riñones en fosas lumbares de tamaño normal, sin dilatación pielocalicial (&lt;4 mm), vejiga presente</small></div></div>
+            <div class="col-md-6 mb-3"><div class="form-check"><input class="form-check-input anat-check" type="checkbox" name="columna_normal" checked onchange="toggleMarcadores()"><label class="form-check-label fw-bold">Columna sin alteraciones</label><small class="text-muted d-block ms-4">Alineación normal en 3 planos, arcos vertebrales íntegros, piel sobre raquis íntegra, sin defectos de cierre</small></div></div>
+            <div class="col-md-6 mb-3"><div class="form-check"><input class="form-check-input anat-check" type="checkbox" name="extremidades_normal" checked onchange="toggleMarcadores()"><label class="form-check-label fw-bold">Extremidades sin alteraciones</label><small class="text-muted d-block ms-4">Los 4 miembros presentes, 3 segmentos por miembro, manos y pies con dedos contables, movimientos activos normales</small></div></div>
         </div>
         <div class="mt-3"><label for="detalles_anomalias" class="form-label">Detalles de Anomalías</label><textarea class="form-control" name="detalles_anomalias" rows="2" placeholder="Describa hallazgos anormales..."></textarea></div>
     </div></div>
 
     <!-- Marcadores Ecográficos -->
-    <div class="card mb-4"><div class="card-header"><i class="fa-solid fa-magnifying-glass me-2"></i> Marcadores Ecográficos</div><div class="card-body">
+    <div id="marcadoresSection" class="card mb-4" style="display:none;"><div class="card-header"><i class="fa-solid fa-magnifying-glass me-2"></i> Marcadores Ecográficos <span class="badge bg-warning text-dark ms-2">Activado por alteración anatómica</span></div><div class="card-body">
         <div class="row">
             <div class="col-md-3 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="ventriculomegalia_leve"><label class="form-check-label">Ventriculomegalia Leve</label></div></div>
             <div class="col-md-3 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="quistes_plexos_coroideos"><label class="form-check-label">Quistes Plexos Coroideos</label></div></div>
@@ -297,6 +297,16 @@ document.addEventListener("DOMContentLoaded", function () {
         } else uploadCount.style.display = 'none';
     }
 });
+
+function toggleMarcadores() {
+    var checks = document.querySelectorAll('.anat-check');
+    var allChecked = true;
+    checks.forEach(function(chk) { if (!chk.checked) allChecked = false; });
+    var section = document.getElementById('marcadoresSection');
+    if (section) {
+        section.style.display = allChecked ? 'none' : 'block';
+    }
+}
 </script>
 
 <?php require_once __DIR__ . '/../layouts/footer.php'; ?>

@@ -29,6 +29,7 @@ require_once __DIR__ . '/../layouts/sidebar.php';
                         <th>Teléfono</th>
                         <th>Correo</th>
                         <th>Registrado en</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -72,11 +73,16 @@ require_once __DIR__ . '/../layouts/sidebar.php';
                                         echo $fc->format('d/m/Y H:i'); 
                                     ?>
                                 </td>
+                                <td>
+                                    <a href="<?php echo Url::to('/pacientes/edit?id=' . $paciente['id']); ?>" class="btn btn-apple btn-apple-secondary btn-sm" title="Editar paciente">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </a>
+                                </td>
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="5" class="text-center py-5" style="color: var(--apple-gray);">
+                            <td colspan="8" class="text-center py-5" style="color: var(--apple-gray);">
                                 <i class="fa-solid fa-users-slash fa-3x mb-3" style="opacity: 0.3;"></i>
                                 <h5 style="font-weight: 600;">No hay pacientes registrados</h5>
                                 <p class="mb-0">Comience agregando nuevos pacientes al sistema.</p>

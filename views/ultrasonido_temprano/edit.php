@@ -212,17 +212,8 @@ foreach ($embriones as $emb) {
             <div class="card mb-4">
                 <div class="card-header"><h5 class="mb-0"><i class="fa-solid fa-note-sticky me-2"></i>Decidua</h5></div>
                 <div class="card-body">
-                    <textarea name="decidua" class="form-control" rows="3" placeholder="Describa la decidua..."><?php echo $val('decidua'); ?></textarea>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-6">
-            <div class="card mb-4">
-                <div class="card-header"><h5 class="mb-0"><i class="fa-solid fa-circle me-2"></i>Saco Gestacional</h5></div>
-                <div class="card-body">
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Tipo</label>
+                        <label class="form-label fw-bold">Saco Gestacional — Tipo</label>
                         <div>
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio" name="sg_tipo" id="sg_unico" value="Unico" onchange="toggleSgCantidad()" <?php echo $sgTipo == 'Unico' ? 'checked' : ''; ?>>
@@ -350,8 +341,15 @@ foreach ($embriones as $emb) {
                         </div>
                         <?php endfor; ?>
                     </div>
+                    <small class="text-muted mb-3 d-block">Saco #1 siempre visible. Al seleccionar "Múltiple" se despliegan sacos adicionales.</small>
+                    <hr>
+                    <label class="form-label fw-bold">Descripción de la Decidua</label>
+                    <textarea name="decidua" class="form-control" rows="3" placeholder="Describa la decidua..."><?php echo $val('decidua'); ?></textarea>
                 </div>
             </div>
+        </div>
+
+        <div class="col-lg-6">
 
             <div class="card mb-4">
                 <div class="card-header"><h5 class="mb-0"><i class="fa-solid fa-heart-pulse me-2"></i>Viabilidad</h5></div>
@@ -644,9 +642,9 @@ function sugerirDiagnostico() {
         var embrionVisibleAny = document.querySelector('input[id$="_embrion_visible_si"]:checked');
         var sugerencia = '';
         if (hasCrlGte7 && !anyFcf) {
-            sugerencia = 'Embarazo NO viable. Criterio diagnóstico: CRL ≥ 7 mm sin actividad cardíaca en ecografía transvaginal, considerado prueba definitiva de pérdida gestacional precoz.';
+            sugerencia = 'Embarazo NO viable. Una sola ecografía transvaginal que identifica un embrión con CRL ≥ 7 mm sin actividad cardíaca se considera prueba definitiva de pérdida gestacional precoz.';
         } else if (maxSaco >= 25 && !embrionVisibleAny) {
-            sugerencia = 'Embarazo NO viable. Criterio diagnóstico: Diámetro medio del saco gestacional ≥ 25 mm sin embrión identificable en ecografía transvaginal, considerado prueba definitiva de pérdida gestacional precoz.';
+            sugerencia = 'Embarazo NO viable. Una sola ecografía transvaginal que identifica un saco gestacional con diámetro medio ≥ 25 mm sin embrión se considera prueba definitiva de pérdida gestacional precoz.';
         } else {
             sugerencia = 'Embarazo NO viable según criterios clínicos y ecográficos.';
         }

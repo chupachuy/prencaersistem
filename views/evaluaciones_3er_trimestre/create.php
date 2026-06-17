@@ -206,15 +206,43 @@ require_once __DIR__.'/../layouts/sidebar.php';
 </div>
 </div></div>
 
-<!-- Anatomía y Líquido -->
-<div class="card mb-4"><div class="card-header"><i class="fa-solid fa-droplet me-2"></i> Anatomía y Líquido Amniótico</div><div class="card-body">
+<!-- Anatomía Fetal -->
+<div class="card mb-4"><div class="card-header"><i class="fa-solid fa-baby me-2"></i> Anatomía Fetal</div><div class="card-body">
+    <div class="row">
+        <div class="col-md-6 mb-3"><div class="form-check"><input class="form-check-input anat-check" type="checkbox" name="craneo_snc_normal" checked onchange="toggleMarcadores()"><label class="form-check-label fw-bold">Cráneo/SNC sin alteraciones</label><small class="text-muted d-block ms-4">Forma y tamaño normal, SNC íntegro, ventriculomegalia &lt; 10 mm, surcos y giros acordes a edad gestacional</small></div></div>
+        <div class="col-md-6 mb-3"><div class="form-check"><input class="form-check-input anat-check" type="checkbox" name="cara_cuello_normal" checked onchange="toggleMarcadores()"><label class="form-check-label fw-bold">Cara/Cuello sin alteraciones</label><small class="text-muted d-block ms-4">Órbitas presentes y simétricas, labio superior íntegro, perfil facial normal</small></div></div>
+        <div class="col-md-6 mb-3"><div class="form-check"><input class="form-check-input anat-check" type="checkbox" name="corazon_normal" checked onchange="toggleMarcadores()"><label class="form-check-label fw-bold">Corazón sin alteraciones</label><small class="text-muted d-block ms-4">Situs solitus, eje cardíaco normal, 4 cámaras, cruce de grandes vasos normal, ritmo regular</small></div></div>
+        <div class="col-md-6 mb-3"><div class="form-check"><input class="form-check-input anat-check" type="checkbox" name="torax_diafragma_normal" checked onchange="toggleMarcadores()"><label class="form-check-label fw-bold">Tórax/Diafragma sin alteraciones</label><small class="text-muted d-block ms-4">Pulmones con ecogenicidad normal, parénquima homogéneo, diafragma íntegro</small></div></div>
+        <div class="col-md-6 mb-3"><div class="form-check"><input class="form-check-input anat-check" type="checkbox" name="abdomen_normal" checked onchange="toggleMarcadores()"><label class="form-check-label fw-bold">Abdomen sin alteraciones</label><small class="text-muted d-block ms-4">Estómago presente, intestino sin dilataciones, pared abdominal íntegra, cordón umbilical de inserción normal</small></div></div>
+        <div class="col-md-6 mb-3"><div class="form-check"><input class="form-check-input anat-check" type="checkbox" name="genitourinario_normal" checked onchange="toggleMarcadores()"><label class="form-check-label fw-bold">Genitourinario sin alteraciones</label><small class="text-muted d-block ms-4">Riñones de tamaño y morfología normal, sin dilatación pielocalicial, vejiga presente</small></div></div>
+        <div class="col-md-6 mb-3"><div class="form-check"><input class="form-check-input anat-check" type="checkbox" name="columna_normal" checked onchange="toggleMarcadores()"><label class="form-check-label fw-bold">Columna sin alteraciones</label><small class="text-muted d-block ms-4">Alineación normal, arcos vertebrales íntegros, cono medular en posición normal</small></div></div>
+        <div class="col-md-6 mb-3"><div class="form-check"><input class="form-check-input anat-check" type="checkbox" name="extremidades_normal" checked onchange="toggleMarcadores()"><label class="form-check-label fw-bold">Extremidades sin alteraciones</label><small class="text-muted d-block ms-4">Los 4 miembros presentes, 3 segmentos, manos y pies normales, movimientos activos</small></div></div>
+    </div>
+    <div class="mt-3"><label for="detalles_anatomia" class="form-label">Detalles de Anomalías</label><textarea class="form-control" name="detalles_anatomia" rows="2" placeholder="Describa hallazgos anormales..."></textarea></div>
+</div></div>
+
+<!-- Líquido Amniótico y Cordón -->
+<div class="card mb-4"><div class="card-header"><i class="fa-solid fa-droplet me-2"></i> Líquido Amniótico y Cordón Umbilical</div><div class="card-body">
 <div class="row">
 <div class="col-md-3 mb-3"><label for="circular_cordon_cuello" class="form-label">Circular Cordón</label><select class="form-select" name="circular_cordon_cuello"><option value="Negativo">Negativo</option><option value="Simple">Simple</option><option value="Doble">Doble</option></select></div>
 <div class="col-md-3 mb-3"><label for="liquido_amniotico_mm" class="form-label">Líquido Amniótico (mm)</label><input type="number" class="form-control" name="liquido_amniotico_mm" placeholder="Ej: 120"></div>
 <div class="col-md-3 mb-3"><label for="metodo_medicion_liquido" class="form-label">Método Medición</label><select class="form-select" name="metodo_medicion_liquido"><option value="Bolsillo Maximo">Bolsillo Máximo</option><option value="Phelan">Phelan</option></select></div>
 <div class="col-md-3 mb-3"><label for="diagnostico_liquido" class="form-label">Diagnóstico Líquido</label><select class="form-select" name="diagnostico_liquido"><option value="Normal">Normal</option><option value="Oligohidramnios">Oligohidramnios</option><option value="Polihidramnios">Polihidramnios</option></select></div>
 </div>
-<div class="row"><div class="col-md-4 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="estructuras_normales" checked><label class="form-check-label">Estructuras Generales Normales</label></div></div></div>
+</div></div>
+
+<!-- Marcadores Ecográficos -->
+<div id="marcadoresSection" class="card mb-4" style="display:none;"><div class="card-header"><i class="fa-solid fa-magnifying-glass me-2"></i> Marcadores Ecográficos <span class="badge bg-warning text-dark ms-2">Activado por alteración anatómica</span></div><div class="card-body">
+    <div class="row">
+        <div class="col-md-3 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="ventriculomegalia_leve"><label class="form-check-label">Ventriculomegalia Leve</label></div></div>
+        <div class="col-md-3 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="quistes_plexos_coroideos"><label class="form-check-label">Quistes Plexos Coroideos</label></div></div>
+        <div class="col-md-3 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="pliegue_nucal_aumentado"><label class="form-check-label">Pliegue Nucal Aumentado</label></div></div>
+        <div class="col-md-3 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="hueso_nasal_ausente"><label class="form-check-label">Hueso Nasal Ausente</label></div></div>
+        <div class="col-md-3 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="foco_ecogenico_cardiaco"><label class="form-check-label">Foco Ecogénico Cardíaco</label></div></div>
+        <div class="col-md-3 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="intestino_hiperecogenico"><label class="form-check-label">Intestino Hiperecogénico</label></div></div>
+        <div class="col-md-3 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="femur_corto"><label class="form-check-label">Fémur Corto</label></div></div>
+        <div class="col-md-3 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="arteria_umbilical_unica"><label class="form-check-label">Arteria Umbilical Única</label></div></div>
+    </div>
 </div></div>
 
 <!-- Evaluación Placentaria AJOG 2025 / FIGO 2023 -->
@@ -360,5 +388,15 @@ require_once __DIR__.'/../layouts/sidebar.php';
         } else uploadCount.style.display = 'none';
     }
 })();
+
+function toggleMarcadores() {
+    var checks = document.querySelectorAll('.anat-check');
+    var allChecked = true;
+    checks.forEach(function(chk) { if (!chk.checked) allChecked = false; });
+    var section = document.getElementById('marcadoresSection');
+    if (section) {
+        section.style.display = allChecked ? 'none' : 'block';
+    }
+}
 </script>
 <?php require_once __DIR__.'/../layouts/footer.php';?>

@@ -69,6 +69,8 @@ $router->post('/asignaciones/store', [AsignacionController::class, 'store']);
 $router->get('/pacientes', [PacienteController::class, 'index']);
 $router->get('/pacientes/create', [PacienteController::class, 'create']);
 $router->post('/pacientes/store', [PacienteController::class, 'store']);
+$router->get('/pacientes/edit', [PacienteController::class, 'edit']);
+$router->post('/pacientes/update', [PacienteController::class, 'update']);
 
 // Informes de Exploración
 $router->get('/informes_exploracion', [InformesExploracionController::class, 'index']);

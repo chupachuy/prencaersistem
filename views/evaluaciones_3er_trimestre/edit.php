@@ -103,12 +103,46 @@ $ev=$evaluacion;$a=$antecedentes;$c=$crecimiento;$d=$doppler;$an=$anatomia;$pl=$
 <div class="col-md-3 mb-3"><div class="form-check mt-4"><input class="form-check-input" type="checkbox" name="alteracion_doppler_detectada" <?php echo $chk($d['alteracion_doppler_detectada']??false);?>><label class="form-check-label">Alteración Doppler</label></div></div></div>
 </div></div>
 
-<div class="card mb-4"><div class="card-header"><i class="fa-solid fa-droplet me-2"></i> Anatomía y Líquido</div><div class="card-body">
+<!-- Anatomía Fetal -->
+<div class="card mb-4"><div class="card-header"><i class="fa-solid fa-baby me-2"></i> Anatomía Fetal</div><div class="card-body">
+    <div class="row">
+        <div class="col-md-6 mb-3"><div class="form-check"><input class="form-check-input anat-check" type="checkbox" name="craneo_snc_normal" <?php echo $chk($an['craneo_snc_normal']??true); ?> onchange="toggleMarcadores()"><label class="form-check-label fw-bold">Cráneo/SNC sin alteraciones</label><small class="text-muted d-block ms-4">Forma y tamaño normal, SNC íntegro, ventriculomegalia &lt; 10 mm, surcos y giros acordes a edad gestacional</small></div></div>
+        <div class="col-md-6 mb-3"><div class="form-check"><input class="form-check-input anat-check" type="checkbox" name="cara_cuello_normal" <?php echo $chk($an['cara_cuello_normal']??true); ?> onchange="toggleMarcadores()"><label class="form-check-label fw-bold">Cara/Cuello sin alteraciones</label><small class="text-muted d-block ms-4">Órbitas presentes y simétricas, labio superior íntegro, perfil facial normal</small></div></div>
+        <div class="col-md-6 mb-3"><div class="form-check"><input class="form-check-input anat-check" type="checkbox" name="corazon_normal" <?php echo $chk($an['corazon_normal']??true); ?> onchange="toggleMarcadores()"><label class="form-check-label fw-bold">Corazón sin alteraciones</label><small class="text-muted d-block ms-4">Situs solitus, eje cardíaco normal, 4 cámaras, cruce de grandes vasos normal, ritmo regular</small></div></div>
+        <div class="col-md-6 mb-3"><div class="form-check"><input class="form-check-input anat-check" type="checkbox" name="torax_diafragma_normal" <?php echo $chk($an['torax_diafragma_normal']??true); ?> onchange="toggleMarcadores()"><label class="form-check-label fw-bold">Tórax/Diafragma sin alteraciones</label><small class="text-muted d-block ms-4">Pulmones con ecogenicidad normal, parénquima homogéneo, diafragma íntegro</small></div></div>
+        <div class="col-md-6 mb-3"><div class="form-check"><input class="form-check-input anat-check" type="checkbox" name="abdomen_normal" <?php echo $chk($an['abdomen_normal']??true); ?> onchange="toggleMarcadores()"><label class="form-check-label fw-bold">Abdomen sin alteraciones</label><small class="text-muted d-block ms-4">Estómago presente, intestino sin dilataciones, pared abdominal íntegra, cordón umbilical de inserción normal</small></div></div>
+        <div class="col-md-6 mb-3"><div class="form-check"><input class="form-check-input anat-check" type="checkbox" name="genitourinario_normal" <?php echo $chk($an['genitourinario_normal']??true); ?> onchange="toggleMarcadores()"><label class="form-check-label fw-bold">Genitourinario sin alteraciones</label><small class="text-muted d-block ms-4">Riñones de tamaño y morfología normal, sin dilatación pielocalicial, vejiga presente</small></div></div>
+        <div class="col-md-6 mb-3"><div class="form-check"><input class="form-check-input anat-check" type="checkbox" name="columna_normal" <?php echo $chk($an['columna_normal']??true); ?> onchange="toggleMarcadores()"><label class="form-check-label fw-bold">Columna sin alteraciones</label><small class="text-muted d-block ms-4">Alineación normal, arcos vertebrales íntegros, cono medular en posición normal</small></div></div>
+        <div class="col-md-6 mb-3"><div class="form-check"><input class="form-check-input anat-check" type="checkbox" name="extremidades_normal" <?php echo $chk($an['extremidades_normal']??true); ?> onchange="toggleMarcadores()"><label class="form-check-label fw-bold">Extremidades sin alteraciones</label><small class="text-muted d-block ms-4">Los 4 miembros presentes, 3 segmentos, manos y pies normales, movimientos activos</small></div></div>
+    </div>
+    <div class="mt-3"><label for="detalles_anatomia" class="form-label">Detalles de Anomalías</label><textarea class="form-control" name="detalles_anatomia" rows="2"><?php echo htmlspecialchars($an['detalles_anatomia']??''); ?></textarea></div>
+</div></div>
+
+<!-- Líquido Amniótico y Cordón -->
+<div class="card mb-4"><div class="card-header"><i class="fa-solid fa-droplet me-2"></i> Líquido Amniótico y Cordón Umbilical</div><div class="card-body">
 <div class="row"><div class="col-md-3 mb-3"><label class="form-label">Circular Cordón</label><select class="form-select" name="circular_cordon_cuello"><?php foreach(['Negativo','Simple','Doble'] as $o):?><option value="<?php echo $o;?>" <?php echo $sel($an['circular_cordon_cuello']??'Negativo',$o);?>><?php echo $o;?></option><?php endforeach;?></select></div>
 <div class="col-md-3 mb-3"><label class="form-label">Líquido Amniótico (mm)</label><input type="number" class="form-control" name="liquido_amniotico_mm" value="<?php echo htmlspecialchars($an['liquido_amniotico_mm']??'');?>"></div>
 <div class="col-md-3 mb-3"><label class="form-label">Método Medición</label><select class="form-select" name="metodo_medicion_liquido"><?php foreach(['Bolsillo Maximo','Phelan'] as $o):?><option value="<?php echo $o;?>" <?php echo $sel($an['metodo_medicion_liquido']??'Bolsillo Maximo',$o);?>><?php echo $o;?></option><?php endforeach;?></select></div>
 <div class="col-md-3 mb-3"><label class="form-label">Diagnóstico Líquido</label><select class="form-select" name="diagnostico_liquido"><?php foreach(['Normal','Oligohidramnios','Polihidramnios'] as $o):?><option value="<?php echo $o;?>" <?php echo $sel($an['diagnostico_liquido']??'Normal',$o);?>><?php echo $o;?></option><?php endforeach;?></select></div></div>
-<div class="row"><div class="col-md-4 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="estructuras_normales" <?php echo $chk($an['estructuras_normales']??true);?>><label class="form-check-label">Estructuras Generales Normales</label></div></div></div>
+</div></div>
+
+<!-- Marcadores Ecográficos -->
+<?php
+$todosSinAlt3t = true;
+$anatFields3t = ['craneo_snc_normal','cara_cuello_normal','corazon_normal','torax_diafragma_normal','abdomen_normal','genitourinario_normal','columna_normal','extremidades_normal'];
+foreach ($anatFields3t as $f) { if (!($an[$f] ?? true)) { $todosSinAlt3t = false; break; } }
+?>
+<div id="marcadoresSection" class="card mb-4" style="<?php echo $todosSinAlt3t ? 'display:none;' : ''; ?>"><div class="card-header"><i class="fa-solid fa-magnifying-glass me-2"></i> Marcadores Ecográficos <span class="badge bg-warning text-dark ms-2">Activado por alteración anatómica</span></div><div class="card-body">
+    <div class="row">
+        <div class="col-md-3 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="ventriculomegalia_leve" <?php echo $chk(false); ?>><label class="form-check-label">Ventriculomegalia Leve</label></div></div>
+        <div class="col-md-3 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="quistes_plexos_coroideos" <?php echo $chk(false); ?>><label class="form-check-label">Quistes Plexos Coroideos</label></div></div>
+        <div class="col-md-3 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="pliegue_nucal_aumentado" <?php echo $chk(false); ?>><label class="form-check-label">Pliegue Nucal Aumentado</label></div></div>
+        <div class="col-md-3 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="hueso_nasal_ausente" <?php echo $chk(false); ?>><label class="form-check-label">Hueso Nasal Ausente</label></div></div>
+        <div class="col-md-3 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="foco_ecogenico_cardiaco" <?php echo $chk(false); ?>><label class="form-check-label">Foco Ecogénico Cardíaco</label></div></div>
+        <div class="col-md-3 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="intestino_hiperecogenico" <?php echo $chk(false); ?>><label class="form-check-label">Intestino Hiperecogénico</label></div></div>
+        <div class="col-md-3 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="femur_corto" <?php echo $chk(false); ?>><label class="form-check-label">Fémur Corto</label></div></div>
+        <div class="col-md-3 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" name="arteria_umbilical_unica" <?php echo $chk(false); ?>><label class="form-check-label">Arteria Umbilical Única</label></div></div>
+    </div>
 </div></div>
 
 <div class="card mb-4"><div class="card-header"><i class="fa-solid fa-uterus me-2"></i> Evaluación Placentaria (AJOG 2025 / FIGO 2023)</div><div class="card-body">
@@ -269,5 +303,15 @@ $ev=$evaluacion;$a=$antecedentes;$c=$crecimiento;$d=$doppler;$an=$anatomia;$pl=$
         } else uploadCount.style.display = 'none';
     }
 })();
+
+function toggleMarcadores() {
+    var checks = document.querySelectorAll('.anat-check');
+    var allChecked = true;
+    checks.forEach(function(chk) { if (!chk.checked) allChecked = false; });
+    var section = document.getElementById('marcadoresSection');
+    if (section) {
+        section.style.display = allChecked ? 'none' : 'block';
+    }
+}
 </script>
 <?php require_once __DIR__.'/../layouts/footer.php';?>
