@@ -62,6 +62,21 @@ class Controller
         return $html;
     }
 
+    private function getMpdfTempDir()
+    {
+        $tmpDir = __DIR__ . '/../storage/tmp';
+        if (!is_dir($tmpDir)) {
+            @mkdir($tmpDir, 0777, true);
+        }
+        if (!is_writable($tmpDir)) {
+            $tmpDir = sys_get_temp_dir() . '/mpdf';
+            if (!is_dir($tmpDir)) {
+                @mkdir($tmpDir, 0777, true);
+            }
+        }
+        return $tmpDir;
+    }
+
     public function streamPdf($view, $data = [], $filename = 'reporte.pdf')
     {
         ob_start();
@@ -70,7 +85,7 @@ class Controller
 
         try {
             $mpdf = new Mpdf([
-                'tempDir' => __DIR__ . '/../storage/tmp',
+                'tempDir' => $this->getMpdfTempDir(),
                 'margin_top' => 30,
                 'margin_header' => 5,
                 'margin_bottom' => 16,
@@ -87,7 +102,7 @@ class Controller
             exit;
         } catch (\Throwable $e) {
             error_log("mPDF error: " . $e->getMessage());
-            Session::set('error', 'Error al generar el PDF.');
+            Session::set('error', 'Error al generar el PDF: ' . $e->getMessage());
             $this->redirect('/');
         }
     }
@@ -100,7 +115,7 @@ class Controller
 
         try {
             $mpdf = new Mpdf([
-                'tempDir' => __DIR__ . '/../storage/tmp',
+                'tempDir' => $this->getMpdfTempDir(),
                 'margin_top' => 30,
                 'margin_header' => 5,
                 'margin_bottom' => 16,
